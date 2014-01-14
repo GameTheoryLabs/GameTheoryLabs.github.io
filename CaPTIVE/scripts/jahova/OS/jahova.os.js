@@ -256,9 +256,9 @@ com.jahova.os = (function()
                                 
                                 
                                 
-                                
+                                os.PlaySplash();
                                     //Execute any Console or Applications in Query String
-                                    os.ExecuteQuery();
+                                //    os.ExecuteQuery();
                                    
                                 
                                 
