@@ -102,10 +102,21 @@ CaPTIVE = {
         Set: {
             LeftHanded: function(e){
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.leftArrows;
+                
+                document.getElementById("arrow1").src = "scripts/Applications/arrow/green.png"
+                document.getElementById("arrow2").src = "scripts/Applications/arrow/green.png"
+                document.getElementById("arrow3").src = "scripts/Applications/arrow/green.png"
+                document.getElementById("arrow4").src = "scripts/Applications/arrow/green.png"
+                
                 CaPTIVE.States.S3DViewer.Input.Update();
             },
             RightHanded: function(e){
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.rightArrows;
+                document.getElementById("arrow1").src = "scripts/Applications/arrow/yellow.png"
+                document.getElementById("arrow2").src = "scripts/Applications/arrow/yellow.png"
+                document.getElementById("arrow3").src = "scripts/Applications/arrow/yellow.png"
+                document.getElementById("arrow4").src = "scripts/Applications/arrow/yellow.png"
+                
                 CaPTIVE.States.S3DViewer.Input.Update();
             },
             LowMargin: function(e){
@@ -128,6 +139,14 @@ CaPTIVE = {
                 if(Number(roll) != 0){
                     CaPTIVE.Entity.model.roll += Number(roll);
                     CaPTIVE.Entity.Orientation.arrows.roll += Number(roll);
+                    
+                    if(CaPTIVE.Entity.Cancers.length > 0){
+                        for(var i = 0; i < CaPTIVE.Entity.Cancers.length; i++){
+                            if(CaPTIVE.Entity.Cancers[i]){
+                                CaPTIVE.Entity.Cancers[i].roll += Number(roll) ;
+                            }
+                        }
+                    }
                 }
                 else{
                     CaPTIVE.Entity.model.Default.yaw = Number(yaw);
@@ -135,6 +154,13 @@ CaPTIVE = {
                 
                     CaPTIVE.Entity.model.roll = 0;
                     CaPTIVE.Entity.Orientation.arrows.roll = 0;
+                    if(CaPTIVE.Entity.Cancers.length > 0){
+                        for(var i = 0; i < CaPTIVE.Entity.Cancers.length; i++){
+                            if(CaPTIVE.Entity.Cancers[i]){
+                                CaPTIVE.Entity.Cancers[i].roll = 0;
+                            }
+                        }
+                    }
                 }
                 
                 CaPTIVE.States.S3DViewer.Input.Update();
@@ -2032,6 +2058,15 @@ CaPTIVE = {
                     mat4.identity(CaPTIVE.Entity.model.Graphics.Matrix.Parent.Rotation);
                     mat4.identity(CaPTIVE.Entity.model.Graphics.Matrix.Pitch);
                     //mat4.identity(CaPTIVE.Entity.model.Graphics.Matrix.Parent.World);
+                    
+                    //Reset Cancers
+                    if(CaPTIVE.Entity.Cancers.length > 0){
+                        for(var i = 0; i < CaPTIVE.Entity.Cancers.length; i++){
+                            if(CaPTIVE.Entity.Cancers[i]){
+                                CaPTIVE.Entity.Cancers[i].roll = 0;
+                            }
+                        }
+                    }
                     
                     //Rotate Yaw Scene Node
                     mat4.rotateY(CaPTIVE.Entity.model.Graphics.Matrix.Parent.Rotation, degToRad(CaPTIVE.Entity.model.Default.yaw), CaPTIVE.Entity.model.Graphics.Matrix.Parent.Rotation);
