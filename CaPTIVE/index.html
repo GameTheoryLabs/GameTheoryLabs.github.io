@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>CaPTIVE: Cancer/Pathology/Tumor Interactive Visual Enhancement</title>
+    <script type="text/javascript" src="scripts/jahova/OS/jahova.os.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/jahova.utilities.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/Console/jahova.utilities.console.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/Timer/jahova.utilities.timer.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/DebugBar/jahova.utilities.debugbar.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.command.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.resschmgr.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.instruction.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/jahova.os.cores.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Network/jahova.os.cores.network.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Threads/jahova.os.cores.thread.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/HTML/jahova.os.cores.html.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Windows/jahova.os.cores.windows.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Input/jahova.os.cores.input.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Database/jahova.os.cores.database.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Audio/jahova.os.cores.audio.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/glMatrix.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/webgl-debug.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/webgl-utils.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/jahova.os.cores.graphics.js" ></script>
+    
+    <script type="text/javascript" src="scripts/Applications/captive.js" ></script>
+    
+    <script type="text/javascript" src="scripts/FileSaver.min.js" ></script>
+    <script type="text/javascript" src="scripts/canvas-to-blob.min.js" ></script>
+    
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/application.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/JaHOVA.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.mac.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.pc.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.hud.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.desktop.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_new.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_colors.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_border.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_transition.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_IdeSidebar.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/icon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/icon.ico" />
+</head>
+
+<body onload="Load()">
+
+<div id="app" class="app">
+    <div id="SStart" class="hide">
+        <div class="SStart">
+            <p><b style="font-size: xx-large;">Drop A File Here<br/>To Start</b><br/> (or click)</p>
+        </div>
+        <input class="SStart" type="file" id="fileSelector" style="opacity: 0;">
+    </div>
+    <div id="SLayerDefinition" class="hide">
+        <div id="layer-overview" class="datagrid hide">
+        </div>
+        <div id="layer-definition" class="SLayerDefinition">
+            <div>
+                <p>Enter Total Number of Layers</p>
+                <input class="textbox" type="text" id="slayerdefinition-total">
+                <a class="button" onclick="CaPTIVE.States.SLayerDefinition.Set();">Save</a>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="SLoadJSON" class="hide">
+        <div class="SLoadJSON">
+            <p><b style="font-size: xx-large;">Loading Case</b></p>
+        </div>
+    </div>
+    <div id="SSaveJSON" class="hide">
+        <div class="SSaveJSON">
+            <p><b style="font-size: xx-large;">Saving Case</b></p>
+        </div>
+    </div>
+    
+    <div id="SImageEditor" class="hide">
+        <div class="SImageEditor mask">
+            <canvas  width="100%" height="100%" style="width: 100%; height: 100%" id="ImageEditor"></canvas>
+        </div>
+        <input class="SStart" type="file" id="imageSelector" style="opacity: 0;">
+        <input class="SStart" type="file" id="layerSelector" style="opacity: 0;">
+    </div>
+    <div id="SLayerEditor" class="hide">
+        <div class="SImageEditor mask">
+            <canvas  width="100%" height="100%" style="width: 100%; height: 100%" id="LayerEditor"></canvas>
+        </div>
+        <input class="SStart" type="file" id="imageSelector" style="opacity: 0;">
+    </div>
+    <div id="S3DViewer" class="hide">
+        <div class="S3DViewer mask">
+            <canvas  width="100%" height="100%" style="width: 100%; height: 100%" id="3DView"></canvas>
+        </div>
+    </div>
+    <div id="SCancerGeneration" class="hide"> 
+    </div>
+    <div id="SModelConfigure" class="hide">
+    </div>
+    <div id="SModelAlignment" class="hide"> 
+    </div>
+    <div id="SLoadOBJ" class="hide"> 
+    </div>
+    <div id="Spinner" class="windows8 hide">
+        <p><b>LOADING</b></p>
+        <div class="wBall" id="wBall_1">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_2">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_3">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_4">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_5">
+            <div class="wInnerBall"></div>
+        </div>
+    </div>
+    <div id="circular3dG" class="hide">
+        <div id="circular3d_1G" class="circular3dG"></div>
+        <div id="circular3d_2G" class="circular3dG"></div>
+        <div id="circular3d_3G" class="circular3dG"></div>
+        <div id="circular3d_4G" class="circular3dG"></div>
+        <div id="circular3d_5G" class="circular3dG"></div>
+        <div id="circular3d_6G" class="circular3dG"></div>
+        <div id="circular3d_7G" class="circular3dG"></div>
+        <div id="circular3d_8G" class="circular3dG"></div>
+    </div>
+</div>
+<div id="openModal" class="modalDialog hide">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        <div id="modalContent">
+        </div>
+    </div>
+</div>
+
+<div id="gtlMenu" class="gtlMenu">
+    <a id="gtlMenu-toggle" class="slider"><img alt="" id="bot" src="images/arrow_bottom.png"></a>
+    <div id="status-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="status-gtlMenu-options">
+            <li><a id="status-gtlMenu-options-0">Overview</a></li>
+            <li><a id="status-gtlMenu-options-1">3D Model</a></li>
+            <li><a id="status-gtlMenu-options-2">Layers</a></li>
+            <li><a id="status-gtlMenu-options-3">Cancer</a></li>
+        </ul>
+
+        <div id="status-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="dashboard-model-light" class="led-red"></div></td>
+                        <td class="statusLabel">3D Models: </td>
+                        <td><a id="dashboard-model-message" class="statusMessage"> NO Models Loaded</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="dashboard-layer-light" class="led-red"></div></td>
+                        <td class="statusLabel">Layers: </td>
+                        <td><a id="dashboard-layer-message" class="statusMessage"> NO Layers Defined</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="dashboard-traces-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer: </td>
+                        <td><a id="dashboard-traces-message" class="statusMessage"> NO Cancers Generated</a></td>
+                    </tr>
+                </table>
+            </div>     
+        </div>
+        <div id="status-gtlMenu-options-1-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="dashboard-model-obj-light" class="led-red"></div></td>
+                        <td class="statusLabel">OBJ Model: </td>
+                        <td><a id="dashboard-model-obj-message" class="statusMessage" > NO OBJ Model Has Been loaded</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="dashboard-model-aligned-light" class="led-red"></div></td>
+                        <td class="statusLabel">Aligned: </td>
+                        <td><a id="dashboard-model-aligned-message" class="statusMessage"> NO Alignments Has Been Made</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="dashboard-model-dimension-light" class="led-red"></div></td>
+                        <td class="statusLabel">Dimensions: </td>
+                        <td><a id="dashboard-model-dimension-message" class="statusMessage"> NO Dimensions Have Been Set</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="status-gtlMenu-options-2-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="dashboard-layer-defined-light" class="led-red"></div></td>
+                        <td class="statusLabel">Layers Defined: </td>
+                        <td><a id="dashboard-layer-defined-message" class="statusMessage"> NO Layers Defined</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="dashboard-layer-cancer-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Layers </td>
+                        <td><a id="dashboard-layer-cancer-message" class="statusMessage"> NO Layers With Cancer</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="status-gtlMenu-options-3-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="dashboard-cancer-outlines-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Outlines: </td>
+                        <td><a id="dashboard-cancer-outlines-message" class="statusMessage"> NO Cancer Outlines Defined</a></td>
+                    </tr>
+                    <tr>
+                        <td><div  id="dashboard-cancer-generated-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Generated: </td>
+                        <td><a id="dashboard-cancer-generated-message" class="statusMessage"> NO Cancer Models Generated</a></td>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="model-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="model-gtlMenu-options">
+            <li><a id="model-gtlMenu-options-0"  >Overview</a></li>
+            <li><a id="model-gtlMenu-options-1"  >Model</a></li>
+            <li><a id="model-gtlMenu-options-2"  >Alignment</a></li>
+            <li><a id="model-gtlMenu-options-3"  >Dimensions</a></li>
+            <li><a id="model-gtlMenu-options-4"  >Properties</a></li>
+        </ul>
+
+        <div id="model-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="model-gtlMenu-options-0-content class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.Launch.Viewer()">Launch 3D Viewer</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div id="model-loaded-light" class="led-red"></div></td>
+                        <td class="statusLabel">3D Models: </td>
+                        <td><a id="model-loaded-message" class="statusMessage" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(1);"> NO Models Loaded</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="model-aligned-light" class="led-red"></div></td>
+                        <td class="statusLabel">Aligned: </td>
+                        <td><a id="model-aligned-message" class="statusMessage" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(2);"> NO Alignment Set</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="model-dimensions-light" class="led-red"></div></td>
+                        <td class="statusLabel">Dimensions: </td>
+                        <td><a id="model-dimensions-message" class="statusMessage" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(3);"> NO Dimensions Set</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="model-gtlMenu-options-1-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="model-gtlMenu-options-1-content" class="gtlMenuContent">
+                <a class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SStart');">Click to Load Model</a>
+            </div>
+        </div>
+        <div id="model-gtlMenu-options-2-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="model-gtlMenu-options-2-content" class="gtlMenuContent" style="margin: 0px; padding: 4px;">
+                
+                <a class="button" onclick="CaPTIVE.Entity.Set.LeftHanded();">Set Left</a>
+                <a class="button" onclick="CaPTIVE.Entity.Set.RightHanded();">Set Right</a>
+                
+                <div class="datagrid" style="width: inherit; box-shadow: none; position: inherit; margin: 0;">
+                <table cellspacing="5px">
+                    
+                    <tr>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(0,0,0);">
+                                <img class="arrowUp" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" />
+                                <img class="arrowRight" width="20px" height="20px" src="scripts/Applications/arrow/green.png" />
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(270,0,0);">
+                                
+                                <img class="arrowUp" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" >
+                                <img class="arrowRight" width="20px" height="20px" src="scripts/Applications/arrow/white.png" >
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(0,-90,0);">
+                                <img class="arrowDown" width="20px" height="20px" src="scripts/Applications/arrow/white.png" />
+                                <img class="arrowRight" width="20px" height="20px" src="scripts/Applications/arrow/green.png" />
+                            </a>
+                        </td>
+                        <td style="padding: 0px;">
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(0,0,90);">
+                                <img class="" width="30px" height="30px" src="scripts/Applications/arrow/rotateLeft.png" />
+                                <!--<img class="arrowLeft" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" />-->
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(180,0,0);">
+                                <img class="arrowUp" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" />
+                                <img class="arrowLeft" width="20px" height="20px" src="scripts/Applications/arrow/green.png" />
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(90,0,0);">
+                                <img class="arrowUp" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" >
+                                <img class="arrowLeft" width="20px" height="20px" src="scripts/Applications/arrow/white.png" >
+                                
+                            </a>
+                        </td>
+                        <td>
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(0,90,0);">
+                                <img class="arrowUp" width="20px" height="20px" src="scripts/Applications/arrow/white.png" />
+                                <img class="arrowRight" width="20px" height="20px" src="scripts/Applications/arrow/green.png" />
+                            </a>
+                        </td>
+                        <td style="padding: 0px;">
+                            <a onclick="CaPTIVE.Entity.Set.Orientation(0,0,-90);">
+                                <img class="" width="30px" height="30px" src="scripts/Applications/arrow/rotateRight.png" />
+                                <!--<img class="arrowRight" width="20px" height="20px" src="scripts/Applications/arrow/blue.png" />-->
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                
+                </div>
+                <a class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SModelAlignment');">Set Alignment</a>
+            </div>
+        </div>
+        <div id="model-gtlMenu-options-3-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <table cellspacing="5px">
+                <tr>
+                    <td class="statusLabel">
+                        <input class="textbox blue" type="text" id="model-blue-label" value="Height">
+                    </td>
+                    <td>
+                       <input class="textbox" type="text" id="model-height" >
+                    </td>
+                    <td>
+                        [mm]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="statusLabel">
+                        <input class="textbox yellowGreen" type="text" id="model-green-label"value="Width">
+                    </td>
+                    <td>
+                       <input class="textbox" type="text" id="model-width" >
+                    </td>
+                    <td>
+                        [mm]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="statusLabel">
+                        <input class="textbox white" type="text" id="model-white-label" value="Depth">
+                    </td>
+                    <td>
+                       <input class="textbox" type="text" id="model-depth">
+                    </td>
+                    <td>
+                        [mm]
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <a class="button" onclick="CaPTIVE.Entity.Set.Dimensions();">Set Model Dimensions</a>
+                    </td>
+                </tr>
+            </table>
+            
+        </div>
+        <div id="model-gtlMenu-options-4-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent" style="margin: auto;">
+                <table cellspacing="5px">
+                    
+                    <tr>
+                        <td>
+                            Ambient Light
+                        </td>
+                        <td>
+                            <input class="slider" id="model-ambient" type="range" min="0.0" max="1.0" step="0.1" value="1.0">
+                        </td>
+                        <td>
+                            Mouse Pitch
+                        </td>
+                        <td>
+                            <input class="slider" id="model-pitch" type="range" min="0.01" max="2.0" step="0.01" value="1.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Specularity
+                        </td>
+                        <td>
+                            <input class="slider" id="model-specularity" type="range" min="1.0" max="30.0" step="0.1" value="0.6">
+                        </td>
+                        <td>
+                            Mouse Yaw
+                        </td>
+                        <td>
+                            <input class="slider" id="model-yaw" type="range" min="0.01" max="2.0" step="0.01" value="1.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Transparency
+                        </td>
+                        <td>
+                            <input class="slider" id="model-alpha" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Scale
+                        </td>
+                        <td>
+                            <input class="slider" id="model-scale" type="range" min="0.1" max="10" step="0.1" value="1">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.ToggleFullscreen()">Fullscreen</a>
+                        </td>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.Entity.Toggle.Mirror()">Mirror</a>
+                        </td>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.Entity.Toggle.Specular()">Specular</a>
+                        </td>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.States.S3DViewer.Input.Reset()">Reset</a>
+                        </td>
+                        
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="layers-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="layers-gtlMenu-options">
+            <li><a id="layers-gtlMenu-options-0"  >Overview</a></li>
+            <li><a id="layers-gtlMenu-options-1"  >Layers</a></li>
+            <li><a id="layers-gtlMenu-options-2"  >Editor</a></li>
+        </ul>
+
+        <div id="layers-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="layers-gtlMenu-options-0-content" class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="layer-defined-light" class="led-red"></div></td>
+                        <td class="statusLabel">Total Layers: </td>
+                        <td><a id="layer-defined-message" class="statusMessage" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(1);">NO Layers Defined</a></td>
+                    </tr>
+                    <tr>
+                        <td><div id="layer-cancer-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Layers: </td>
+                        <td><a id="layer-cancer-message" class="statusMessage" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(1);">NO Layers with Cancer</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="layers-gtlMenu-options-1-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="layers-gtlMenu-options-2-content" class="gtlMenuContent">
+                <a id="layer-overview-button" class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SLayerDefinition');">Define Layers</a>
+            </div>
+        </div>
+        <div id="layers-gtlMenu-options-2-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="layers-gtlMenu-options-1-content" class="gtlMenuContent">
+                <a class="button" onclick="CaPTIVE.Launch.LayerEditor()">Launch Layer Editor</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="cancer-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="cancer-gtlMenu-options">
+            <li><a id="cancer-gtlMenu-options-0"  >Overview</a></li>
+            <li><a id="cancer-gtlMenu-options-1"  >Cancers</a></li>
+            <li><a id="cancer-gtlMenu-options-2"  >Options</a></li>
+            <!--<li><a id="cancer-gtlMenu-options-3"  >Testing</a></li>-->
+        </ul>
+
+        <div id="cancer-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td><div id="cancer-outlines-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Outlines: </td>
+                        <td><a id="cancer-outlines-message" onclick="CaPTIVE.Launch.LayerEditor();" class="statusMessage"> NO Cancer Outlines Defined</a></td>
+                    </tr>
+                    <tr>
+                        <td><div  id="cancer-generated-light" class="led-red"></div></td>
+                        <td class="statusLabel">Cancer Generated: </td>
+                        <td><a id="cancer-generated-message" onclick="CaPTIVE.Menu[CaPTIVE.Menu.Current].SetActiveOption(1);" class="statusMessage"> NO Cancer Models Generated</a></td>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+        <div id="cancer-gtlMenu-options-1-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="cancer-gtlMenu-options-1-content" class="gtlMenuContent">
+                <a id="cancer-generate-button" class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SCancerGeneration');">Generate Cancer Models</a>
+            </div>
+        </div>
+        <div id="cancer-gtlMenu-options-2-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <table cellspacing="5px">
+                <tr>
+                    <td>
+                        <a id="cancer-margin-low-toggle" class="statusMessage" onclick="CaPTIVE.Entity.Toggle.LowMargin();"> <div id="cancer-margin-low-toggle-light" class="led-red"></div></a>
+                    </td>
+                    
+                    <td class="statusLabel">
+                        Low Margin
+                    </td>
+                    
+                    <td>
+                       <input class="textbox" type="text" id="cancer-margin-low-value" size='10' value="2.0"> [mm]
+                    </td>
+                    <td>
+                        <a id="cancer-margin-low-set-button" class="button" onclick="CaPTIVE.Entity.Set.LowMargin();">Set</a>
+                    </td>
+                    
+                    
+                </tr>
+                <tr>
+                    <td>
+                        <a id="cancer-margin-high-toggle" class="statusMessage" onclick="CaPTIVE.Entity.Toggle.HighMargin();"> <div id="cancer-margin-high-toggle-light" class="led-red"></div></a>
+                    </td>
+                    <td class="statusLabel">
+                        High Margin
+                    </td>
+                    
+                    <td>
+                       <input class="textbox" type="text" id="cancer-margin-high-value" size='10' value="5.0">[mm]
+                    </td>
+                    <td>
+                        <a id="cancer-margin-high-set-button" class="button" onclick="CaPTIVE.Entity.Set.HighMargin();">Set</a>
+                    </td>
+                </tr>
+                
+            </table>
+                
+                
+
+        </div>
+        <!--<div id="cancer-gtlMenu-options-3-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <a class="button" href="#openModal">Open Modal</a>
+        </div>-->
+    </div>
+    <div id="imageEditor-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="imageEditor-gtlMenu-options">
+            <li><a id="imageEditor-gtlMenu-options-0"  >Editor</a></li>
+            <li><a id="imageEditor-gtlMenu-options-1"  >Options</a></li>
+        </ul>
+
+        <div id="imageEditor-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="imageEditor-gtlMenu-options-0-content class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <a class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SImageEditor');">Launch Image Editor</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="imageEditor-gtlMenu-options-1-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+            <div id="imageEditor-gtlMenu-options-1-content class="gtlMenuContent">
+                <table cellspacing="5px">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="case-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="case-gtlMenu-options">
+            <li><a id="case-gtlMenu-options-0"  >Options</a></li>
+        </ul>
+
+        <div id="case-gtlMenu-options-0-content-wrapper" style="display: none;" class="gtlMenuSelectedContent ">
+
+                 <a class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SSaveJSON');">Save Case</a>
+                 <a class="button" onclick="CaPTIVE.FSM.AnimatedTransition('SStart');">Load Case</a>
+        </div>
+        
+    </div>
+    <ul id="gtlMenuTopLevel">
+        <li>
+            <a id="status">Status</a>
+        </li>
+        <li>
+            <a id="model">3D Model</a>
+        </li>
+        <li>
+            <a id="layers">Layers</a>
+        </li>
+        <li>
+            <a id="cancer">Cancer</a>
+        </li>
+        <li>
+            <a id="imageEditor">Image Editor</a>
+        </li>
+        <li>
+            <a id="case">Case</a>
+        </li>
+    </ul>
+    
+</div>
+
+
+</body>
+</html>
