@@ -311,7 +311,7 @@ com.jahova.os = (function()
                                     console.ProcessInputString();
                                 }
                                 else if(cmdApp){
-                                    //os.PlaySplash()
+                                    os.PlaySplash()
                                     window[cmdApp]();
                                 }
                             },
