@@ -157,6 +157,8 @@ Cancer.Calculate = {
         }
     },
     VolumetricJSON: function(layer){
+        layer.json = [];
+        
         for(var i = 0; i < layer.outlines.length; i++){
             var top;
             var bot;
@@ -619,7 +621,24 @@ Cancer.Calculate = {
                             }
                             
                         }
+                        if(!topIntersection || !botIntersection){
+                        //console.error("Failed to find Mesh Intersection");
+                        //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
+                        //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
+                        //console.error("Point: " + JSON.stringify(point, null, "\t"));
+                        if(topIntersection && !botIntersection){
+                            layer.Intersection[k].Mesh.Bot.push(layer.Intersection[k].Mesh.Top[layer.Intersection[k].Mesh.Top.length-1]);
+                            layer.Intersection[k].Margin.Bot.push(layer.Intersection[k].Margin.Top[layer.Intersection[k].Margin.Top.length-1]);
+                                    
+                        }
+                        else if(!topIntersection && botIntersection){
+                            layer.Intersection[k].Mesh.Top.push(layer.Intersection[k].Mesh.Bot[layer.Intersection[k].Mesh.Bot.length-1]);
+                            layer.Intersection[k].Margin.Top.push(layer.Intersection[k].Margin.Bot[layer.Intersection[k].Margin.Bot.length-1]);
+                        }
+                    
+                    }
                         
+                            
                         //Normailize Margins
                         for(var j = 0; j < msh.vertexMargins.length; j++){
                             
@@ -629,6 +648,11 @@ Cancer.Calculate = {
                             }
                         }
                     }
+                    
+                    if(layer.Intersection[k].Mesh.Top.length != layer.Intersection[k].Mesh.Bot.length){
+                        console.log("Whoa there nelly");
+                    }
+                    
                 }
             }
         }
@@ -747,12 +771,19 @@ Cancer.Calculate = {
         for(var k = 0; k < layer.outlines.length; k++){
             if(layer.borderID != k){
                 var cancer = layer.outlines[k];
-                layer.Offsets = [];
+                
+                if(!layer.Offsets){
+                    layer.Offsets = [];
+                }
+                
                 layer.Offsets[k] = {};
                 layer.Offsets[k].absolute = [];
                 layer.Offsets[k].percentage = [];
                 
-                layer.Intersection = [];
+                if(!layer.Intersection){
+                    layer.Intersection = [];
+                }
+                
                 layer.Intersection[k] = {};
                 layer.Intersection[k].Trace = [];
                 
@@ -791,7 +822,7 @@ Cancer.Calculate = {
                         //console.error("Point: " + JSON.stringify(point, null, "\t"));
                         
                         //os.debugbar.AnchorConsolePage();
-                        //os.console.Comment("No collision found!");
+                        os.console.Comment("No collision found!");
                     }
                     else{
                         layer.Intersection[k].Trace.push(point);
@@ -1372,11 +1403,16 @@ BuildJSON = function(obj){
                     x = obj.vertex[v*3];
                     y = obj.vertex[v*3 + 1];
                     z = obj.vertex[v*3 + 2];
+                    
+                    json.vertexPositions.push(x);
+                    json.vertexPositions.push(y);
+                    json.vertexPositions.push(z);
+                }
+                else{
+                    console.log("X, Y, and Z were left to default values");
                 }
                 
-                json.vertexPositions.push(x);
-                json.vertexPositions.push(y);
-                json.vertexPositions.push(z);
+                
                 
                 //Verify that the position will not extend outside
                 //  of obj.texture array

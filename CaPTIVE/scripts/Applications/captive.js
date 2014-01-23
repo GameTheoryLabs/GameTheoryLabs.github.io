@@ -100,7 +100,7 @@ CaPTIVE = {
             }    
         },
         Set: {
-            LeftHanded: function(e){
+            RightHanded: function(e){
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.leftArrows;
                 
                 document.getElementById("arrow1").src = "scripts/Applications/arrow/green.png"
@@ -110,7 +110,7 @@ CaPTIVE = {
                 
                 CaPTIVE.States.S3DViewer.Input.Update();
             },
-            RightHanded: function(e){
+            LeftHanded: function(e){
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.rightArrows;
                 document.getElementById("arrow1").src = "scripts/Applications/arrow/yellow.png"
                 document.getElementById("arrow2").src = "scripts/Applications/arrow/yellow.png"
@@ -953,41 +953,81 @@ CaPTIVE = {
                 
                 }
                 if(CaPTIVE.Status.CancerObjectsGenerated){
+                     CaPTIVE.Entity.Cancers = [];
+                
                     //Create Cancer Entities                
                     for(var j = 0; j < CaPTIVE.Entity.Layers.length; j++){
                         var layer = CaPTIVE.Entity.Layers[j];
+                        
                         //If Cancer Exist In Layer, Build Graphics Entity
                         if(layer.cancer){
                             for(var k = 0; k < layer.json.length; k++){
                                 var list = layer.json[k]
                                 //Create Entity
-                                CaPTIVE.Entity.Cancers[layer.id] = os.graphics.Managers.Entity.Create();
+                                var cancer = os.graphics.Managers.Entity.Create();
                                 
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.texture(false);
-                                CaPTIVE.Entity.Cancers[layer.id].Set.Scale(1,1,1);
-                                CaPTIVE.Entity.Cancers[layer.id].Set.Position(0,0,0);
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.useBlendColor(true);
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.blendColor([0.5, 0.5, 0.5]);
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.enableAlpha(false);
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.aligned(true);
-                                CaPTIVE.Entity.Cancers[layer.id].Default.yaw = 0;
-                                CaPTIVE.Entity.Cancers[layer.id].Default.pitch = 0;
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch = mat4.create();
-                                mat4.identity(CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch);
-                                    
+                                cancer.Graphics.Set.texture(false);
+                                cancer.Set.Scale(1,1,1);
+                                cancer.Set.Position(0,0,0);
+                                cancer.Graphics.Set.useBlendColor(true);
+                                cancer.Graphics.Set.blendColor([0.5, 0.5, 0.5]);
+                                cancer.Graphics.Set.enableAlpha(false);
+                                cancer.Graphics.Set.aligned(true);
+                                cancer.Default.yaw = 0;
+                                cancer.Default.pitch = 0;
+                                cancer.Graphics.Matrix.Pitch = mat4.create();
+                                mat4.identity(cancer.Graphics.Matrix.Pitch);
+                                
+                                
                                 for(var i = 0; i < list.length; i++){
                                     //Initialize Mesh
-                                    var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + j + "-" + i , null, list[i]);
+                                    var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + k + "-" + i , null, list[i]);
                                     msh.Initialize();
-                                    CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
+                                    cancer.Graphics.Add.Mesh(msh.name);
                                 }
                                 
+                                CaPTIVE.Entity.Cancers.push(cancer);
+                                CaPTIVE.Dashboard.SetLight.Green(document.getElementById(layer.id + "-layer-3d"));
                             }
-                            if(CaPTIVE.Entity.Cancers[i]){
-                                //os.graphics.AddToDraw(CaPTIVE.Entity.Cancers[layer.id]);
-                            }
+                            
+                        
                         }
                     }
+                    ////Create Cancer Entities                
+                    //for(var j = 0; j < CaPTIVE.Entity.Layers.length; j++){
+                    //    var layer = CaPTIVE.Entity.Layers[j];
+                    //    //If Cancer Exist In Layer, Build Graphics Entity
+                    //    if(layer.cancer){
+                    //        for(var k = 0; k < layer.json.length; k++){
+                    //            var list = layer.json[k]
+                    //            //Create Entity
+                    //            CaPTIVE.Entity.Cancers[layer.id] = os.graphics.Managers.Entity.Create();
+                    //            
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.texture(false);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Set.Scale(1,1,1);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Set.Position(0,0,0);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.useBlendColor(true);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.blendColor([0.5, 0.5, 0.5]);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.enableAlpha(false);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.aligned(true);
+                    //            CaPTIVE.Entity.Cancers[layer.id].Default.yaw = 0;
+                    //            CaPTIVE.Entity.Cancers[layer.id].Default.pitch = 0;
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch = mat4.create();
+                    //            mat4.identity(CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch);
+                    //                
+                    //            for(var i = 0; i < list.length; i++){
+                    //                //Initialize Mesh
+                    //                var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + j + "-" + i , null, list[i]);
+                    //                msh.Initialize();
+                    //                CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
+                    //            }
+                    //            
+                    //        }
+                    //        if(CaPTIVE.Entity.Cancers[i]){
+                    //            //os.graphics.AddToDraw(CaPTIVE.Entity.Cancers[layer.id]);
+                    //        }
+                    //    }
+                    //}
                     
                     CaPTIVE.Dashboard.SetLight.Green(document.getElementById("cancer-generated-light"));
                     document.getElementById("cancer-generated-message").innerHTML ="Cancer Generation Complete";
@@ -1936,26 +1976,72 @@ CaPTIVE = {
                 //  Update Cancers if they exist
                 //
                 if(msg.data.layers){
-                    for(var i = 0; i < msg.data.layers.length; i++){
-                        var layer = msg.data.layers[i];
+                    CaPTIVE.Entity.Layers = msg.data.layers;
+                    
+                    CaPTIVE.Entity.Cancers = [];
+                
+                    //Create Cancer Entities                
+                    for(var j = 0; j < CaPTIVE.Entity.Layers.length; j++){
+                        var layer = CaPTIVE.Entity.Layers[j];
                         
+                        //If Cancer Exist In Layer, Build Graphics Entity
                         if(layer.cancer){
-                            for(var j = 0; j < layer.json.length; j++){
-                                var obj = layer.json[j];
+                            for(var k = 0; k < layer.json.length; k++){
+                                var list = layer.json[k]
+                                //Create Entity
+                                var cancer = os.graphics.Managers.Entity.Create();
                                 
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Mesh.removeAll();
+                                cancer.Graphics.Set.texture(false);
+                                cancer.Set.Scale(1,1,1);
+                                cancer.Set.Position(0,0,0);
+                                cancer.Graphics.Set.useBlendColor(true);
+                                cancer.Graphics.Set.blendColor([0.5, 0.5, 0.5]);
+                                cancer.Graphics.Set.enableAlpha(false);
+                                cancer.Graphics.Set.aligned(true);
+                                cancer.Default.yaw = 0;
+                                cancer.Default.pitch = 0;
+                                cancer.Graphics.Matrix.Pitch = mat4.create();
+                                mat4.identity(cancer.Graphics.Matrix.Pitch);
                                 
-                                for(var k = 0; k < obj.length; k++){
-
+                                
+                                for(var i = 0; i < list.length; i++){
                                     //Initialize Mesh
-                                    var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + j + "-" + k , null, obj[k]);
+                                    var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + k + "-" + i , null, list[i]);
                                     msh.Initialize();
-                                    CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
-                            
+                                    cancer.Graphics.Add.Mesh(msh.name);
                                 }
+                                
+                                CaPTIVE.Entity.Cancers.push(cancer);
+                                CaPTIVE.Dashboard.SetLight.Green(document.getElementById(layer.id + "-layer-3d"));
                             }
+                            
+                        
                         }
                     }
+                    
+                    
+                    
+                    
+                    //for(var i = 0; i < msg.data.layers.length; i++){
+                    //    var layer = msg.data.layers[i];
+                    //    
+                    //    if(layer.cancer){
+                    //        for(var j = 0; j < layer.json.length; j++){
+                    //            var obj = layer.json[j];
+                    //            
+                    //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Mesh.removeAll();
+                    //            
+                    //            for(var k = 0; k < obj.length; k++){
+                    //
+                    //                //Initialize Mesh
+                    //                var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + j + "-" + k , null, obj[k]);
+                    //                msh.Initialize();
+                    //                CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
+                    //        
+                    //            }
+                    //        }
+                    //    }
+                    //}
                 }
                 
                 //
@@ -2640,6 +2726,8 @@ CaPTIVE = {
                 //Get Updated Layers
                 CaPTIVE.Entity.Layers = e.data.layers;
                 
+                CaPTIVE.Entity.Cancers = [];
+                
                 //Create Cancer Entities                
                 for(var j = 0; j < CaPTIVE.Entity.Layers.length; j++){
                     var layer = CaPTIVE.Entity.Layers[j];
@@ -2649,37 +2737,76 @@ CaPTIVE = {
                         for(var k = 0; k < layer.json.length; k++){
                             var list = layer.json[k]
                             //Create Entity
-                            CaPTIVE.Entity.Cancers[layer.id] = os.graphics.Managers.Entity.Create();
+                            var cancer = os.graphics.Managers.Entity.Create();
                             
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.texture(false);
-                            CaPTIVE.Entity.Cancers[layer.id].Set.Scale(1,1,1);
-                            CaPTIVE.Entity.Cancers[layer.id].Set.Position(0,0,0);
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.useBlendColor(true);
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.blendColor([0.5, 0.5, 0.5]);
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.enableAlpha(false);
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.aligned(true);
-                            CaPTIVE.Entity.Cancers[layer.id].Default.yaw = 0;
-                            CaPTIVE.Entity.Cancers[layer.id].Default.pitch = 0;
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch = mat4.create();
-                            mat4.identity(CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch);
+                            cancer.Graphics.Set.texture(false);
+                            cancer.Set.Scale(1,1,1);
+                            cancer.Set.Position(0,0,0);
+                            cancer.Graphics.Set.useBlendColor(true);
+                            cancer.Graphics.Set.blendColor([0.5, 0.5, 0.5]);
+                            cancer.Graphics.Set.enableAlpha(false);
+                            cancer.Graphics.Set.aligned(true);
+                            cancer.Default.yaw = 0;
+                            cancer.Default.pitch = 0;
+                            cancer.Graphics.Matrix.Pitch = mat4.create();
+                            mat4.identity(cancer.Graphics.Matrix.Pitch);
                             
-                            CaPTIVE.Entity.Cancers[layer.id].Graphics.Mesh.removeAll();
                             
                             for(var i = 0; i < list.length; i++){
                                 //Initialize Mesh
                                 var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + k + "-" + i , null, list[i]);
                                 msh.Initialize();
-                                CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
+                                cancer.Graphics.Add.Mesh(msh.name);
                             }
                             
+                            CaPTIVE.Entity.Cancers.push(cancer);
                             CaPTIVE.Dashboard.SetLight.Green(document.getElementById(layer.id + "-layer-3d"));
                         }
                         
-                        if(CaPTIVE.Entity.Cancers[i]){
-                            //os.graphics.AddToDraw(CaPTIVE.Entity.Cancers[layer.id]);
-                        }
+                    
                     }
                 }
+                
+                ////Create Cancer Entities                
+                //for(var j = 0; j < CaPTIVE.Entity.Layers.length; j++){
+                //    var layer = CaPTIVE.Entity.Layers[j];
+                //    
+                //    //If Cancer Exist In Layer, Build Graphics Entity
+                //    if(layer.cancer){
+                //        for(var k = 0; k < layer.json.length; k++){
+                //            var list = layer.json[k]
+                //            //Create Entity
+                //            CaPTIVE.Entity.Cancers[layer.id] = os.graphics.Managers.Entity.Create();
+                //            
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.texture(false);
+                //            CaPTIVE.Entity.Cancers[layer.id].Set.Scale(1,1,1);
+                //            CaPTIVE.Entity.Cancers[layer.id].Set.Position(0,0,0);
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.useBlendColor(true);
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.blendColor([0.5, 0.5, 0.5]);
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.enableAlpha(false);
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Set.aligned(true);
+                //            CaPTIVE.Entity.Cancers[layer.id].Default.yaw = 0;
+                //            CaPTIVE.Entity.Cancers[layer.id].Default.pitch = 0;
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch = mat4.create();
+                //            mat4.identity(CaPTIVE.Entity.Cancers[layer.id].Graphics.Matrix.Pitch);
+                //            
+                //            CaPTIVE.Entity.Cancers[layer.id].Graphics.Mesh.removeAll();
+                //            
+                //            for(var i = 0; i < list.length; i++){
+                //                //Initialize Mesh
+                //                var msh = os.graphics.Managers.Mesh.Create.Mesh("layer" + layer.id + "-" + k + "-" + i , null, list[i]);
+                //                msh.Initialize();
+                //                CaPTIVE.Entity.Cancers[layer.id].Graphics.Add.Mesh(msh.name);
+                //            }
+                //            
+                //            CaPTIVE.Dashboard.SetLight.Green(document.getElementById(layer.id + "-layer-3d"));
+                //        }
+                //        
+                //        if(CaPTIVE.Entity.Cancers[i]){
+                //            //os.graphics.AddToDraw(CaPTIVE.Entity.Cancers[layer.id]);
+                //        }
+                //    }
+                //}
                 
                 //Update Margins on Excision Mesh
                 var meshes = e.data.meshes;
