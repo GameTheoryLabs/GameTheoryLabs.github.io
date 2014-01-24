@@ -202,22 +202,43 @@ Cancer.Calculate = {
             if(k != layer.borderID){
                 
                 var objVerts = [];
+                var verts2Perimeter = new CMap();
+                    
                 var vertsPerSide = 0;
+                var totTopVerts = 0;
                 
                 if(layer.Models[k].top.index.length > 0){
                     
                     var file = "#Created By GameTheoryLabs\n";
                     var map = new CMap();
+                    var lookup = new CMap();
+                    var verts = [];
                     
                     //Create Map to hold verts
                     for(var m = 0; m < layer.Models[k].top.index.length; m++){
-                        map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
+                        //Does the vert already exist?
+                        if(undefined == lookup.get(layer.Models[k].top.index[m])){
+                            //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
+                            lookup.put(layer.Models[k].top.index[m], verts.length);
+                            verts.push(layer.Models[k].top.verts[m]);
+                            
+                            for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
+                                var perimeter = layer.Perimeter.Top[k][i];
+                                var v = layer.Models[k].top.verts[m];
+                                if((perimeter[0] == v[0]) && (perimeter[1] == v[1])){
+                                    verts2Perimeter.put(i + 1, verts.length);
+                                }
+                            }
+                        }
+                        //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
                     }
-                    vertsPerSide = map.size;
+                    totTopVerts = lookup.size;
+                    vertsPerSide = lookup.size;
                     
                     //Ouptut verts to file
-                    for(var i = 0; i < map.size; i++){
-                        var vert = map.get(i+1);
+                    
+                    for(var i = 0; i < verts.length; i++){
+                        var vert = verts[i];
                         
                         //Output to OBJ File
                         try{
@@ -232,11 +253,27 @@ Cancer.Calculate = {
                         
                     }
                     
+                    //for(var i = 0; i < map.size; i++){
+                    //    var vert = map.get(i+1);
+                    //    
+                    //    //Output to OBJ File
+                    //    try{
+                    //        if(vert){
+                    //            file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
+                    //            objVerts.push("v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n");
+                    //        }
+                    //    }
+                    //    catch(e){
+                    //        console.error(e);
+                    //    }
+                    //    
+                    //}
+                    
                     
                     var numOfPolys = layer.Models[k].top.index.length/3;
                     
                     for(var j = 0; j < numOfPolys; j++){
-                        file += "f " + layer.Models[k].top.index[j*3 + 0] + " " + layer.Models[k].top.index[j*3 + 1] + "  " + layer.Models[k].top.index[j*3 + 2] + "\n";
+                        file += "f " + (lookup.get(layer.Models[k].top.index[j*3 + 0]) + 1) + " " + (lookup.get(layer.Models[k].top.index[j*3 + 1]) + 1) + "  " + (lookup.get(layer.Models[k].top.index[j*3 + 2]) + 1) + "\n";
                     }
                     layer.Models[k].top.obj = file;
                     layer.obj.top[k] = file;
@@ -246,17 +283,35 @@ Cancer.Calculate = {
                     
                     var file = "#Created By GameTheoryLabs\n";
                     var map = new CMap();
+                    var lookup = new CMap();
+                    var verts = [];
                     
                     //Create Map to hold verts
                     for(var m = 0; m < layer.Models[k].bot.index.length; m++){
-                        map.put(layer.Models[k].bot.index[m], layer.Models[k].bot.verts[m]);
+                        
+                        //Does the vert already exist?
+                        if(undefined == lookup.get(layer.Models[k].bot.index[m])){
+                            //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
+                            lookup.put(layer.Models[k].bot.index[m], verts.length);
+                            verts.push(layer.Models[k].bot.verts[m]);
+                            
+                            for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
+                                var perimeter = layer.Perimeter.Bot[k][i];
+                                var v = layer.Models[k].bot.verts[m];
+                                if(perimeter[0] == v[0] && perimeter[1] == v[1]){
+                                    verts2Perimeter.put(totTopVerts + (i + 1), totTopVerts + verts.length);
+                                }
+                            }
+                        }
+                        
+                        //map.put(layer.Models[k].bot.index[m], layer.Models[k].bot.verts[m]);
                     }
                     
-                    vertsPerSide = (vertsPerSide < 1) ? map.size : vertsPerSide;
+                    vertsPerSide = (vertsPerSide < 1) ? lookup.size : vertsPerSide;
                     
-                    //Ouptut verts to file
-                    for(var i = 0; i < map.size; i++){
-                        var vert = map.get(i+1);
+                     //Ouptut verts to file
+                    for(var i = 0; i < verts.length; i++){
+                        var vert = verts[i];
                         
                         //Output to OBJ File
                         try{
@@ -271,51 +326,101 @@ Cancer.Calculate = {
                         
                     }
                     
+                    ////Ouptut verts to file
+                    //for(var i = 0; i < map.size; i++){
+                    //    var vert = map.get(i+1);
+                    //    
+                    //    //Output to OBJ File
+                    //    try{
+                    //        if(vert){
+                    //            file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
+                    //            objVerts.push("v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n");
+                    //        }
+                    //    }
+                    //    catch(e){
+                    //        console.error(e);
+                    //    }
+                    //    
+                    //}
+                    
                     
                     var numOfPolys = layer.Models[k].bot.index.length/3;
                     
                     for(var j = 0; j < numOfPolys; j++){
-                        file += "f " + layer.Models[k].bot.index[j*3 + 0] + " " + layer.Models[k].bot.index[j*3 + 1] + "  " + layer.Models[k].bot.index[j*3 + 2] + "\n";
+                        file += "f " + (lookup.get(layer.Models[k].bot.index[j*3 + 0]) + 1) + " " + (lookup.get(layer.Models[k].bot.index[j*3 + 1]) + 1) + "  " + (lookup.get(layer.Models[k].bot.index[j*3 + 2]) + 1) + "\n";
                     }
                     layer.Models[k].bot.obj = file;
                     layer.obj.bot[k] = file;
                 }
                 if((layer.Models[k].top.index.length > 0) && (layer.Models[k].bot.index.length > 0) ){
                     var file = "#Created By GameTheoryLabs\n";
-                    //Create Map to hold verts
-                    var map = new CMap();
                     
-                    //Store top verts
-                    for(var m = 0; m < layer.Models[k].top.index.length; m++){
-                        map.put("t" + layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
+                    //Push top verts to file
+                    for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
+                        var vert = layer.Perimeter.Top[k][i];
+                        
+                        //Output to OBJ File
+                        try{
+                            if(vert){
+                                file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
+                            }
+                        }
+                        catch(e){
+                            console.error(e);
+                        }
+                        
                     }
-                    //Store bottom verts
-                    for(var m = 0; m < layer.Models[k].bot.index.length; m++){
-                        map.put("b" + layer.Models[k].bot.index[m], layer.Models[k].bot.verts[m]);
+                    //Push bot verts to file
+                    for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
+                        var vert = layer.Perimeter.Bot[k][i];
+                        
+                        //Output to OBJ File
+                        try{
+                            if(vert){
+                                file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
+                            }
+                        }
+                        catch(e){
+                            console.error(e);
+                        }
+                        
                     }
                     
-                    //Ouptut verts to file
-                    for(var i = 0; i < objVerts.length; i++){
-                        file += objVerts[i];
-                    }
-
+                    totTopVerts = layer.Perimeter.Top[k].length;
                     var numOfPolys = (vertsPerSide * 2) - 2;
                     
                     for(var j = 1; j < vertsPerSide; j++){
                         
                         //Bottom Tris
                         // tri: b[i], b[i+1], t[i+1]
-                        file += "f " + (vertsPerSide + j) + " " + (vertsPerSide + j + 1) + " " + (j + 1) + "\n";
+                        file += "f " + ((totTopVerts + j)) + " " + ((totTopVerts + j + 1)) + " " + (j + 1) + "\n";
                         
                         //Top tris
                         // tri: b[i], t[i+1], t[i]
-                        file += "f " + (vertsPerSide + j) + " " + (j + 1) + " " + (j) + "\n";
+                        file += "f " + ((totTopVerts + j)) + " " + (j + 1) + " " + (j) + "\n";
                     }
                         //Final Bottom
-                        file += "f " + (vertsPerSide * 2) + " " + (vertsPerSide + 1) + " " + (1) + "\n";
+                        file += "f " + (totTopVerts * 2) + " " + ((totTopVerts + 1)) + " " + (1) + "\n";
                         
                         //Final Top
-                        file += "f " + (vertsPerSide * 2) + " " + (1) + " " + (vertsPerSide) + "\n";
+                        file += "f " + (totTopVerts * 2) + " " + (1) + " " + (totTopVerts) + "\n";
+                        
+                     
+                    //for(var j = 1; j < vertsPerSide; j++){
+                    //    
+                    //    //Bottom Tris
+                    //    // tri: b[i], b[i+1], t[i+1]
+                    //    file += "f " + (vertsPerSide + j) + " " + (vertsPerSide + j + 1) + " " + (j + 1) + "\n";
+                    //    
+                    //    //Top tris
+                    //    // tri: b[i], t[i+1], t[i]
+                    //    file += "f " + (vertsPerSide + j) + " " + (j + 1) + " " + (j) + "\n";
+                    //}
+                    //    //Final Bottom
+                    //    file += "f " + (vertsPerSide * 2) + " " + (vertsPerSide + 1) + " " + (1) + "\n";
+                    //    
+                    //    //Final Top
+                    //    file += "f " + (vertsPerSide * 2) + " " + (1) + " " + (vertsPerSide) + "\n";
                     
                     layer.Models[k].mid.obj = file;
                     layer.obj.mid[k] = file;
@@ -788,8 +893,8 @@ Cancer.Calculate = {
                 layer.Intersection[k].Trace = [];
                 
                 var center = {
-                    x: layer.BVs[k].Cx,
-                    y: layer.BVs[k].Cy
+                    x: layer.BVs[layer.borderID].Cx,//layer.BVs[k].Cx,
+                    y: layer.BVs[layer.borderID].Cy//layer.BVs[k].Cy
                 };
                 
                 for(var i = 0; i < cancer.length; i++){
@@ -1403,16 +1508,19 @@ BuildJSON = function(obj){
                     x = obj.vertex[v*3];
                     y = obj.vertex[v*3 + 1];
                     z = obj.vertex[v*3 + 2];
-                    
-                    json.vertexPositions.push(x);
-                    json.vertexPositions.push(y);
-                    json.vertexPositions.push(z);
                 }
                 else{
                     console.log("X, Y, and Z were left to default values");
+                    //x = json.vertexPositions[json.vertexPositions.length - 3];
+                    //y = json.vertexPositions[json.vertexPositions.length - 2];
+                    //z = json.vertexPositions[json.vertexPositions.length - 1];
+                    
+                    
                 }
                 
-                
+                json.vertexPositions.push(x);
+                json.vertexPositions.push(y);
+                json.vertexPositions.push(z);
                 
                 //Verify that the position will not extend outside
                 //  of obj.texture array
