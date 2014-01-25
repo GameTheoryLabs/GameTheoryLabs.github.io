@@ -207,6 +207,9 @@ Cancer.Calculate = {
                 var vertsPerSide = 0;
                 var totTopVerts = 0;
                 
+                var top = [];
+                var bot = [];
+                    
                 if(layer.Models[k].top.index.length > 0){
                     
                     var file = "#Created By GameTheoryLabs\n";
@@ -222,13 +225,13 @@ Cancer.Calculate = {
                             lookup.put(layer.Models[k].top.index[m], verts.length);
                             verts.push(layer.Models[k].top.verts[m]);
                             
-                            for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
-                                var perimeter = layer.Perimeter.Top[k][i];
-                                var v = layer.Models[k].top.verts[m];
-                                if((perimeter[0] == v[0]) && (perimeter[1] == v[1])){
-                                    verts2Perimeter.put(i + 1, verts.length);
-                                }
-                            }
+                            //for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
+                            //    var perimeter = layer.Perimeter.Top[k][i];
+                            //    var v = layer.Models[k].top.verts[m];
+                            //    if((perimeter[0] == v[0]) && (perimeter[1] == v[1])){
+                            //        verts2Perimeter.put(i + 1, verts.length);
+                            //    }
+                            //}
                         }
                         //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
                     }
@@ -277,6 +280,7 @@ Cancer.Calculate = {
                     }
                     layer.Models[k].top.obj = file;
                     layer.obj.top[k] = file;
+                    top = verts;
                 }
                 
                 if(layer.Models[k].bot.index.length > 0){
@@ -295,13 +299,13 @@ Cancer.Calculate = {
                             lookup.put(layer.Models[k].bot.index[m], verts.length);
                             verts.push(layer.Models[k].bot.verts[m]);
                             
-                            for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
-                                var perimeter = layer.Perimeter.Bot[k][i];
-                                var v = layer.Models[k].bot.verts[m];
-                                if(perimeter[0] == v[0] && perimeter[1] == v[1]){
-                                    verts2Perimeter.put(totTopVerts + (i + 1), totTopVerts + verts.length);
-                                }
-                            }
+                            //for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
+                            //    var perimeter = layer.Perimeter.Bot[k][i];
+                            //    var v = layer.Models[k].bot.verts[m];
+                            //    if(perimeter[0] == v[0] && perimeter[1] == v[1]){
+                            //        verts2Perimeter.put(totTopVerts + (i + 1), totTopVerts + verts.length);
+                            //    }
+                            //}
                         }
                         
                         //map.put(layer.Models[k].bot.index[m], layer.Models[k].bot.verts[m]);
@@ -351,42 +355,76 @@ Cancer.Calculate = {
                     }
                     layer.Models[k].bot.obj = file;
                     layer.obj.bot[k] = file;
+                    bot = verts;
                 }
                 if((layer.Models[k].top.index.length > 0) && (layer.Models[k].bot.index.length > 0) ){
-                    var file = "#Created By GameTheoryLabs\n";
                     
-                    //Push top verts to file
+                    var file = "#Created By GameTheoryLabs\n";
+                    var topPerimeter = [];
+                    var botPerimeter = [];
+                    
                     for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
+                        
                         var vert = layer.Perimeter.Top[k][i];
                         
-                        //Output to OBJ File
-                        try{
-                            if(vert){
+                        for(var j = 0; j < top.length; j++){
+                            var val = top[j];
+                            
+                            if(vert[0] == val[0]  && vert[1] == val[1]){
+                                topPerimeter.push(vert);
                                 file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
+                                break;
                             }
                         }
-                        catch(e){
-                            console.error(e);
-                        }
-                        
-                    }
-                    //Push bot verts to file
-                    for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
-                        var vert = layer.Perimeter.Bot[k][i];
-                        
-                        //Output to OBJ File
-                        try{
-                            if(vert){
-                                file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
-                            }
-                        }
-                        catch(e){
-                            console.error(e);
-                        }
-                        
                     }
                     
-                    totTopVerts = layer.Perimeter.Top[k].length;
+                    for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
+                        
+                        var vert = layer.Perimeter.Bot[k][i];
+                        
+                        for(var j = 0; j < bot.length; j++){
+                            var val = bot[j];
+                            
+                            if(vert[0] == val[0]  && vert[1] == val[1]){
+                                topPerimeter.push(vert);
+                                file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
+                                break;
+                            }
+                        }
+                    }
+                    
+                    ////Push top verts to file
+                    //for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
+                    //    var vert = layer.Perimeter.Top[k][i];
+                    //    
+                    //    //Output to OBJ File
+                    //    try{
+                    //        if(vert){
+                    //            file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
+                    //        }
+                    //    }
+                    //    catch(e){
+                    //        console.error(e);
+                    //    }
+                    //    
+                    //}
+                    ////Push bot verts to file
+                    //for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
+                    //    var vert = layer.Perimeter.Bot[k][i];
+                    //    
+                    //    //Output to OBJ File
+                    //    try{
+                    //        if(vert){
+                    //            file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
+                    //        }
+                    //    }
+                    //    catch(e){
+                    //        console.error(e);
+                    //    }
+                    //    
+                    //}
+                    
+                    totTopVerts = top.length;//layer.Perimeter.Top[k].length;
                     var numOfPolys = (vertsPerSide * 2) - 2;
                     
                     for(var j = 1; j < vertsPerSide; j++){
@@ -634,12 +672,15 @@ Cancer.Calculate = {
                 //Loop through each ray
                 for(var i = 0; i < cancer.length; i++){
                     ray = new CRay(0,0, cancer[i].x - center[0], cancer[i].y - center[1]);
+                    var tIntersection = [];
+                    var bInterscetion = [];
                     
+                    var topIntersection = false;
+                    var botIntersection = false;
                     for(var m = 0; m < mesh.length; m++){
                         
                         var msh = mesh[m];
-                        var topIntersection = false;
-                        var botIntersection = false;
+                        
                         
                         //Loop through each tri in mesh
                         for(var j = 0; j < msh.indices.length; j += 3){
@@ -663,6 +704,7 @@ Cancer.Calculate = {
                                     //Move Point back to Original Position
                                     mat4.multiplyVec3(revTrans.top, pointTop, pointTop);
                                     
+                                    tIntersection.push(pointTop);
                                     layer.Intersection[k].Mesh.Top.push(pointTop);
                                     
                                     //Calculate distance between pointTop and vertexPosition
@@ -702,6 +744,7 @@ Cancer.Calculate = {
                                     mat4.multiplyVec3(revTrans.bot, pointBot, pointBot);
                                     
                                     layer.Intersection[k].Mesh.Bot.push(pointBot);
+                                    bInterscetion.push(pointBot);
                                     
                                     var margin = vec3.length(pointBot) * (1 - layer.Offsets[k].percentage[layer.Intersection[k].Mesh.Bot.length - 1]);
                                     
@@ -726,23 +769,26 @@ Cancer.Calculate = {
                             }
                             
                         }
-                        if(!topIntersection || !botIntersection){
-                        //console.error("Failed to find Mesh Intersection");
-                        //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
-                        //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
-                        //console.error("Point: " + JSON.stringify(point, null, "\t"));
-                        if(topIntersection && !botIntersection){
-                            layer.Intersection[k].Mesh.Bot.push(layer.Intersection[k].Mesh.Top[layer.Intersection[k].Mesh.Top.length-1]);
-                            layer.Intersection[k].Margin.Bot.push(layer.Intersection[k].Margin.Top[layer.Intersection[k].Margin.Top.length-1]);
-                                    
-                        }
-                        else if(!topIntersection && botIntersection){
-                            layer.Intersection[k].Mesh.Top.push(layer.Intersection[k].Mesh.Bot[layer.Intersection[k].Mesh.Bot.length-1]);
-                            layer.Intersection[k].Margin.Top.push(layer.Intersection[k].Margin.Bot[layer.Intersection[k].Margin.Bot.length-1]);
-                        }
-                    
-                    }
                         
+                    }
+                    if(tIntersection.length > 1 || bInterscetion.length > 1){
+                        console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
+
+                    }
+                    if(!topIntersection || !botIntersection){
+                    //console.error("Failed to find Mesh Intersection");
+                    //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
+                    //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
+                    //console.error("Point: " + JSON.stringify(point, null, "\t"));
+                    if(topIntersection && !botIntersection){
+                        layer.Intersection[k].Mesh.Bot.push(layer.Intersection[k].Mesh.Top[layer.Intersection[k].Mesh.Top.length-1]);
+                        layer.Intersection[k].Margin.Bot.push(layer.Intersection[k].Margin.Top[layer.Intersection[k].Margin.Top.length-1]);
+                                
+                    }
+                    else if(!topIntersection && botIntersection){
+                        layer.Intersection[k].Mesh.Top.push(layer.Intersection[k].Mesh.Bot[layer.Intersection[k].Mesh.Bot.length-1]);
+                        layer.Intersection[k].Margin.Top.push(layer.Intersection[k].Margin.Bot[layer.Intersection[k].Margin.Bot.length-1]);
+                    }    
                             
                         //Normailize Margins
                         for(var j = 0; j < msh.vertexMargins.length; j++){
