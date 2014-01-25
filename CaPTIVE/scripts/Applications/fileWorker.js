@@ -770,27 +770,6 @@ Cancer.Calculate = {
                             
                         }
                         
-                    }
-                    if(tIntersection.length > 1 || bInterscetion.length > 1){
-                        console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
-
-                    }
-                    if(!topIntersection || !botIntersection){
-                    //console.error("Failed to find Mesh Intersection");
-                    //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
-                    //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
-                    //console.error("Point: " + JSON.stringify(point, null, "\t"));
-                    if(topIntersection && !botIntersection){
-                        layer.Intersection[k].Mesh.Bot.push(layer.Intersection[k].Mesh.Top[layer.Intersection[k].Mesh.Top.length-1]);
-                        layer.Intersection[k].Margin.Bot.push(layer.Intersection[k].Margin.Top[layer.Intersection[k].Margin.Top.length-1]);
-                                
-                    }
-                    else if(!topIntersection && botIntersection){
-                        layer.Intersection[k].Mesh.Top.push(layer.Intersection[k].Mesh.Bot[layer.Intersection[k].Mesh.Bot.length-1]);
-                        layer.Intersection[k].Margin.Top.push(layer.Intersection[k].Margin.Bot[layer.Intersection[k].Margin.Bot.length-1]);
-                    }    
-                            
-                        //Normailize Margins
                         for(var j = 0; j < msh.vertexMargins.length; j++){
                             
                             //Had an intersection
@@ -798,6 +777,28 @@ Cancer.Calculate = {
                                 msh.vertexMargins[j] = Number.MAX_VALUE;
                             }
                         }
+                    }
+                    if(tIntersection.length > 1 || bInterscetion.length > 1){
+                        console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
+
+                    }
+                    if(!topIntersection || !botIntersection){
+                        //console.error("Failed to find Mesh Intersection");
+                        //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
+                        //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
+                        //console.error("Point: " + JSON.stringify(point, null, "\t"));
+                        if(topIntersection && !botIntersection){
+                            layer.Intersection[k].Mesh.Bot.push(layer.Intersection[k].Mesh.Top[layer.Intersection[k].Mesh.Top.length-1]);
+                            layer.Intersection[k].Margin.Bot.push(layer.Intersection[k].Margin.Top[layer.Intersection[k].Margin.Top.length-1]);
+                                    
+                        }
+                        else if(!topIntersection && botIntersection){
+                            layer.Intersection[k].Mesh.Top.push(layer.Intersection[k].Mesh.Bot[layer.Intersection[k].Mesh.Bot.length-1]);
+                            layer.Intersection[k].Margin.Top.push(layer.Intersection[k].Margin.Bot[layer.Intersection[k].Margin.Bot.length-1]);
+                        }    
+                                
+                        //Normailize Margins
+                        
                     }
                     
                     if(layer.Intersection[k].Mesh.Top.length != layer.Intersection[k].Mesh.Bot.length){
