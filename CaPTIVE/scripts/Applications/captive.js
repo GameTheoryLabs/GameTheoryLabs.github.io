@@ -26,7 +26,8 @@ CaPTIVE = {
             rightArrows: null,
             leftArrows: null,
             rightTexture: null,
-            leftTexture: null
+            leftTexture: null,
+            rightHanded: true
         },
         scene: null,
         model: null,
@@ -103,6 +104,7 @@ CaPTIVE = {
         },
         Set: {
             RightHanded: function(e){
+                CaPTIVE.Entity.Orientation.rightHanded = true;
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.leftArrows;
                 
                 document.getElementById("arrow1").src = "scripts/Applications/arrow/green.png"
@@ -113,6 +115,7 @@ CaPTIVE = {
                 CaPTIVE.States.S3DViewer.Input.Update();
             },
             LeftHanded: function(e){
+                CaPTIVE.Entity.Orientation.rightHanded = false;
                 CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.rightArrows;
                 document.getElementById("arrow1").src = "scripts/Applications/arrow/yellow.png"
                 document.getElementById("arrow2").src = "scripts/Applications/arrow/yellow.png"
@@ -544,6 +547,7 @@ CaPTIVE = {
             
             CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.leftArrows;
             
+            CaPTIVE.Entity.Orientation.rightHanded = true;
             //os.graphics.AddToDraw(CaPTIVE.Entity.Orientation.leftArrows);
 
             
@@ -689,6 +693,23 @@ CaPTIVE = {
                     CaPTIVE.Entity.Layers = CaPTIVE.Files.json.Layers;
                     CaPTIVE.Files.mesh = CaPTIVE.Files.json.mesh;
                     CaPTIVE.Files.obj = CaPTIVE.Files.json.obj;
+                    
+                    CaPTIVE.Entity.Orientation.rightHanded = CaPTIVE.Files.json.rightHanded == undefined ? true : CaPTIVE.Files.json.rightHanded;
+                    if(CaPTIVE.Entity.Orientation.rightHanded){
+                        CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.leftArrows;
+                
+                        document.getElementById("arrow1").src = "scripts/Applications/arrow/green.png"
+                        document.getElementById("arrow2").src = "scripts/Applications/arrow/green.png"
+                        document.getElementById("arrow3").src = "scripts/Applications/arrow/green.png"
+                        document.getElementById("arrow4").src = "scripts/Applications/arrow/green.png"
+                    }
+                    else{
+                        CaPTIVE.Entity.Orientation.arrows = CaPTIVE.Entity.Orientation.rightArrows;
+                        document.getElementById("arrow1").src = "scripts/Applications/arrow/yellow.png"
+                        document.getElementById("arrow2").src = "scripts/Applications/arrow/yellow.png"
+                        document.getElementById("arrow3").src = "scripts/Applications/arrow/yellow.png"
+                        document.getElementById("arrow4").src = "scripts/Applications/arrow/yellow.png"
+                    }
                     
                     document.getElementById('model-blue-label').value = CaPTIVE.Files.json.blue ? CaPTIVE.Files.json.blue : "";
                     document.getElementById('model-white-label').value = CaPTIVE.Files.json.red ? CaPTIVE.Files.json.red : "";
@@ -1153,6 +1174,7 @@ CaPTIVE = {
                 output.date = document.getElementById('json-date').value;
                 output.site = document.getElementById('json-site').value;
                 output.error = CaPTIVE.error;
+                output.rightHanded = CaPTIVE.Entity.Orientation.rightHanded;
                 output.Margin ={
                     low: document.getElementById("cancer-margin-low-value").value,
                     high: document.getElementById("cancer-margin-high-value").value

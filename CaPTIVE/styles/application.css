@@ -950,7 +950,8 @@ transform:scale(.3)}
     height: 100%;
     width: 80%;
     background-color: #EEEEEE;
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
+    overflow: hidden;
     
     -moz-border-radius-bottomright: 10px;
     -moz-border-radius-topright: 10px;
