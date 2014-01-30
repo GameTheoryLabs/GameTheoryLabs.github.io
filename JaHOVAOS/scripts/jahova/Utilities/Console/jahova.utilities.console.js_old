@@ -1,0 +1,362 @@
+//JaHOVA Utilities : Console 
+//      Dependent on JaHOVA Utilities
+
+/****h* Utilities/Console
+*  LINKS
+* |html <p><a href="http://jahovaos.com/JaHOVA/0v3_0WIP/scripts/Doc/toc_index.html">   Table of Contents </a></p>
+*
+*  NAME
+*    JaHOVA Utilities Console
+*    
+*  AUTHOR
+*   Corey Clark
+*   cclark@coreyclarkphd.com
+*
+*  HISTORY
+*   Created: 4/14/2011
+*   
+*
+*  DESCRIPTION
+*     This module adds console window and functionality
+*     
+*
+*  USAGE
+*/
+com.jahova.utilities.Instance().Console = (function()
+                        {
+                            var pInstance;
+                    
+                            function constructor()
+                            {
+                                //******************
+                                //PRIVATE ATTRIBUTES
+                                //******************
+                                
+                                var NAME = "JaHOVA Utilities : Console Module";
+                                var VERSION = "0v3";
+                                var PATH = "scripts/jahova/Utilities/Console/jahova.utilities.console.js";
+                                var ENABLED = true;
+                                
+                                var os = com.jahova.os.Instance();
+                                var prompt = "~JaHOVA OS >>";
+                                var console = this;
+                                
+                                //******************
+                                //PRIVATE METHODS
+                                //******************
+                                
+                                
+                                //******************
+                                //INITALIZATION
+                                //******************
+
+                                
+                                return{
+                                    //PUBLIC ATTRIBUTES                                    
+                                    cmdWindow: null,
+                                    length: 0,
+                                    Pinned: false,
+                                    ConsoleHover: false,
+                                    APIPinned: false,
+                                    APIHover: false,
+                                    Commands: null,
+                                    //PUBLIC PRIVILEDGE METHODS
+                                    GetName: function(){
+                                        return NAME;
+                                    },
+                                    
+                                    GetVersion: function(){
+                                        return VERSION;
+                                    },
+                                    
+                                    GetPath: function(){
+                                        return PATH;
+                                    },
+                                    
+                                    GetStatus: function(){
+                                        return ENABLED;
+                                    },
+                                    
+                                    Enable: function(){
+                                        ENABLED = true;
+                                        console.cmdWindow.onkeydown = console.EvaluateInput;
+                                    },
+                                    
+                                    Disable: function(){
+                                        ENABLED = false;
+                                        console.cmdWindow.onkeydown = null;
+                                    },
+                                    
+                                    Initialize: function(){
+                                        console = this;
+                                        
+                                        os.Elements.ConsoleTabText.onclick = console.PinHover;
+                                        os.Elements.ConsoleTabPageHeaderPin.onclick = console.Pin;
+                                        
+                                        console.cmdWindow = document.createElement("textarea");
+                                        console.cmdWindow.id = "com.jahova.consoleTab.page.window";
+                                        console.cmdWindow.className = "console";
+                                        console.cmdWindow.onkeydown = console.EvaluateInput;
+                                        os.Elements.ConsoleTabPage.appendChild(console.cmdWindow);
+                                        console.cmdWindow.value = prompt;
+                                        
+                                        
+                                        //Adding Documentation, Needs to be moved to Utilitiy File
+                                        os.Elements.DocumentationTabPageHeaderPin.onclick = console.PinAPIDoc;
+                                        os.Elements.DocumentationTabText.onclick = console.PinHover;
+                                        
+                                        os.Elements.DocumentationIFrame = document.createElement("iframe");
+                                        os.Elements.DocumentationIFrame.setAttribute("src", os.GetDomain() + "scripts/Doc/toc_index.html");
+                                        os.Elements.DocumentationIFrame.setAttribute("scrolling", "auto");
+                                        os.Elements.DocumentationIFrame.className = "apidoc";
+                                        os.Elements.DocumentationTabPage.appendChild(os.Elements.DocumentationIFrame);
+                                        
+                                        os.Elements.DemoIFrame = document.createElement("iframe");
+                                        os.Elements.DemoIFrame.setAttribute("src", "http://www.youtube.com/embed/-jhzMrKgrlA?rel=0");
+                                        os.Elements.DemoIFrame.className = "apidoc";
+                                        os.Elements.DemoTabPage.appendChild(os.Elements.DemoIFrame);
+                                    },
+                                    
+                                    LoadCommands: function(){
+                                        this.Commands = os.resschmgr.Create.Map();
+                                        
+                                        //Load Default Commands
+                                        var help = "Clears command window\nExample >> clear";
+                                        this.AddCommand("clear", function(){this.cmdWindow.value = "";}, this, help);
+                                        
+                                        help = "Displays a list of all loaded commands\nExample >> help";
+                                        this.AddCommand("help", this.DisplayCommands, this, help);
+                                        
+                                        help = "Pins the console and prevents from sliding back\nExample >> pin"
+                                        this.AddCommand("pin", this.Pin, this, help);
+                                        
+                                        help = "Load Multi-threaded Physics Demo\nExample >>threads";
+                                        this.AddCommand("threads", this.ThreadDemo, this, help);
+                                        
+                                        help = "Create a socket and connect to test server, ";
+                                        help += "Allows the use of SocketSend and SocketClose Commands";
+                                        help += "\nExample >>SocketOpen";
+                                        this.AddCommand("SocketOpen", this.SocketCreate,this, help);
+                                        
+                                        help = "Sends message to server via connected socket, ";
+                                        help += "Message will be broadcast to all connected users and displaye in console";
+                                        help += "\nExmaple >> SocketSend your message here";
+                                        this.AddCommand("SocketSend", this.SocketSend, this, help);
+                                        
+                                        help = "Closes connected socket\nExample >> SocketClose";
+                                        this.AddCommand("SocketClose", this.SocketClose, this, help);
+                                        
+                                        help = "Create a Window\nExample >>CreateWindow [ID Name Width Height Top Left]";
+                                        this.AddCommand("CreateWindow", this.CreateWindow, this, help);
+                                        
+                                        //Display Loaded Commands
+                                        os.console.AppendComment("Commands Loaded: \n");
+                                        this.DisplayCommands();
+                                        
+                                    },
+                                    ThreadDemo: function(){
+                                        os.console.Comment("\nCalling Demo Initialization");
+                                        demo.Initialize();
+                                    },
+                                    CreateWindow: function(msg){
+                                        var dims = msg.split(" ");
+                                        os.resschmgr.Create.Window(dims[0], dims[1], dims[2], dims[3], dims[4], dims[5]);
+                                    },
+                                    SocketCreate: function(){
+                                        var socket = os.network.SocketManager.CreateSocket("demo.jahovaos.com", "8080", " ");
+                                        os.console.AppendComment("Socket Created");
+                                        
+                                        socket.onmessage = function(msg){os.console.Comment("Socket: " + msg);};
+                                        socket.onmessagescope = os.console;
+                                        
+                                        socket.onclose = function(){console.Comment("Socket Closed");};
+                                        socket.onclosescope = os.console;
+                                        
+                                        socket.onopen = function(){console.Comment("Socket Opened");};
+                                        socket.onopenscope = os.console;
+                                        
+                                        os.console.AppendComment("Callbacks Set");
+                                        os.console.Comment("");
+                                        
+                                        socket.Open();
+                                    },
+                                    SocketSend: function(msg){
+                                        os.console.Comment("\nSending... ");
+                                        os.network.SocketManager.Sockets.value().Send(msg);
+                                    },
+                                    SocketClose: function(){
+                                        os.console.Comment("Closing Socket");
+                                        os.network.SocketManager.Sockets.value().Close();
+                                        
+                                        var id = os.network.SocketManager.Sockets.value().GetID();
+                                        os.network.SocketManager.Sockets.remove(id);
+                                    },
+                                    Pin: function(){
+                                        if(os.console.Pinned){
+                                            os.Elements.ConsoleTabPage.className = "debugPage";
+                                            os.Elements.ConsoleTabPage.style.width = "";
+                                            os.Elements.ConsoleTabPageHeaderPin.className = "pin";
+                                            console.cmdWindow.className = "console";
+                                            os.console.Pinned = false;
+                                        }
+                                        else{
+                                            os.Elements.ConsoleTabPage.className = "debugPagePin";
+                                            os.Elements.ConsoleTabPage.style.width = "700px";
+                                            os.Elements.ConsoleTabPageHeaderPin.className = "pinPin";
+                                            console.cmdWindow.className = "consolePin";
+                                            os.console.Pinned = true;
+                                        }
+                                    },
+                                    PinHover: function(){
+                                        //console.ConsoleHover = !console.ConsoleHover;
+                                        //os.Elements.ConsoleTab.className = (console.ConsoleHover ? id : '')
+                                    },
+                                    PinAPIDoc: function(){
+                                        if(os.console.APIPinned){
+                                            os.Elements.DocumentationTabPage.className = "debugPage";
+                                            os.Elements.DocumentationTabPage.style.width = "";
+                                            os.Elements.DocumentationTabPageHeaderPin.className = "pin";
+                                            os.console.APIPinned = false;
+                                        }
+                                        else{
+                                            os.Elements.DocumentationTabPage.className = "debugPagePin";
+                                            os.Elements.DocumentationTabPage.style.width = "700px";
+                                            os.Elements.DocumentationTabPageHeaderPin.className = "pinPin";
+                                            os.console.APIPinned = true;
+                                        }
+                                        
+                                    },
+                                    PinAPIDocHover: function(){
+                                        if( document.createEvent ) {
+                                            var evObj = document.createEvent('MouseEvents');
+                                            evObj.initEvent( 'mouseover', true, false );
+                                            elem.dispatchEvent(evObj);
+                                        } else if( document.createEventObject ) {
+                                            elem.fireEvent('onmouseover');
+                                        }
+
+                                        
+                                    },
+                                    AddCommand: function(name, callback, scope, help){
+                                        this.Commands.put(name.toUpperCase(),os.resschmgr.Create.Command(name, callback, scope, help));
+                                    },
+                                    RemoveCommand: function(name){
+                                        this.Commands.remove(name.toUpperCase());  
+                                    },
+                                    GetCommand: function(name){
+                                        return this.Commands.get(name.toUpperCase());
+                                    },
+                                    DisplayCommands: function(){
+                                        
+                                        for(var i = 0; i++ < this.Commands.size; this.Commands.next())
+                                        {
+                                            os.console.AppendComment("Command: " + this.Commands.value().name);
+                                            os.console.AppendComment("Description:");
+                                            os.console.AppendComment(this.Commands.value().help);
+                                            os.console.AppendComment("");
+                                        }
+
+                                    },
+                                    AppendComment: function(comment){
+                                        
+                                        console.cmdWindow.value += "\n" + comment;
+                                        console.cmdWindow.scrollTop = console.cmdWindow.scrollHeight;
+
+                                    },
+                                    
+                                    Comment: function(comment){
+                                        
+                                        console.cmdWindow.value += " " + comment + "\n" + prompt;
+                                        console.cmdWindow.scrollTop = console.cmdWindow.scrollHeight;                                        
+                                    },
+                                    
+                                    Warning: function(comment){
+                                        console.cmdWindow.value += "~WARNING~ " + comment + "\n" + prompt;
+                                        console.cmdWindow.scrollTop = console.cmdWindow.scrollHeight;                                        
+                                    },
+                                    
+                                    Error: function(comment){
+                                        console.cmdWindow.value += "~ERROR~ " + comment + "\n" + prompt;
+                                        console.cmdWindow.scrollTop = console.cmdWindow.scrollHeight;                                        
+                                    },
+                                    
+                                    Clear: function(){
+                                        console.cmdWindow.value = prompt;
+                                        console.cmdWindow.scrollTop = console.cmdWindow.scrollHeight;                                        
+                                    },
+                                    
+                                    EvaluateInput: function(e){
+                                        var keyCode = e.keyCode ? e.keyCode : e.charCode;
+                                        
+                                        if (keyCode == 13)
+                                        {
+                                            e.preventDefault();
+                                            //this.cmdWindow = document.getElementById('com.jahova.console.window');
+                                            //var txtVal = this.cmdWindow.value;
+                                            var lastIndex = os.console.cmdWindow.value.lastIndexOf(prompt);
+                                            var lastInput = os.console.cmdWindow.value.substring(lastIndex + prompt.length);
+                                            var cmdIndex = lastInput.indexOf(" ");
+                                            var cmdString = cmdIndex > 0 ? lastInput.substring(0, cmdIndex).toUpperCase() : lastInput.toUpperCase();
+                                            
+                                            var cmd = os.console.Commands.get(cmdString);
+                                            if(cmd){
+                                                cmd.Execute(lastInput.substring(cmdIndex + 1));
+                                            }
+                                            else{
+                                                console.AppendComment("Command: " + cmdString + "\nNot Found, type help to get a list of loaded commands");
+                                            }
+                                            
+                                            console.Comment("");
+                                            
+                                            
+                                            os.console.length = 0;
+                                        } 
+                                        else if (keyCode == 8) {
+                                            if (os.console.length > 0)
+                                                os.console.length--;
+                                            else {
+                                                e.preventDefault();
+                                                //this.cmdWindow.value += ">";
+                                            }
+                                        }
+                                        else if (keyCode > 31) {
+                                            os.console.length++;
+                                        }
+                                        
+                                    }
+
+                                }
+                            }
+                            
+                            return {
+                                //OBJECT ACCESSOR
+                                Instance: function()
+                                {
+                                    if(!pInstance)
+                                    {
+                                        //Instantiate if pInstance does not exist
+                                        pInstance = constructor();
+                                    }
+                                    
+                                    return pInstance;
+                                }
+                            }
+                        })();
+/*
+*  NOTES
+*     N/A
+*
+*  IDEAS
+*     N/A
+*
+*  TODO
+*   Add Commands Module to Console
+*   Add Ability to see listo avaliable commands
+*   Add Debug command, moves to open script interface
+*       that evaluates code when ESC is pressed
+*       Add pre over window so color highlighting and formatting
+*       can be applied
+*   Add popup window for oupting live data
+*   
+*  
+*******/
