@@ -774,7 +774,7 @@ Cancer.Calculate = {
                         for(var j = 0; j < msh.vertexMargins.length; j++){
                             
                             //Had an intersection
-                            if(msh.vertexMargins[j] < 0){
+                            if((msh.vertexMargins[j] < 0) || (msh.vertexMargins[j] > 1000)){
                                 msh.vertexMargins[j] = 1000;//Number.MAX_VALUE / 2;
                             }
                         }
