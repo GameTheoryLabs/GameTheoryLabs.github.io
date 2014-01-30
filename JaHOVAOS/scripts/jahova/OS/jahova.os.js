@@ -311,7 +311,7 @@ com.jahova.os = (function()
                                         
                                         setTimeout(pInstance.splash.Hide.window, 4000);
                                     })();
-                                    Gamepad();
+                                    //Gamepad();
                                     //window[cmdApp]();
                                 //}
                             },
