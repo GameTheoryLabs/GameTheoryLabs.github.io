@@ -1,5 +1,6 @@
 importScripts("../../scripts/jahova/OS/Cores/Graphics/glMatrix.js", "workerUtils.js");
 
+
 self.addEventListener('message', function(e) {
     var msg = e.data;
     var result = {msg: "ERROR", data: "Error, Unknown Message"};
@@ -251,7 +252,7 @@ Cancer.Calculate = {
                             }
                         }
                         catch(e){
-                            console.error(e);
+                            //console.error(e);
                         }
                         
                     }
@@ -325,7 +326,7 @@ Cancer.Calculate = {
                             }
                         }
                         catch(e){
-                            console.error(e);
+                            //console.error(e);
                         }
                         
                     }
@@ -493,7 +494,7 @@ Cancer.Calculate = {
                             }
                         }
                         catch(e){
-                            console.error(e);
+                            //console.error(e);
                         }
                         
                     }
@@ -774,12 +775,12 @@ Cancer.Calculate = {
                             
                             //Had an intersection
                             if(msh.vertexMargins[j] < 0){
-                                msh.vertexMargins[j] = Number.MAX_VALUE;
+                                msh.vertexMargins[j] = 1000;//Number.MAX_VALUE / 2;
                             }
                         }
                     }
                     if(tIntersection.length > 1 || bInterscetion.length > 1){
-                        console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
+//console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
 
                     }
                     if(!topIntersection || !botIntersection){
@@ -802,7 +803,7 @@ Cancer.Calculate = {
                     }
                     
                     if(layer.Intersection[k].Mesh.Top.length != layer.Intersection[k].Mesh.Bot.length){
-                        console.log("Whoa there nelly");
+                        //console.log("Whoa there nelly");
                     }
                     
                 }
@@ -968,13 +969,13 @@ Cancer.Calculate = {
                     }
                     
                     if(point == null){
-                        console.error("Failed to find Intersection");
+                        //console.error("Failed to find Intersection");
                         //console.error("Ray: " + JSON.stringify(ray, null, "\t"));
                         //console.error("Seg: " + JSON.stringify(seg, null, "\t"));
                         //console.error("Point: " + JSON.stringify(point, null, "\t"));
                         
                         //os.debugbar.AnchorConsolePage();
-                        os.console.Comment("No collision found!");
+                        //os.console.Comment("No collision found!");
                     }
                     else{
                         layer.Intersection[k].Trace.push(point);
@@ -1557,7 +1558,7 @@ BuildJSON = function(obj){
                     z = obj.vertex[v*3 + 2];
                 }
                 else{
-                    console.log("X, Y, and Z were left to default values");
+                    //console.log("X, Y, and Z were left to default values");
                     //x = json.vertexPositions[json.vertexPositions.length - 3];
                     //y = json.vertexPositions[json.vertexPositions.length - 2];
                     //z = json.vertexPositions[json.vertexPositions.length - 1];
