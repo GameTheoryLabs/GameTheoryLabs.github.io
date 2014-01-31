@@ -95,7 +95,7 @@ com.jahova.os = (function()
                     var NAME = "JaHOVA OS";
                     var VERSION = "0v5";
                     var PATH = "scripts/jahova/OS/jahova.os.js";
-                    var DOMAIN = "http://gametheorylabs.com/JaHOVA/";
+                    var DOMAIN = "http://gametheorylabs.com/JaHOVAOS/";
                 
                     
                     //******************
