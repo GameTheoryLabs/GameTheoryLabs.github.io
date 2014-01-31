@@ -293,7 +293,7 @@ com.jahova.os = (function()
                                     pInstance.console.cmdWindow.value += cmdConsole;
                                     pInstance.console.ProcessInputString();
                                 }
-                                //else if(cmdApp){
+                                else if(cmdApp){
                                     (PlaySplash = function(){
                                         pInstance.splash = pInstance.os.windows.WindowsManager.Create.Window("", "PC");
                                         pInstance.splash.Hide.menubar();
@@ -312,8 +312,8 @@ com.jahova.os = (function()
                                         setTimeout(pInstance.splash.Hide.window, 4000);
                                     })();
                                     //Gamepad();
-                                    //window[cmdApp]();
-                                //}
+                                    window[cmdApp]();
+                                }
                             },
                         
                         //PUBLIC OBJECTS/CLASSES
