@@ -95,7 +95,7 @@ com.jahova.os = (function()
                     var NAME = "JaHOVA OS";
                     var VERSION = "0v5";
                     var PATH = "scripts/jahova/OS/jahova.os.js";
-                    var DOMAIN = "http://gametheorylabs.com/JaHOVAOS/";
+                    var DOMAIN = "http://demo.jahovaos.com/JaHOVA/0v5_0/";
                 
                     
                     //******************
@@ -293,7 +293,7 @@ com.jahova.os = (function()
                                     pInstance.console.cmdWindow.value += cmdConsole;
                                     pInstance.console.ProcessInputString();
                                 }
-                                else if(cmdApp){
+                                //else if(cmdApp){
                                     (PlaySplash = function(){
                                         pInstance.splash = pInstance.os.windows.WindowsManager.Create.Window("", "PC");
                                         pInstance.splash.Hide.menubar();
@@ -312,8 +312,8 @@ com.jahova.os = (function()
                                         setTimeout(pInstance.splash.Hide.window, 4000);
                                     })();
                                     //Gamepad();
-                                    window[cmdApp]();
-                                }
+                                    //window[cmdApp]();
+                                //}
                             },
                         
                         //PUBLIC OBJECTS/CLASSES
