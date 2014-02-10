@@ -781,9 +781,6 @@ Cancer.Calculate = {
                             
                         }
                         
-<<<<<<< HEAD
-                        
-=======
                         for(var j = 0; j < msh.vertexMargins.length; j++){
                             
                             //Had an intersection
@@ -791,7 +788,6 @@ Cancer.Calculate = {
                                 msh.vertexMargins[j] = 1000;//Number.MAX_VALUE / 2;
                             }
                         }
->>>>>>> parent of c9f2182... update Captive, switch margin from infinity to 1000
                     }
                     if(tIntersection.length > 1 || bInterscetion.length > 1){
 //console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
