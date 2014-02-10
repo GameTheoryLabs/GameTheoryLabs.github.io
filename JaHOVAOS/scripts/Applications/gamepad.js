@@ -102,19 +102,19 @@ var GPLoad = {
         GPTextureMgr.Requested = 7;
         var tex = null;
         tex = os.graphics.Managers.Texture.Create.Texture("fighter1", "scripts/jahova/OS/Cores/Graphics/textures/fighter1.jpg");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded fighter 1 texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("fighter2", "scripts/jahova/OS/Cores/Graphics/textures/fighter2.jpg");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded fighter 2 texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("gunship", "scripts/jahova/OS/Cores/Graphics/textures/gunship.jpg");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded gunship texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("bullet", "scripts/jahova/OS/Cores/Graphics/textures/bullet.bmp");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded bullet texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("forcefield", "scripts/jahova/OS/Cores/Graphics/textures/forcefield.png");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded forcefield texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("spacestation", "scripts/jahova/OS/Cores/Graphics/textures/spacestation.jpg");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded spacestation texture"); GPAssetComplete(); }
         tex = os.graphics.Managers.Texture.Create.Texture("missile", "scripts/jahova/OS/Cores/Graphics/textures/missile.jpg");
-        tex.onLoad = function(){GPTextureMgr.Loaded++; GPAssetComplete(); }
+        tex.onLoad = function(){GPTextureMgr.Loaded++; os.console.Comment("Loaded missle texture"); GPAssetComplete(); }
 
     },
     Meshes: function(){

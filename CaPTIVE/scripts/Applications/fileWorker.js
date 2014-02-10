@@ -629,6 +629,16 @@ Cancer.Calculate = {
         
         var center = [layer.BVs[layer.borderID].Cx,layer.BVs[layer.borderID].Cy, 0];
         
+        //Remove all previous margins calculated
+        for(var m = 0; m < mesh.length; m++){
+                
+            var msh = mesh[m];
+            for(var j = 0; j < msh.vertexMargins.length; j++){
+               
+                msh.vertexMargins[j] = -1;
+            }
+        }
+                
         for(var k = 0; k < layer.outlines.length; k++){
             
             if(k != layer.borderID){
@@ -669,6 +679,7 @@ Cancer.Calculate = {
                 mat4.translate(revTrans.top, [0,0, -1 * heightTop ], revTrans.top);
                 mat4.translate(revTrans.bot, [0,0, -1 * heightBottom ], revTrans.bot);
                 
+                
                             
                 //Loop through each ray
                 for(var i = 0; i < cancer.length; i++){
@@ -681,7 +692,6 @@ Cancer.Calculate = {
                     for(var m = 0; m < mesh.length; m++){
                         
                         var msh = mesh[m];
-                        
                         
                         //Loop through each tri in mesh
                         for(var j = 0; j < msh.indices.length; j += 3){
@@ -774,7 +784,7 @@ Cancer.Calculate = {
                         for(var j = 0; j < msh.vertexMargins.length; j++){
                             
                             //Had an intersection
-                            if((msh.vertexMargins[j] < 0) || (msh.vertexMargins[j] > 1000)){
+                            if(msh.vertexMargins[j] < 0){
                                 msh.vertexMargins[j] = 1000;//Number.MAX_VALUE / 2;
                             }
                         }
@@ -806,6 +816,19 @@ Cancer.Calculate = {
                         //console.log("Whoa there nelly");
                     }
                     
+                }
+            }
+        }
+        
+        //Remove default margins of -1 or MAX_NUMBER
+        for(var m = 0; m < mesh.length; m++){
+                
+            var msh = mesh[m];
+            for(var j = 0; j < msh.vertexMargins.length; j++){
+               
+                //Had an intersection (or legacy file with MAX_NUMBER saved)
+                if((msh.vertexMargins[j] < 0) || (msh.vertexMargins[j] > 1000)){
+                    msh.vertexMargins[j] = 1000;
                 }
             }
         }
