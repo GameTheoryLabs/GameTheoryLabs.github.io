@@ -171,13 +171,13 @@ void main(void) {
         }
     }
     if(uHighMarginEnable){
-        if(vMargin < uHighMarginValue){
+        if((vMargin < uHighMarginValue) && (vMargin > 0.0)){
             fragmentColor.rgba = vec4(1.0, 0.816, 0.0, 1.0);
         }
     }
     
     if(uLowMarginEnable){
-        if(vMargin < uLowMarginValue){
+        if((vMargin < uLowMarginValue) && (vMargin > 0.0)){
             fragmentColor.rgba = vec4(1.0, 0.0, 0.0, 1.0);
         }
     }
