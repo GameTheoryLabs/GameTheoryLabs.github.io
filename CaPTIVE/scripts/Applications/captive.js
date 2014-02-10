@@ -2705,6 +2705,12 @@ CaPTIVE = {
                     CaPTIVE.Entity.Dimensions.top = 0.5 - thickness;
                     CaPTIVE.Entity.Dimensions.bottom = 0.5 + thickness;
                     
+                    //Remove margins from current excision model
+                    for(var i = 0; i < CaPTIVE.Files.mesh.length; i++){
+                        for(var j = 0; j < CaPTIVE.Files.mesh[i].vertexMargins.length; j++){
+                            CaPTIVE.Files.mesh[i].vertexMargins[j] = -1;
+                        }
+                    }
                     CaPTIVE.Workers.files.postMessage({
                                                         type: "Cancer",
                                                         data: {

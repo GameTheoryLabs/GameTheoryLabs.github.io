@@ -225,14 +225,6 @@ Cancer.Calculate = {
                             //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
                             lookup.put(layer.Models[k].top.index[m], verts.length);
                             verts.push(layer.Models[k].top.verts[m]);
-                            
-                            //for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
-                            //    var perimeter = layer.Perimeter.Top[k][i];
-                            //    var v = layer.Models[k].top.verts[m];
-                            //    if((perimeter[0] == v[0]) && (perimeter[1] == v[1])){
-                            //        verts2Perimeter.put(i + 1, verts.length);
-                            //    }
-                            //}
                         }
                         //map.put(layer.Models[k].top.index[m], layer.Models[k].top.verts[m]);
                     }
@@ -256,24 +248,6 @@ Cancer.Calculate = {
                         }
                         
                     }
-                    
-                    //for(var i = 0; i < map.size; i++){
-                    //    var vert = map.get(i+1);
-                    //    
-                    //    //Output to OBJ File
-                    //    try{
-                    //        if(vert){
-                    //            file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
-                    //            objVerts.push("v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n");
-                    //        }
-                    //    }
-                    //    catch(e){
-                    //        console.error(e);
-                    //    }
-                    //    
-                    //}
-                    
-                    
                     var numOfPolys = layer.Models[k].top.index.length/3;
                     
                     for(var j = 0; j < numOfPolys; j++){
@@ -300,13 +274,6 @@ Cancer.Calculate = {
                             lookup.put(layer.Models[k].bot.index[m], verts.length);
                             verts.push(layer.Models[k].bot.verts[m]);
                             
-                            //for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
-                            //    var perimeter = layer.Perimeter.Bot[k][i];
-                            //    var v = layer.Models[k].bot.verts[m];
-                            //    if(perimeter[0] == v[0] && perimeter[1] == v[1]){
-                            //        verts2Perimeter.put(totTopVerts + (i + 1), totTopVerts + verts.length);
-                            //    }
-                            //}
                         }
                         
                         //map.put(layer.Models[k].bot.index[m], layer.Models[k].bot.verts[m]);
@@ -330,24 +297,6 @@ Cancer.Calculate = {
                         }
                         
                     }
-                    
-                    ////Ouptut verts to file
-                    //for(var i = 0; i < map.size; i++){
-                    //    var vert = map.get(i+1);
-                    //    
-                    //    //Output to OBJ File
-                    //    try{
-                    //        if(vert){
-                    //            file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
-                    //            objVerts.push("v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n");
-                    //        }
-                    //    }
-                    //    catch(e){
-                    //        console.error(e);
-                    //    }
-                    //    
-                    //}
-                    
                     
                     var numOfPolys = layer.Models[k].bot.index.length/3;
                     
@@ -394,36 +343,7 @@ Cancer.Calculate = {
                         }
                     }
                     
-                    ////Push top verts to file
-                    //for(var i = 0; i < layer.Perimeter.Top[k].length; i++){
-                    //    var vert = layer.Perimeter.Top[k][i];
-                    //    
-                    //    //Output to OBJ File
-                    //    try{
-                    //        if(vert){
-                    //            file += "v " + vert[0] + " " + layer.Models[k].top.height + " " + vert[1] + "\n";
-                    //        }
-                    //    }
-                    //    catch(e){
-                    //        console.error(e);
-                    //    }
-                    //    
-                    //}
-                    ////Push bot verts to file
-                    //for(var i = 0; i < layer.Perimeter.Bot[k].length; i++){
-                    //    var vert = layer.Perimeter.Bot[k][i];
-                    //    
-                    //    //Output to OBJ File
-                    //    try{
-                    //        if(vert){
-                    //            file += "v " + vert[0] + " " + layer.Models[k].bot.height + " " + vert[1] + "\n";
-                    //        }
-                    //    }
-                    //    catch(e){
-                    //        console.error(e);
-                    //    }
-                    //    
-                    //}
+                    
                     
                     totTopVerts = top.length;//layer.Perimeter.Top[k].length;
                     var numOfPolys = (vertsPerSide * 2) - 2;
@@ -443,23 +363,6 @@ Cancer.Calculate = {
                         
                         //Final Top
                         file += "f " + (totTopVerts * 2) + " " + (1) + " " + (totTopVerts) + "\n";
-                        
-                     
-                    //for(var j = 1; j < vertsPerSide; j++){
-                    //    
-                    //    //Bottom Tris
-                    //    // tri: b[i], b[i+1], t[i+1]
-                    //    file += "f " + (vertsPerSide + j) + " " + (vertsPerSide + j + 1) + " " + (j + 1) + "\n";
-                    //    
-                    //    //Top tris
-                    //    // tri: b[i], t[i+1], t[i]
-                    //    file += "f " + (vertsPerSide + j) + " " + (j + 1) + " " + (j) + "\n";
-                    //}
-                    //    //Final Bottom
-                    //    file += "f " + (vertsPerSide * 2) + " " + (vertsPerSide + 1) + " " + (1) + "\n";
-                    //    
-                    //    //Final Top
-                    //    file += "f " + (vertsPerSide * 2) + " " + (1) + " " + (vertsPerSide) + "\n";
                     
                     layer.Models[k].mid.obj = file;
                     layer.obj.mid[k] = file;
@@ -628,16 +531,6 @@ Cancer.Calculate = {
         var revTrans = {top: [], bot:[]};
         
         var center = [layer.BVs[layer.borderID].Cx,layer.BVs[layer.borderID].Cy, 0];
-        
-        //Remove all previous margins calculated
-        for(var m = 0; m < mesh.length; m++){
-                
-            var msh = mesh[m];
-            for(var j = 0; j < msh.vertexMargins.length; j++){
-               
-                msh.vertexMargins[j] = -1;
-            }
-        }
                 
         for(var k = 0; k < layer.outlines.length; k++){
             
@@ -664,8 +557,8 @@ Cancer.Calculate = {
                 mat4.translate(transform.bot, [0,0,heightBottom], transform.bot);
                 
                 //Rotate Triangle By 90 on X Axis
-                mat4.rotateX(transform.top, Math.PI/-2, transform.top);
-                mat4.rotateX(transform.bot, Math.PI/-2, transform.bot);
+                mat4.rotateX(transform.top, -1 * Math.PI/2, transform.top);
+                mat4.rotateX(transform.bot, -1 * Math.PI/2, transform.bot);
                 
                 mat4.identity(revTrans.top);
                 mat4.identity(revTrans.bot);
@@ -781,13 +674,6 @@ Cancer.Calculate = {
                             
                         }
                         
-                        for(var j = 0; j < msh.vertexMargins.length; j++){
-                            
-                            //Had an intersection
-                            if(msh.vertexMargins[j] < 0){
-                                msh.vertexMargins[j] = 1000;//Number.MAX_VALUE / 2;
-                            }
-                        }
                     }
                     if(tIntersection.length > 1 || bInterscetion.length > 1){
 //console.log("Layer " + k + " has multiple intersections, Top: " + tIntersection.length + ", Bot: " + bInterscetion.length);
@@ -827,8 +713,8 @@ Cancer.Calculate = {
             for(var j = 0; j < msh.vertexMargins.length; j++){
                
                 //Had an intersection (or legacy file with MAX_NUMBER saved)
-                if((msh.vertexMargins[j] < 0) || (msh.vertexMargins[j] > 1000)){
-                    msh.vertexMargins[j] = 1000;
+                if((msh.vertexMargins[j] < 0) || (msh.vertexMargins[j] > 1000.0)){
+                    msh.vertexMargins[j] = 1000.0;//Number.MAX_VALUE;
                 }
             }
         }
