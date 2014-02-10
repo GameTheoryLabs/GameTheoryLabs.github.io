@@ -312,6 +312,8 @@ CaPTIVE = {
         
         //Remove temporary hide from modal to allow functionality
         document.getElementById("openModal").className = "modalDialog";
+        
+        CaPTIVE.Load.Password();
     },
     Spinner: {
         Show: function(){
@@ -383,6 +385,14 @@ CaPTIVE = {
         files: null  
     },
     Load: {
+        Password: function(){
+            var html = "<h2>Enter Password</h2>";
+            html += "<p><input class='textbox' type='text' id='pword' ></p><br/>";
+            html += '<a class="button" onclick="CaPTIVE.ProcessPassword()">Submit</a>'
+            document.getElementById("modalContent").innerHTML = html;
+            document.getElementById("modalCloseButton").style.display = "none";
+            CaPTIVE.Modal.Show();     
+        },
         ImageEditor: function(){
             CaPTIVE.ImageEditor.Initialize();  
         },
@@ -2835,6 +2845,19 @@ CaPTIVE = {
     Menu: null,
     Set: {
         
+    },
+    ProcessPassword: function(){
+        
+        var pw = document.getElementById('pword').value;
+        
+        if( (pw == "8gp5fq3u") || (pw == "tracking")){
+            document.getElementById("modalCloseButton").style.display = "";
+            CaPTIVE.Modal.Hide();
+        }
+        else{
+            
+            document.getElementById('pword').value = "";
+        }
     },
     ToggleFullscreen: function(){
         var canvas = os.graphics.Get.Canvas();
