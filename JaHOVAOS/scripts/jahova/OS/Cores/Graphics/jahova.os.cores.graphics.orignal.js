@@ -981,13 +981,9 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
                 var temp = mat4.create();
                 
                 //mat4.identity(this.Matrix.Normal);
-                //mat4.multiply(this.Matrix.World, os.graphics.Matrix.View, temp);
-                //mat4.toInverseMat3(temp, this.Matrix.Normal);
-                //mat3.transpose(this.Matrix.Normal, this.Matrix.Normal);
-                
-                mat4.toInverseMat3(this.Matrix.World, this.Matrix.Normal);
+                mat4.multiply(this.Matrix.World, os.graphics.Matrix.View, temp);
+                mat4.toInverseMat3(temp, this.Matrix.Normal);
                 mat3.transpose(this.Matrix.Normal, this.Matrix.Normal);
-                
                 
                 //mat3.transpose(this.Matrix.World, this.Matrix.Normal);
                 
@@ -1425,10 +1421,10 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
                             
                             //Lighting Variables
                             shd.AddUniform("uMaterialShininess", "FLOAT", 32);
-                            shd.AddUniform("uAmbientColor", "VEC3", [0.2,0.2,0.2]);
+                            shd.AddUniform("uAmbientColor", "VEC3", [0.6,0.6,0.6]);
                             shd.AddUniform("uBlendColor", "VEC3", [0.0,0.0,0.0]);
                             shd.AddUniform("uPointLightDiffuseColor", "VEC3", [0.8,0.8,0.8]);
-                            shd.AddUniform("uPointLightLocation", "VEC3",[75,120,211]);// [-10.0, 4.0, -20.0]);
+                            shd.AddUniform("uPointLightLocation", "VEC3", [-10.0, 4.0, -20.0]);
                             
                             
                             //Fog Variables
@@ -1453,12 +1449,7 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
                             shd.AddUniform("uInstanceColor", "ARRAY_VEC4", ent.Graphics.Instanced.color);
                             
                             //Add Accessor Object to Adjust Uniforms
-                            ent.Graphics.Set.lightPosition = function(val){
-                                
-                                    var shd = this.Graphics.Shaders.get("default");
-                                    vec3.set(val, shd.Uniforms.get("uPointLightLocation").value);
-                                    
-                                }.bind(ent);
+                            
                             ent.Graphics.Set.light = function(val){
                                 
                                     var shd = this.Graphics.Shaders.get("default");
@@ -1814,7 +1805,7 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
                         //os.graphics.Managers.Camera.Position[2] += pos[2];
                         
                         var dist =[]
-                        vec3.scale(os.graphics.Managers.Camera.Axis.Up, -distance,dist);
+                        vec3.scale(os.graphics.Managers.Camera.Axis.Forward, -distance,dist);
                         vec3.add(os.graphics.Managers.Camera.Position, dist, os.graphics.Managers.Camera.Position);
                         
                     },

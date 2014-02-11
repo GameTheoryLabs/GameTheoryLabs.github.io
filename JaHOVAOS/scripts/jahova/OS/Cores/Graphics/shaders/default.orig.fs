@@ -11,6 +11,7 @@ varying vec4 vPosition;             //Vert Position in View Space
 varying vec3 vPositionW;            //Vert Position in World Space
 varying vec4 vColor;                //Particle blend color
 
+
 //
 //  CONTROL VARIABLES
 //
@@ -64,7 +65,7 @@ void main(void) {
     else {  //Lighting Enabled
         
         //Get Direction of Light
-        vec3 lightDirection = normalize(uPointLightLocation - vPositionW);
+        vec3 lightDirection = normalize(uPointLightLocation - vPosition.xyz);
         
         //Normalize Transformed Normal
         //  normalization is required since the vertex normals are linarely interpolated

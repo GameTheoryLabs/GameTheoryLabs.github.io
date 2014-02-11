@@ -23,7 +23,7 @@ void main(void) {
     
     // View Space Position, used in Lighting Calculations in fragment shader
     vPosition = uVMatrix * uWMatrix * vec4(aVertexPosition, 1.0);
-
+    
     //World Position of Vert
     vPositionW = vec4( uWMatrix * vec4(aVertexPosition, 1.0) ).xyz;
     

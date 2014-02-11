@@ -131,6 +131,7 @@ var GPLoad = {
         fighter1.Graphics.Add.Texture("fighter1");
         fighter1.Set.Scale(0.1,0.1,0.1);
         fighter1.Set.Position(300,-185,-800);
+        fighter1.Graphics.Set.ambientColor([0.7,0.7,0.7]);
         fighter1.pitch = 0;
         fighter1.Graphics.Set.texture(true);
         mat4.rotateX(fighter1.Default.Offset, degToRad(-90), fighter1.Default.Offset);
@@ -157,6 +158,7 @@ var GPLoad = {
         fighter2.Set.Position(-800,-200,250);
         fighter2.pitch = 0;
         fighter2.Graphics.Set.texture(true);
+        fighter2.Graphics.Set.ambientColor([0.7,0.7,0.7]);
         //os.graphics.AddToWorld(fighter2);
         mat4.rotateX(fighter2.Default.Offset, degToRad(-90), fighter2.Default.Offset);
         mat4.rotateZ(fighter2.Default.Offset, degToRad(180), fighter2.Default.Offset);
@@ -180,6 +182,7 @@ var GPLoad = {
         gunship.Set.Scale(5,5,5);
         gunship.pitch = 0;
         gunship.Set.Position(-800,-240,150);
+        gunship.Graphics.Set.ambientColor([0.7,0.7,0.7]);
         gunship.Graphics.Set.texture(true);
         gunship.orientation = quat4.create([0,0,0,1]);
         //os.graphics.AddToWorld(gunship);
