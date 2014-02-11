@@ -2410,7 +2410,7 @@ ED ={
             eacFloor.onLoad = function(){ED.Start("mesh","EAC Floor Mesh Loaded")};
             ED.Assets.Meshes.requested++;
             
-            var edCarts = os.graphics.Managers.Mesh.Create.Mesh("EDCart", "scripts/Applications/data/models/ED_Carts.json");
+            var edCarts = os.graphics.Managers.Mesh.Create.Mesh("EDCart", "scripts/Applications/data/models/ED_carts.json");
             edCarts.onLoad = function(){ED.Start("mesh","ED Carts Mesh Loaded")};
             ED.Assets.Meshes.requested++;
             
