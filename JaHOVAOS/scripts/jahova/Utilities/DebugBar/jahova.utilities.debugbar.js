@@ -284,7 +284,7 @@ com.jahova.utilities.Instance().DebugBar = (function()
                                         
                                     },
                                     AnchorConsole: function(){
-                                        if(this.ConsolPagePinned == false){
+                                        if(this.ConsolePagePinned == false){
                                             this.ConsolePagePinned = true;
                                             os.Elements.DebugBarConsole.className = "ideSidebarPageFolderViewPinned sidebarTabColor jahova_borRadL2 jahova_borRadB2";
                                             os.Elements.DebugBarConsole.style.width = "560px";
