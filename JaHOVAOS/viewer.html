@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset"utf-8" />
+    <title>Game Theory Labs OBJ Model Viewer
+</title>
+    <script type="text/javascript" src="scripts/jahova/OS/jahova.os.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/jahova.utilities.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/Console/jahova.utilities.console.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/Timer/jahova.utilities.timer.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/Utilities/DebugBar/jahova.utilities.debugbar.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.command.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.resschmgr.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Kernel/jahova.os.kernel.instruction.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/jahova.os.cores.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Network/jahova.os.cores.network.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Network/socket_io/socket.io.js" ></script>
+<!--    <script type="text/javascript" src="http://demo.jahovaos.com:8081/socket.io/socket.io.js" ></script>-->
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Threads/jahova.os.cores.thread.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/HTML/jahova.os.cores.html.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Windows/jahova.os.cores.windows.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Physics/jahova.os.cores.physics.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Database/jahova.os.cores.database.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Audio/jahova.os.cores.audio.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/glMatrix.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/webgl-debug.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/webgl-utils.js" ></script>
+    <script type="text/javascript" src="scripts/jahova/OS/Cores/Graphics/jahova.os.cores.graphics.js" ></script>
+    <script type="text/javascript" src="scripts/Applications/gdc2012.js" ></script>
+    <script type="text/javascript" src="scripts/Applications/viewer.js" ></script>
+    <script type="text/javascript" src="scripts/Applications/gauge.js" ></script>
+    <script type="text/javascript" src="scripts/application.js" ></script>
+    <script type="text/javascript" src="scripts/jahova_2dDemo.js" ></script>
+    <script type="text/javascript" src="scripts/FileSaver.min.js" ></script>
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/JaHOVA.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/biopsyViewer.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.mac.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.pc.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.hud.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova.window.desktop.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/jahova_outputWindow.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_new.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_colors.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/jahova_border.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/jahova_transition.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_sidebar_r2.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_IdeSidebar.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_outputWindow.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/JaHOVA_ide.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/CSS/2dBallDemo.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/Zadok_icon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/Zadok_icon.ico" />
+    <style>
+        
+    </style>
+    <script type="text/javascript">
+
+        
+    </script>
+</head>
+
+<body onload="(function(){com.jahova.os.Instance().Load(); Application()})()">
+<div id="app"> 
+
+    <div id="bio-container" >
+        <div id="image-3d" class="image-3d-docked border-radius-10px border-1px-solid-293955">
+            <div id="image-3d-window" class="image-3d-window border-radius-top-10px">
+                <div id="expand-button" class="expand-button-min" onclick="fullscreen()"></div>
+            </div>
+            <div id="image-3d-footer" class="border-radius-btm-10px">
+                <form action="" class="border-radius-btm-10px">
+                    <div class="choose-file">
+                        <label>Select a mesh: </label>
+                        <input type="file" name="3DModelFile" id="meshFile" multiple="multiple"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="thumbnail" class="thumbnail border-radius-10px border-1px-solid-293955""> 
+            <div id="thumbnail-window" class="border-radius-top-10px"></div>
+            <div id="thumbnail-footer" class="border-radius-btm-10px">
+                <form action="" class="border-radius-btm-10px">
+                    <div class="choose-file">
+                        <label>Select an image: </label>
+                        <input type="file" name="ImageFile" id="imgFile" multiple="multiple"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="properties" class="border-radius-top-10px border-1px-solid-293955"">
+            <div id="properties-header" class="border-radius-top-10px">
+                <div class="cbx-container">
+                    <select id="dropdown" class="cbx-properties">
+                    </select>
+                    <button type="button" onclick="UnDockWindow();" style="width:75px;">Undock</button>
+                </div>
+            </div>
+            <div id="properties-window" class="properties-window-docked"></div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

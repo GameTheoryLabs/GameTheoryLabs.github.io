@@ -277,8 +277,7 @@ com.jahova.os.Instance().Cores.Instance().Windows = (function()
                     },
                     content: function(){
                         return _state.content;
-                    }
-                    
+                    }  
                 },
                 theme: function(){
                     return this.theme;
@@ -290,7 +289,10 @@ com.jahova.os.Instance().Cores.Instance().Windows = (function()
                 position: function(){
                     return {top: _position.top,
                             left: _position.left};
-                }
+                },
+                title: function(){
+                    return _title;
+                } 
             };
             
             this.Set = {
@@ -1054,7 +1056,7 @@ com.jahova.os.Instance().Cores.Instance().Windows = (function()
             //PUBLIC OBJECTS
             Create: {
                 Window: function(wndTitle, themeName){
-                    return new CWindow("jahoava.window.id." + os.windows.WindowsManager.nextID++, wndTitle, themeName);
+                    return new CWindow("jahova.window.id." + os.windows.WindowsManager.nextID++, wndTitle, themeName);
                 },
                 ErrorWindow: function(wndTitle, message){
                     var width = 400;
@@ -1180,7 +1182,7 @@ com.jahova.os.Instance().Cores.Instance().Windows = (function()
                 ActiveWindow: null,
                 Create: {
                     Window: function(wndTitle, themeName){
-                        return new CWindow("jahoava.window.id." + os.windows.WindowsManager.nextID++, wndTitle, themeName);
+                        return new CWindow("jahova.window.id." + os.windows.WindowsManager.nextID++, wndTitle, themeName);
                     },
                     Theme: function(name){
                         var theme = new CWindowTheme(name);
