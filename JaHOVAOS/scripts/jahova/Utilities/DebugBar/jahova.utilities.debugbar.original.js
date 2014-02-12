@@ -284,44 +284,13 @@ com.jahova.utilities.Instance().DebugBar = (function()
                                         
                                     },
                                     AnchorConsole: function(){
-                                        if(this.ConsolPagePinned == false){
-                                            this.ConsolePagePinned = true;
-                                            os.Elements.DebugBarConsole.className = "ideSidebarPageFolderViewPinned sidebarTabColor jahova_borRadL2 jahova_borRadB2";
-                                            os.Elements.DebugBarConsole.style.width = "560px";
-                                            os.Elements.DebugBarConsoleHeaderPin.className = "ideSidebarPinned";
-                                            os.Elements.DebugBarConsoleHeaderLabel.className = "ideSidebarFolderH3Pinned";
-                                            os.Elements.DebugBarConsoleContent.className = "ideSidebarFolderContentPinned jahova_borRadB2 viewContentBkgColor";
-                                            os.Elements.DebugBarConsoleHeaderLabel.innerHTML = "Terminal Window";
-                                        }
-                                        else{
-                                            os.Elements.DebugBarConsole.className = "ideSidebarPageFolderView sidebarTabColor jahova_borRadL2 jahova_borRadB2 jahova_transWp5s";
-                                            os.Elements.DebugBarConsole.style.width = "";
-                                            os.Elements.DebugBarConsoleHeaderPin.className = "ideSidebarPin";
-                                            os.Elements.DebugBarConsoleHeaderLabel.className = "ideSidebarFolderH3";
-                                            os.Elements.DebugBarConsoleContent.className = "ideSidebarFolderContent jahova_borRadB2 viewContentBkgColor";
-                                            os.Elements.DebugBarConsoleHeaderLabel.innerHTML = "Terminal Window";
-                                            this.ConsolePagePinned = false;
-                                        }
-                                        
-                                        
-                                    },
-                                    AnchorSettings: function(){
-                                        if(this.SettingsPagePinned == true){
-                                            os.Elements.DebugBarSettings.className = "ideSidebarPageFolderView sidebarTabColor jahova_borRadL2 jahova_borRadB2 jahova_transWp5s";
-                                            os.Elements.DebugBarSettingsHeaderPin.className = "ideSidebarPin";
-                                            os.Elements.DebugBarSettingsHeaderLabel.className = "ideSidebarFolderH3";
-                                            os.Elements.DebugBarSettingsContent.className = "ideSidebarFolderContent jahova_borRadB2 viewContentBkgColor";
-                                            os.Elements.DebugBarSettingsHeaderLabel.innerHTML = "JaHOVA Settings";
-                                            this.SettingsPagePinned = false;
-                                        }
-                                        else{
-                                            os.Elements.DebugBarSettings.className = "ideSidebarPageFolderViewPinned sidebarTabColor jahova_borRadL2 jahova_borRadB2";
-                                            os.Elements.DebugBarSettingsHeaderPin.className = "ideSidebarPinned";
-                                            os.Elements.DebugBarSettingsHeaderLabel.className = "ideSidebarFolderH3Pinned";
-                                            os.Elements.DebugBarSettingsContent.className = "ideSidebarFolderContentPinned jahova_borRadB2 viewContentBkgColor";
-                                            os.Elements.DebugBarSettingsHeaderLabel.innerHTML = "JaHOVA Settings";
-                                            this.SettingsPagePinned = true;
-                                        }
+                                        os.Elements.DebugBarConsole.className = "ideSidebarPageFolderViewPinned sidebarTabColor jahova_borRadL2 jahova_borRadB2";
+                                        os.Elements.DebugBarConsole.style.width = "560px";
+                                        os.Elements.DebugBarConsoleHeaderPin.className = "ideSidebarPinned";
+                                        os.Elements.DebugBarConsoleHeaderLabel.className = "ideSidebarFolderH3Pinned";
+                                        os.Elements.DebugBarConsoleContent.className = "ideSidebarFolderContentPinned jahova_borRadB2 viewContentBkgColor";
+                                        os.Elements.DebugBarConsoleHeaderLabel.innerHTML = "Terminal Window";
+                                        this.ConsolePagePinned = true;
                                     },
                                     AnchorConsolePage: function(e){
                                         
