@@ -1425,7 +1425,7 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
                             
                             //Lighting Variables
                             shd.AddUniform("uMaterialShininess", "FLOAT", 32);
-                            shd.AddUniform("uAmbientColor", "VEC3", [0.2,0.2,0.2]);
+                            shd.AddUniform("uAmbientColor", "VEC3", [0.6,0.6,0.6]);
                             shd.AddUniform("uBlendColor", "VEC3", [0.0,0.0,0.0]);
                             shd.AddUniform("uPointLightDiffuseColor", "VEC3", [0.8,0.8,0.8]);
                             shd.AddUniform("uPointLightLocation", "VEC3",[75,120,211]);// [-10.0, 4.0, -20.0]);
