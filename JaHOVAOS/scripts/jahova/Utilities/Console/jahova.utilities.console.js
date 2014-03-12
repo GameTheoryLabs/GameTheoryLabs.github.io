@@ -316,6 +316,7 @@ com.jahova.utilities.Instance().Console = (function()
                                         //this.DisplayCommands();
                                         
                                     },
+                                    
                                     //******************************************
                                     //
                                     //  THREAD API DEMO METHODS
