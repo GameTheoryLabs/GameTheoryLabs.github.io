@@ -1,0 +1,156 @@
+
+.Wrapper {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 1024px;
+    height: 768px;        
+}
+.background{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 1024px;
+    height: 768px;
+    -webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+    background: url(../images/Screens/menu.png) no-repeat center center fixed;
+}
+
+.alert {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 768px;
+    height: 1024px;
+    -webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+    background: url(../images/Screens/rotate.png) no-repeat center center fixed;
+}
+
+
+.PracticeMenu{
+    background: url(../images/Screens/PracticeMenu.png) no-repeat center center fixed;
+}
+.PracticeMenuButton{
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+.Practice3{
+    background: url(../images/Screens/PracticeFruitNinja.png) no-repeat center center fixed;
+}
+
+.LevelMenu{
+    background: url(../images/Screens/DogPark.png) no-repeat center center fixed;
+}
+.LevelMenuButton{
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+.Level1{
+    background: url(../images/Screens/LevelRevCatch.png) no-repeat center center fixed;
+}
+.Level1Button{
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+.Level2{
+    background: url(../images/Screens/LevelBowlTip.png) no-repeat center center fixed;
+}
+.Level3{
+    background: url(../images/Screens/LevelFruitNinja.png) no-repeat center center fixed;
+}
+.Training {
+    background: url(../images/Screens/Training.png) no-repeat center center fixed;
+}
+.TrainingButton {
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+.Settings {
+    background: url(../images/Screens/Settings.png) no-repeat center center fixed;
+}
+.SettingsButton{
+    position: absolute;
+    display: block;
+    width: 145px;
+    height: 75px;
+    background-color:rgba(255,0,0,0.0);
+}
+.MainMenu {
+    background: url(../images/Screens/menu.png) no-repeat center center fixed;
+}
+.MainMenuButton {
+    position: absolute;
+    display: block;
+    width: 285px;
+    height: 110px;
+    background-color:rgba(255,0,0,0.0);
+}
+
+.DogShow {
+    background: url(../images/Screens/dogshow.png) no-repeat center center fixed;   
+}
+.DogShowButton {
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+
+.PetShop {
+    background: url(../images/Screens/petshop.png) no-repeat center center fixed;   
+}
+.PetShopButton {
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color:rgba(255,0,0,0.0);
+}
+
+
+
+.hide {
+    display: none;
+}
+.Message {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 1024px;
+    height: 768px;
+}
+
+
+body{
+    overflow: hidden;
+}
+html{
+    overflow: hidden;
+}
+
+/*.bcolor{
+    background-color: red;
+    position: absolute; background: url('../images/walking-girl.png'); width: 10px; height: 20px;
+}*/
+
+
+

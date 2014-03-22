@@ -1,0 +1,124 @@
+[
+  {
+    "src": "../images/spritesheets/Dog_Flip_SS.png",
+    "name": "dog_flip",
+    "ssWidth": 1680,
+    "ssHeight": 1120,
+    "rows": 4,
+    "columns": 6,
+    "cellWidth": 280,
+    "cellHeight": 280,
+    "animations": [
+      {
+        "name": "left flip",
+        "numberOfFrames": 11,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "right flip",
+        "numberOfFrames": 11,
+        "startRow": 2,
+        "startColumn": 6,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "../images/spritesheets/Dog_SS.png",
+    "name": "dog",
+    "ssWidth": 2720,
+    "ssHeight": 2430,
+    "rows": 9,
+    "columns": 8,
+    "cellWidth": 340,
+    "cellHeight": 270,
+    "animations": [
+      {
+        "name": "right dig",
+        "numberOfFrames": 3,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left dig",
+        "numberOfFrames": 3,
+        "startRow": 1,
+        "startColumn": 4,
+        "speed": 80
+      },
+      {
+        "name": "right sit",
+        "numberOfFrames": 5,
+        "startRow": 1,
+        "startColumn": 7,
+        "speed": 80
+      },
+      {
+        "name": "left sit",
+        "numberOfFrames": 5,
+        "startRow": 2,
+        "startColumn": 4,
+        "speed": 80
+      },
+      {
+        "name": "right run start",
+        "numberOfFrames": 4,
+        "startRow": 3,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "right run",
+        "numberOfFrames": 4,
+        "startRow": 3,
+        "startColumn": 5,
+        "speed": 80
+      },
+      {
+        "name": "left run start",
+        "numberOfFrames": 4,
+        "startRow": 4,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left run",
+        "numberOfFrames": 4,
+        "startRow": 4,
+        "startColumn": 2,
+        "speed": 80
+      },
+      {
+        "name": "right sad",
+        "numberOfFrames": 11,
+        "startRow": 5,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left sad",
+        "numberOfFrames": 11,
+        "startRow": 6,
+        "startColumn": 4,
+        "speed": 80
+      },
+      {
+        "name": "turn left",
+        "numberOfFrames": 9,
+        "startRow":  7,
+        "startColumn": 7,
+        "speed": 80
+      },
+      {
+        "name": "turn right",
+        "numberOfFrames": 9,
+        "startRow": 8,
+        "startColumn":  8,
+        "speed": 80
+      }
+    ]
+  }
+]

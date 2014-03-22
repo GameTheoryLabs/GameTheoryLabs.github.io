@@ -1,0 +1,110 @@
+[
+  {
+    "src": "../images/spritesheets/Dog_Flip_SS.png",
+    "name": "dogFlip",
+    "ssWidth": 3036,
+    "ssHeight": 552,
+    "rows": 2,
+    "columns": 11,
+    "cellWidth": 276,
+    "cellHeight": 276,
+    "animations": [
+      {
+        "name": "left flip",
+        "numberOfFrames": 11,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 70
+      },
+      {
+        "name": "right flip",
+        "numberOfFrames": 11,
+        "startRow": 2,
+        "startColumn": 1,
+        "speed": 70
+      }
+    ]
+  },
+  {
+    "src": "../images/spritesheets/Dog_SS.png",
+    "name": "dog",
+    "ssWidth": 4404,
+    "ssHeight": 1772,
+    "rows": 8,
+    "columns": 16,
+    "cellWidth": 276,
+    "cellHeight": 221,
+    "animations": [
+      {
+        "name": "right dig",
+        "numberOfFrames": 3,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left dig",
+        "numberOfFrames": 3,
+        "startRow": 1,
+        "startColumn": 4,
+        "speed": 80
+      },
+      {
+        "name": "right sit",
+        "numberOfFrames": 5,
+        "startRow": 2,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left sit",
+        "numberOfFrames": 5,
+        "startRow": 2,
+        "startColumn": 6,
+        "speed": 80
+      },
+      {
+        "name": "right run",
+        "numberOfFrames": 4,
+        "startRow": 4,
+        "startColumn": 5,
+        "speed": 80
+      },
+      {
+        "name": "left run",
+        "numberOfFrames": 4,
+        "startRow": 4,
+        "startColumn": 13,
+        "speed": 80
+      },
+      {
+        "name": "right sad",
+        "numberOfFrames": 11,
+        "startRow": 5,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "left sad",
+        "numberOfFrames": 11,
+        "startRow": 5,
+        "startColumn": 12,
+        "speed": 80
+      },
+      {
+        "name": "turn left",
+        "numberOfFrames": 9,
+        "startRow": 7,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "turn right",
+        "numberOfFrames": 9,
+        "startRow": 8,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  }
+]

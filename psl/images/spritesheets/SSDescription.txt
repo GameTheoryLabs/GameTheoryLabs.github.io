@@ -1,0 +1,34 @@
+Final Concepts Dimensions
+
+DOG ANIMATIONS
+
+SS Width: 4404
+SS Hieght: 1772
+SS Rows: 8
+SS Columns: 16
+Cell Width: 276
+Cell Hieght: 221
+
+
+DOG FLIP
+
+SS Width: 3036
+SS Hieght: 552
+SS Rows: 2
+SS Columns: 11
+Cell Width: 276
+Cell Hieght: 276
+
+
+ITEM ANIMATIONS
+
+SS Width: 360
+SS Hieght: 288
+SS Rows: 4
+SS Columns: 5
+Cell Width: 72
+Cell Hieght: 72
+
+
+
+

@@ -1,0 +1,6 @@
+LOCK SPRITE SHEET DIMENSIONS
+
+SSWidth: 1589
+SSHeight: 194
+Cell Width:227
+Cell Height: 194
