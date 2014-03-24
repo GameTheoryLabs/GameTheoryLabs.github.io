@@ -1744,7 +1744,7 @@ com.playstylelabs = (function(){
                     
                 //Initialize Entity Manager, identify if it is a canvas or div enviroment
                     //options: {canvas: html element}
-                pInstance.Entity.Initialize({useCanvas: false, canvas: document.getElementById("background"),background: bkgrnd});
+                pInstance.Entity.Initialize({useCanvas: true, canvas: document.getElementById("background"),background: bkgrnd});
                 
                 //Create an Entity and extend with Graphics object
                 dog = pInstance.Entity.Create({width: 100, height: 100, position: [0,0,0], rotation:[0,0,0]});
