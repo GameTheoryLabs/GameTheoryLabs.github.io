@@ -12,3 +12,9 @@ window.onload = function(){
 }
 
 //http://phrogz.net/tmp/image_move_sprites_css.html
+function rotateDog(deg){
+                dog.rotation[0] += deg * Math.PI/ 180;
+               }
+               function scaleDog(val){
+                dog.graphics.Scale([val,val,val]);
+               }

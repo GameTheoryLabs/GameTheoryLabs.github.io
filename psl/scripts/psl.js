@@ -804,15 +804,26 @@ com.playstylelabs = (function(){
             
         var EntityManager = function(){
             var nextID = 0;
+            this.useCanvas = false;
+            this.canvas = null;
+            this.ctx = null;
+            this.container = null;
+            this.background = null;
             this.NextID = function(){return nextID++;}
             
             
-                    //options: {canvas: html element}
+                    //options: {useCanvas: true, canvas: html element, background: img}
             this.Initialize = function(options){
-                if(options.canvas){
-                    this.canvas = options.canvas;
-                }
-                else{
+                this.useCanvas = options.useCanvas;
+                this.canvas = options.canvas;
+                this.canvas.className = "background";
+                this.ctx = this.canvas.getContext('2d');
+                this.background = options.background || null;
+                
+                CEntity.prototype.canvas = this.canvas;
+                CEntity.prototype.ctx = this.canvas.getContext("2d");
+                
+                if(!options.useCanvas){
                     this.container = new CHTMLElement("div");
                     this.container.AppendClass("EntityManager");
                     this.container.AppendToHTML(document.body);
@@ -821,7 +832,7 @@ com.playstylelabs = (function(){
             
         }
         EntityManager.prototype.map = new CMap();
-        //options: width: 0px, height: 0px, position: [0,0]
+        //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
         EntityManager.prototype.Create = function(options){
             
             // Determine options
@@ -840,28 +851,31 @@ com.playstylelabs = (function(){
             
         }
         
-        //options:  id: int, canvas: html element, width: 0px, height: 0px, position: [0,0]
+        //options:  id: int, canvas: html element, width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
         var CEntity = function(options){
             this.id = options.id;
-            var width = options.width || 0;
-            var height = options.height || 0;
-            var position = options.position || [0,0];
+            this.width = options.width || 100;
+            this.height = options.height || 100;
+            this.position = options.position || [0,0,0];
+            this.rotation = options.rotation || [0,0,0];
             
             
-            //Using canvas enviroment
-            if(options.canvas){
-                this.canvas = options.canvas;
-            }
-            //Using div enviroment
-            else{
+            //Not using canvas, create a Div
+            if(!pInstance.Entity.useCanvas){
                 this.container = new CHTMLElement("div");
                 this.container.html.id = options.id;
+                this.container.AppendClass("Entity");
                 this.container.AppendToHTML(pInstance.Entity.container.html);
+                
+                
             }
+            
             
             
             pInstance.Entity.map.put(this.id, this);
         }
+        CEntity.prototype.canvas = null;
+        CEntity.prototype.ctx = null;
         CEntity.prototype.AddGraphics = function(){
             pInstance.Graphics.Extend(this);
         }
@@ -874,13 +888,22 @@ com.playstylelabs = (function(){
         //  Graphics 
         //
         var GraphicsManager = function(){
-            
-            
+                        
         }
         GraphicsManager.prototype.map = new CMap();
         GraphicsManager.prototype.spritesheets = new CMap();
         GraphicsManager.prototype.aniamtions = new CMap();
-        GraphicsManager.prototype.sequences = new CMap();
+        GraphicsManager.prototype.images = new CMap();
+        GraphicsManager.prototype.LoadImage = function(sURL,callback){
+            var img = new CHTMLElement("img");
+            
+            img.html.src = sURL;
+            img.html.onload = callback;
+            pInstance.Graphics.images.put(sURL, img);
+            
+            return img;
+            
+        }
         GraphicsManager.prototype.CreateSpriteSheet = function(){
             
         }
@@ -894,17 +917,36 @@ com.playstylelabs = (function(){
             oEntity.graphics = new CGraphics(oEntity);
         }
         GraphicsManager.prototype.Update = function(dt){
+            for(var i = 0; i < pInstance.Entity.map.size; i++, pInstance.Entity.map.next()){
+                pInstance.Entity.map.value().graphics.Update(dt);
+            }
+        }
+        GraphicsManager.prototype.Draw = function(){
+            pInstance.Entity.ctx.drawImage(pInstance.Entity.background.html, 0, 0);
             
+            if(pInstance.Entity.useCanvas){
+                for(var i = 0; i < pInstance.Entity.map.size; i++, pInstance.Entity.map.next()){
+                    pInstance.Entity.map.value().graphics.Draw();
+                }
+                
+            }
         }
         
         
         //HTML Element
         var CGraphics = function(oEntity){
             var self = this;
-            var scale      = [1,1,1];
+            this.scale      = [1,1,1];
+            this.offset     = [0,0,0];
+            this.matrix     = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
             this.parent     = oEntity;
             this.canvas     = null;
             this.container  = null;
+            
+            //Function pointers, based upon redering system
+            //  Div's = Update/Scale/Draw + HTML
+            // canvas = Update/Scale/Draw + Canvas
+            this.UpdateMatrix = "";
             this.Update = "";
             this.Scale  = "";
             this.Draw   = "";
@@ -999,21 +1041,26 @@ com.playstylelabs = (function(){
 
             
             //using canvas
-            if(this.parent.canvas){
+            if(pInstance.Entity.useCanvas){
                 this.canvas = this.parent.canvas;
                 //Set proper Update, Scale, and Draw Functions
                 this.Update = this.UpdateCanvas;
                 this.Scale  = this.ScaleCanvas;
                 this.Draw   = this.DrawCanvas;
+                this.UpdateMatrix = this.UpdateMatrixCanvas;
             }
             //usign div
             else{
                 this.container = new CHTMLElement("div");
                 this.container.AppendToHTML(this.parent.container.html);
+                //this.container.html.style.width = this.parent.width + "px";
+                //this.container.html.style.height = this.parent.height + "px";
+                
                 //Set proper Update and Scale Functions
                 this.Update = this.UpdateHTML;
                 this.Scale  = this.ScaleHTML;
                 this.Draw   = this.DrawHTML;
+                this.UpdateMatrix = this.UpdateMatrixHTML;
             }
             
             
@@ -1021,28 +1068,110 @@ com.playstylelabs = (function(){
             pInstance.Graphics.map.put(this.parent.id, this);
             return this;
         }
+        CGraphics.prototype.UpdateMatrixHTML = function(){
+            this.matrix[0] = this.scale[0] * Math.cos(this.parent.rotation[0]);
+            this.matrix[1] = this.scale[1] * Math.sin(this.parent.rotation[0]);
+            this.matrix[2] = 0;
+            this.matrix[3] = 0;
+            this.matrix[4] = this.scale[0] * -1 * Math.sin(this.parent.rotation[0]);
+            this.matrix[5] = this.scale[1] * Math.cos(this.parent.rotation[0]);
+            this.matrix[6] = 0;
+            this.matrix[7] = 0;
+            this.matrix[8] = 0;
+            this.matrix[9] = 0;
+            this.matrix[10] = this.scale[2];
+            this.matrix[11] = 0;
+            this.matrix[12] = this.parent.position[0] + this.offset[0];
+            this.matrix[13] = this.parent.position[1] + this.offset[1];
+            this.matrix[14] = this.parent.position[2] + this.offset[2];
+            this.matrix[15] = 1;
+        }
+        CGraphics.prototype.UpdateMatrixCanvas = function(){
+                       
+            var cos = Math.cos(this.parent.rotation[0]);
+            var sin = Math.sin(this.parent.rotation[0]);
+            var Sx = this.scale[0];
+            var Sy = this.scale[1];
+            
+            var halfWidth = this.Animation.currentAnimation.sheet.cellWidth / 2;
+            var halfHeight = this.Animation.currentAnimation.sheet.cellHeight / 2;
+            
+            this.matrix[0] =  cos * Sx;
+            this.matrix[1] =  sin * Sx;
+            this.matrix[2] = -sin * Sy;
+            this.matrix[3] =  cos * Sy;
+            
+            this.matrix[4] = -1 * Sx * cos * halfWidth + Sy * sin * halfHeight + (this.parent.position[0] + halfWidth * Sx);
+            this.matrix[5] = -1 * Sx * sin * halfWidth - Sy * cos * halfHeight + (this.parent.position[1] + halfHeight * Sy);
+
+        }
         CGraphics.prototype.DrawHTML = function(){
             this.container.html.style.backgroundPosition = -this.Animation.currentAnimation.frames[this.Animation.currentFrame].x + "px " + -this.Animation.currentAnimation.frames[this.Animation.currentFrame].y + "px";
-        },
+            this.container.html.style.webkitTransform = "matrix3d(" + this.matrix.join(",") + ")";
+        }
         CGraphics.prototype.DrawCanvas = function(){
+
+            this.parent.ctx.save();
+            //this.parent.ctx.translate(-1 * (this.parent.position[0] + (((1 - this.scale[0]) * this.Animation.currentAnimation.sheet.cellWidth)/2)|0), -1 * (this.parent.position[1] + (((1 - this.scale[1]) * this.Animation.currentAnimation.sheet.cellHeight)/2)|0));
+            //this.parent.ctx.translate(-1 *(this.parent.position[0] + this.offset[0]), -1 *(this.parent.position[1] + this.offset[1]))
+            this.parent.ctx.setTransform(this.matrix[0], this.matrix[1], this.matrix[2], this.matrix[3], this.matrix[4], this.matrix[5]);
             
+            //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+            this.parent.ctx.drawImage(this.Animation.currentAnimation.sheet.img,
+                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].x,
+                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].y,
+                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].width,
+                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].height,
+                        0,
+                        0,
+                        (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
+                        (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);
+            //this.parent.ctx.fillRect(0,0,
+            //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
+            //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);   // Draw a rectangle with default settings
+            this.parent.ctx.restore();
         }
         CGraphics.prototype.UpdateHTML = function(dt){
             //If Animating, update frame
             if(this.Animation.active){
                 this.Animation.Update(dt);
             }
+            this.UpdateMatrix();
         }
         CGraphics.prototype.UpdateCanvas = function(dt){
             //If Animating, update frame
             if(this.Animation.active){
                 this.Animation.Update(dt);
             }
-        }
-        CGraphics.prototype.ScaleCanvas = function(scale){
+            this.UpdateMatrix();
             
         }
+        CGraphics.prototype.ScaleCanvas = function(scale){
+            this.scale[0] = scale[0];
+            this.scale[1] = scale[1];
+            this.scale[2] = scale[2];
+            
+            var width = this.Animation.currentAnimation.sheet.cellWidth;
+            var height = this.Animation.currentAnimation.sheet.cellHeight;
+            
+            this.offset[0] = ((width *  scale[0]) / 2)|0;
+            this.offset[1] = ((height * scale[1]) / 2)|0;
+
+        }
         CGraphics.prototype.ScaleHTML = function(scale){
+            this.scale[0] = scale[0];
+            this.scale[1] = scale[1];
+            this.scale[2] = scale[2];
+            
+            var width = this.Animation.currentAnimation.sheet.cellWidth;
+            var height = this.Animation.currentAnimation.sheet.cellHeight;
+            
+            this.offset[0] = (-(width - (width * scale[0]))/2)|0;
+            this.offset[1] = (-(height - (height * scale[1]))/2)|0;
+
+            
+            
+        
             /*
                 Scale: x, y
                 //Sprite Div
@@ -1060,6 +1189,7 @@ com.playstylelabs = (function(){
         //Animation Classes
         var CSpriteSheet = function(sName){
             var self = this;
+            this.img = null;
             this.width = 0;
             this.height = 0;
             this.cellWidth = 0;
@@ -1072,10 +1202,12 @@ com.playstylelabs = (function(){
             var className = ""
             this.BuildClass = function(sClassName){
                 className = sClassName ? sClassName.replace(/\s/g, "_") : self.name;
-    
+                this.img = new Image();
+                this.img.src = this.path;
+                
                 var style = "position: absolute; ";
                 style += "overflow: hidden;";
-                style += "background: url('" + this.path + "'); ";
+                style += "background: url('"+ window.location.href + this.path + "'); ";
                 style += "width: " + this.cellWidth +"px;";
                 style += "height: " + this.cellHeight + "px;";
                 
@@ -1603,22 +1735,27 @@ com.playstylelabs = (function(){
             },
             Demo: function(){
                 //  New Demo
-                    
+                
+                bkgrnd = pInstance.Graphics.LoadImage("images/backgrounds/Level_1.png", function(){
+                        pInstance.Entity.canvas.width = 1024; //"1024px";
+                        pInstance.Entity.canvas.height = 768; //"768px";
+                        pInstance.Entity.ctx.drawImage(bkgrnd.html, 0, 0);
+                    });    
                     
                 //Initialize Entity Manager, identify if it is a canvas or div enviroment
                     //options: {canvas: html element}
-                pInstance.Entity.Initialize({canvas: null});
+                pInstance.Entity.Initialize({useCanvas: false, canvas: document.getElementById("background"),background: bkgrnd});
                 
                 //Create an Entity and extend with Graphics object
-                dog = pInstance.Entity.Create({width: 10, height: 10, position: [20,30]});
+                dog = pInstance.Entity.Create({width: 100, height: 100, position: [0,0,0], rotation:[0,0,0]});
                 dog.AddGraphics();
                 
                 //Create custom animation from sequence from base animations
-                right_run_turn = psl.Create.Animation("right_run_turn");
-                left_run_turn = psl.Create.Animation("left_run_turn");
+                var right_run_turn = psl.Create.Animation("right_run_turn");
+                var left_run_turn = psl.Create.Animation("left_run_turn");
                 
-                right_run = psl.Animation.animations.get("right_run");
-                left_run  = psl.Animation.animations.get("left_run");
+                var right_run = psl.Animation.animations.get("right_run");
+                var left_run  = psl.Animation.animations.get("left_run");
                 var right_flip = psl.Animation.animations.get("right_flip");
                 var left_flip = psl.Animation.animations.get("left_flip");
                 
@@ -1638,11 +1775,13 @@ com.playstylelabs = (function(){
                 
                 var SetRightRun = function(){
                     dog.graphics.Animation.Set("right_run_turn");
-                    dog.graphics.Animation.onStop = SetRightFlip;
+                    //dog.graphics.Animation.onStop = SetRightFlip;
+                    dog.graphics.Animation.onStop = SetLeftRun;
                 }
                 var SetLeftRun = function(){
                     dog.graphics.Animation.Set("left_run_turn");
-                    dog.graphics.Animation.onStop = SetLeftFlip;
+                    //dog.graphics.Animation.onStop = SetLeftFlip;
+                    dog.graphics.Animation.onStop = SetRightRun;
                 }
                 var SetLeftFlip = function(){
                     dog.graphics.Animation.Set("left_flip");
@@ -1689,61 +1828,33 @@ com.playstylelabs = (function(){
                 dog.graphics.Animation.Add("left_flip");
                 
                 SetRightRun();
+                //dog.graphics.Scale([0.25,0.25,1]);
+                dog.rotation[0] = 45 * Math.PI / 180;
+                dog.graphics.Scale([0.5,0.5,0.5]);
+                //dog.graphics.Scale([1,1,1]);
                 pInstance.Input.Register.Keyboard.Event.Keydown("S", function(){
                     dog.graphics.Animation.list.next();
                     dog.graphics.Animation.Set(dog.graphics.Animation.list.key())
                 });
                
-                
-                //Build Puppy Sprite
-                //Sprite = pInstance.Create.Sprite("puppy");
-                //Sprite.graphic.AppendToHTML(document.getElementById("sprite"));
-                
-                //Load Animations into Sprite
-                //for(var i = 0; i < pInstance.Animation.animations.size; i++){
-                //    Sprite.Animation.Load(pInstance.Animation.animations.value());
-                //    pInstance.Animation.animations.next();
-                //}
-                
-                //Set Active Animation
-                //Sprite.Animation.SetActive(pInstance.Animation.animations.key());
-                
-                //Add input
-                
-                //pInstance.Input.Register.Keyboard.Event.Keydown("S", function(){pInstance.Animation.animations.next();Sprite.Animation.SetActive(pInstance.Animation.animations.key());});
-                //pInstance.Input.Register.Keyboard.Event.Keydown("A", function(){pInstance.Animation.animations.value().speed += 5});
-                //pInstance.Input.Register.Keyboard.Event.Keydown("D", function(){pInstance.Animation.animations.value().speed -= 5});
-                
                 var lastUpdate = pInstance.Get.Time();
-                var time;
-                //Start Animation
-                Loop = function(){
-                    //if(Sprite.Animation.Current.animation){
-                        time = pInstance.Get.Time()
-                        var dt = time - lastUpdate;
-                        //if(dt > Sprite.Animation.Current.animation.speed){
-                        lastUpdate = time;
-                            
-                        dog.Update(dt);
-                            
-                            // update animation
-                            //Sprite.Animation.NextFrame();
-                            
-                            
-                        //}
-                            window.requestAnimFrame(Loop);
-                    //}
-                    //window.webkitRequestAnimationFrame(Update);
-                };
+                var time,dt;
                 
-                Loop();
-                //Setup Keypress Binds
-                //os.input.Register.Keyboard.Event.Keydown("Q", function(){App.Sprite.Animation.SetActive("runRight");});
-                //os.input.Register.Keyboard.Event.Keydown("W", function(){App.Sprite.Animation.SetActive("runLeft");});
-                //os.input.Register.Keyboard.Event.Keydown("E", function(){App.Sprite.Animation.SetActive("sitRight");});
-                //os.input.Register.Keyboard.Event.Keydown("R", function(){App.Sprite.Animation.SetActive("sitLeft");});
-                //os.input.Register.Keyboard.Event.Keydown("T", function(){App.Sprite.Animation.SetActive("jumpRight");});
-                //os.input.Register.Keyboard.Event.Keydown("Y", function(){App.Sprite.Animation.SetActive("jumpLeft");});
+                //Start Game Loop
+                (Loop = function(){
+
+                    time = pInstance.Get.Time()
+                    dt = time - lastUpdate;
+
+                    lastUpdate = time;
+                    pInstance.Graphics.Update(dt);
+                    pInstance.Graphics.Draw();    
+
+
+                    window.requestAnimFrame(Loop);
+
+                })();
+
             },
             Classes: {
                 HTMLElement:  CHTMLElement

@@ -1,6 +1,6 @@
 [
   {
-    "src": "../images/spritesheets/Dog_Flip_SS.png",
+    "src": "images/spritesheets/Dog_Flip_SS.png",
     "name": "dog_flip",
     "ssWidth": 1680,
     "ssHeight": 1120,
@@ -26,7 +26,7 @@
     ]
   },
   {
-    "src": "../images/spritesheets/Dog_SS.png",
+    "src": "images/spritesheets/Dog_SS.png",
     "name": "dog",
     "ssWidth": 2720,
     "ssHeight": 2430,
