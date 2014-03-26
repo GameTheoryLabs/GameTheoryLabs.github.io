@@ -1,39 +1,13 @@
 [
   {
-    "src": "images/spritesheets/Dog_Flip_SS.png",
-    "name": "dog_flip",
-    "ssWidth": 1680,
-    "ssHeight": 1120,
-    "rows": 4,
-    "columns": 6,
-    "cellWidth": 280,
-    "cellHeight": 280,
-    "animations": [
-      {
-        "name": "left flip",
-        "numberOfFrames": 11,
-        "startRow": 1,
-        "startColumn": 1,
-        "speed": 80
-      },
-      {
-        "name": "right flip",
-        "numberOfFrames": 11,
-        "startRow": 2,
-        "startColumn": 6,
-        "speed": 80
-      }
-    ]
-  },
-  {
     "src": "images/spritesheets/Dog_SS.png",
     "name": "dog",
     "ssWidth": 2720,
-    "ssHeight": 2430,
-    "rows": 9,
+    "ssHeight": 3360,
+    "rows": 12,
     "columns": 8,
     "cellWidth": 340,
-    "cellHeight": 270,
+    "cellHeight": 280,
     "animations": [
       {
         "name": "right dig",
@@ -81,14 +55,14 @@
         "name": "left run start",
         "numberOfFrames": 4,
         "startRow": 4,
-        "startColumn": 1,
+        "startColumn": 5,
         "speed": 80
       },
       {
         "name": "left run",
         "numberOfFrames": 4,
         "startRow": 4,
-        "startColumn": 2,
+        "startColumn": 1,
         "speed": 80
       },
       {
@@ -117,6 +91,20 @@
         "numberOfFrames": 9,
         "startRow": 8,
         "startColumn":  8,
+        "speed": 80
+      },
+      {
+        "name": "left flip",
+        "numberOfFrames": 11,
+        "startRow": 10,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "right flip",
+        "numberOfFrames": 11,
+        "startRow": 11,
+        "startColumn": 4,
         "speed": 80
       }
     ]

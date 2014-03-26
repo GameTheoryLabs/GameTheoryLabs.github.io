@@ -770,9 +770,9 @@ com.playstylelabs = (function(){
         window.addEventListener("keydown", _InputEvents.Keyboard.Keydown, false);
         window.addEventListener("keyup", _InputEvents.Keyboard.Keyup, false);
         
-        var Animations = new CMap();
-        var SpriteSheets = new CMap();
-        var Sprites = new CMap();
+        //var Animations = new CMap();
+        //var SpriteSheets = new CMap();
+        //var Sprites = new CMap();
         
         //
         //  Sound API
@@ -866,12 +866,9 @@ com.playstylelabs = (function(){
                 this.container.html.id = options.id;
                 this.container.AppendClass("Entity");
                 this.container.AppendToHTML(pInstance.Entity.container.html);
-                
-                
+
             }
-            
-            
-            
+
             pInstance.Entity.map.put(this.id, this);
         }
         CEntity.prototype.canvas = null;
@@ -1169,7 +1166,8 @@ com.playstylelabs = (function(){
             this.offset[0] = (-(width - (width * scale[0]))/2)|0;
             this.offset[1] = (-(height - (height * scale[1]))/2)|0;
 
-            
+            //this.offset[0] = 0;
+            //this.offset[1] = 0;
             
         
             /*
@@ -1186,7 +1184,117 @@ com.playstylelabs = (function(){
             */
         }
         
-        //Animation Classes
+        
+        //
+        //  Animation Classes
+        //
+        
+        //Manager
+        var AnimationManager = function(){
+            
+        }
+        AnimationManager.prototype.spritesheets = new CMap();
+        AnimationManager.prototype.animations = new CMap();
+        AnimationManager.prototype.LoadJSON = function(sURL, callback, scope){
+            var xhr = new CXHRObject();
+            
+            xhr.open('GET',sURL,false);
+            
+            xhr.onreadystatechange = function(){
+              if(xhr.readyState==4){ //4==DONE
+                    if(xhr.status == 200)
+                    {
+                        try{
+                            animations = JSON.parse(xhr.responseText);
+                            
+                            for(var i = 0; i < animations.length; i++){
+                                var data = animations[i];
+                                
+                                var ss = new CSpriteSheet(data.name);
+
+                                ss.width = data.ssWidth;
+                                ss.height = data.ssHeight;
+                                ss.cellWidth = data.cellWidth;
+                                ss.cellHeight = data.cellHeight;
+                                ss.rows = data.rows;
+                                ss.columns = data.columns;
+                                ss.path = data.src;
+                                ss.BuildClass(data.name);
+                                
+                                var options = {
+                                    name: "",
+                                    numOfFrames: 0,
+                                    startRow: 0,
+                                    startColumn: 0,
+                                    spriteSheet: ss,
+                                    speed: 0
+                                }
+                                
+                                for(var j = 0; j < data.animations.length; j++){
+                                    var ani = data.animations[j];
+                                    
+                                    options.name = ani.name;
+                                    options.numOfFrames = ani.numberOfFrames;
+                                    options.startRow = ani.startRow;
+                                    options.startColumn = ani.startColumn;
+                                    options.speed = ani.speed;
+                                    
+                                    
+                                    //CreateAnimation(Animation Name, number of frames, startRow, startColumn, SS, speed)
+                                    new CAnimation(options.name, options);
+                                    //new CAnimation(ani.name, ani.numberOfFrames, ani.startRow, ani.startColumn, ss, ani.speed);
+                                }
+                            }
+                            
+                            if(callback){
+                                scope ? callback.apply(scope, [animations]) : callback(animations);
+                            }
+
+                            //pInstance.Demo();
+                        }
+                        catch(e){
+                            console.error("Error parsing Animation Description: " + e);   
+                        }
+                    }
+                    else{
+                        console.error("Error loading Animation Description at: " + sURL);
+                    }
+              }
+                
+            }.bind(this);
+            
+            xhr.send();
+        }
+        AnimationManager.prototype.AddFrames = function(target, source){
+            for(var i = 0; i < source.frames.length; i++){
+                target.frames.push(source.frames[i]);
+            }
+        }
+        AnimationManager.prototype.AddFramesReverse = function(target, source){
+            for(var i = source.frames.length - 1; i >= 0; i--){
+                target.frames.push(source.frames[i]);
+            }
+        }
+        AnimationManager.prototype.ReverseFrames = function(source){
+            //Create temp array to hold frames
+            var temp = [];
+            
+            //Store source frames in temp array, in reverse order
+            for(var i = source.frames.length - 1; i >= 0; i--){
+                temp.push(source.frames[i]);
+            }
+            
+            //Clear out source frames array
+            source.frames = [];
+            
+            //Push frames back to source via temp (in reverse order)
+            for(var i = 0; i < temp.length; i++){
+                source.frames.push(temp[i]);
+            }
+        }
+        
+        //  Animation Objects
+        //
         var CSpriteSheet = function(sName){
             var self = this;
             this.img = null;
@@ -1272,80 +1380,7 @@ com.playstylelabs = (function(){
         return{
             Entity: new EntityManager(),
             Graphics: new GraphicsManager(),
-            Animation: {
-                spritesheets: null,
-                animations: null,
-                LoadJSON: function(sURL, callback, scope){
-                    var xhr = new CXHRObject();
-                    
-                    xhr.open('GET',sURL,false);
-                    
-                    xhr.onreadystatechange = function(){
-                      if(xhr.readyState==4){ //4==DONE
-                            if(xhr.status == 200)
-                            {
-                                try{
-                                    animations = JSON.parse(xhr.responseText);
-                                    
-                                    for(var i = 0; i < animations.length; i++){
-                                        var data = animations[i];
-                                        
-                                        var ss = new CSpriteSheet(data.name);
-
-                                        ss.width = data.ssWidth;
-                                        ss.height = data.ssHeight;
-                                        ss.cellWidth = data.cellWidth;
-                                        ss.cellHeight = data.cellHeight;
-                                        ss.rows = data.rows;
-                                        ss.columns = data.columns;
-                                        ss.path = data.src;
-                                        ss.BuildClass(data.name);
-                                        
-                                        var options = {
-                                            name: "",
-                                            numOfFrames: 0,
-                                            startRow: 0,
-                                            startColumn: 0,
-                                            spriteSheet: ss,
-                                            speed: 0
-                                        }
-                                        
-                                        for(var j = 0; j < data.animations.length; j++){
-                                            var ani = data.animations[j];
-                                            
-                                            options.name = ani.name;
-                                            options.numOfFrames = ani.numberOfFrames;
-                                            options.startRow = ani.startRow;
-                                            options.startColumn = ani.startColumn;
-                                            options.speed = ani.speed;
-                                            
-                                            
-                                            //CreateAnimation(Animation Name, number of frames, startRow, startColumn, SS, speed)
-                                            new CAnimation(options.name, options);
-                                            //new CAnimation(ani.name, ani.numberOfFrames, ani.startRow, ani.startColumn, ss, ani.speed);
-                                        }
-                                    }
-                                    
-                                    if(callback){
-                                        scope ? callback.apply(scope, [animations]) : callback(animations);
-                                    }
-
-                                    //pInstance.Demo();
-                                }
-                                catch(e){
-                                    console.error("Error parsing Animation Description: " + e);   
-                                }
-                            }
-                            else{
-                                console.error("Error loading Animation Description at: " + sURL);
-                            }
-                      }
-                        
-                    }.bind(this);
-                    
-                    xhr.send();
-                }
-            },
+            Animation: new AnimationManager(),
             Get: {
                 Sprite: function(sName){
                     return Sprites.get(sName);
@@ -1405,21 +1440,15 @@ com.playstylelabs = (function(){
                     var ent = pInstance.Entity.Create(options);
                     return ent;
                 },
-                Sprite: function(sName){
-                    var sprite = new CSprite(sName);
-                    Sprites.put(sName, sprite);
-                    
-                    return  sprite;
-                },
                 SpriteSheet: function(sName){
                     var sheet = new CSpriteSheet(sName);
-                    SpriteSheets.put(sName, sheet);
+                    pInstance.spritesheets.put(sName, sheet);
                     
                     return sheet;   
                 },
                 Animation: function(sName,iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed){
                     var ani = new CAnimation(sName,iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
-                    Animations.put(sName, ani);
+                    pInstance.Animation.animations.put(sName, ani);
                     
                     return ani;
                 },
@@ -1733,129 +1762,6 @@ com.playstylelabs = (function(){
             Modules:{
                 
             },
-            Demo: function(){
-                //  New Demo
-                
-                bkgrnd = pInstance.Graphics.LoadImage("images/backgrounds/Level_1.png", function(){
-                        pInstance.Entity.canvas.width = 1024; //"1024px";
-                        pInstance.Entity.canvas.height = 768; //"768px";
-                        pInstance.Entity.ctx.drawImage(bkgrnd.html, 0, 0);
-                    });    
-                    
-                //Initialize Entity Manager, identify if it is a canvas or div enviroment
-                    //options: {canvas: html element}
-                pInstance.Entity.Initialize({useCanvas: true, canvas: document.getElementById("background"),background: bkgrnd});
-                
-                //Create an Entity and extend with Graphics object
-                dog = pInstance.Entity.Create({width: 100, height: 100, position: [0,0,0], rotation:[0,0,0]});
-                dog.AddGraphics();
-                
-                //Create custom animation from sequence from base animations
-                var right_run_turn = psl.Create.Animation("right_run_turn");
-                var left_run_turn = psl.Create.Animation("left_run_turn");
-                
-                var right_run = psl.Animation.animations.get("right_run");
-                var left_run  = psl.Animation.animations.get("left_run");
-                var right_flip = psl.Animation.animations.get("right_flip");
-                var left_flip = psl.Animation.animations.get("left_flip");
-                
-                var turn_left = psl.Animation.animations.get("turn_left");
-                var turn_right = psl.Animation.animations.get("turn_right");
-                
-                var AddFrames = function(target, source){
-                    for(var i = 0; i < source.frames.length; i++){
-                        target.frames.push(source.frames[i]);
-                    }
-                }
-                var AddFramesReverse = function(target, source){
-                    for(var i = source.frames.length - 1; i >= 0; i--){
-                        target.frames.push(source.frames[i]);
-                    }
-                }
-                
-                var SetRightRun = function(){
-                    dog.graphics.Animation.Set("right_run_turn");
-                    //dog.graphics.Animation.onStop = SetRightFlip;
-                    dog.graphics.Animation.onStop = SetLeftRun;
-                }
-                var SetLeftRun = function(){
-                    dog.graphics.Animation.Set("left_run_turn");
-                    //dog.graphics.Animation.onStop = SetLeftFlip;
-                    dog.graphics.Animation.onStop = SetRightRun;
-                }
-                var SetLeftFlip = function(){
-                    dog.graphics.Animation.Set("left_flip");
-                    dog.graphics.Animation.onStop = SetRightRun;
-                }
-                var SetRightFlip = function(){
-                    dog.graphics.Animation.Set("right_flip");
-                    dog.graphics.Animation.onStop = SetLeftRun;
-                }
-                
-                AddFramesReverse(right_run_turn, turn_right);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                AddFrames(right_run_turn, right_run);
-                right_run_turn.numOfFrames = right_run_turn.frames.length;
-                right_run_turn.sheet = right_run.sheet;
-                right_run_turn.speed = right_run.speed;
-                
-                //AddFrames(ani, right_flip);
-                AddFrames(left_run_turn, turn_left);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                AddFrames(left_run_turn, left_run);
-                left_run_turn.numOfFrames = left_run_turn.frames.length;
-                left_run_turn.sheet = left_run.sheet;
-                left_run_turn.speed = left_run.speed;
-                
-
-                
-                //Add Animation to dog
-                dog.graphics.Animation.Add("right_run_turn");
-                dog.graphics.Animation.Add("right_flip");
-                dog.graphics.Animation.Add("left_run_turn");
-                dog.graphics.Animation.Add("left_flip");
-                
-                SetRightRun();
-                //dog.graphics.Scale([0.25,0.25,1]);
-                dog.rotation[0] = 45 * Math.PI / 180;
-                dog.graphics.Scale([0.5,0.5,0.5]);
-                //dog.graphics.Scale([1,1,1]);
-                pInstance.Input.Register.Keyboard.Event.Keydown("S", function(){
-                    dog.graphics.Animation.list.next();
-                    dog.graphics.Animation.Set(dog.graphics.Animation.list.key())
-                });
-               
-                var lastUpdate = pInstance.Get.Time();
-                var time,dt;
-                
-                //Start Game Loop
-                (Loop = function(){
-
-                    time = pInstance.Get.Time()
-                    dt = time - lastUpdate;
-
-                    lastUpdate = time;
-                    pInstance.Graphics.Update(dt);
-                    pInstance.Graphics.Draw();    
-
-
-                    window.requestAnimFrame(Loop);
-
-                })();
-
-            },
             Classes: {
                 HTMLElement:  CHTMLElement
             }
@@ -1871,8 +1777,6 @@ com.playstylelabs = (function(){
             {
                 //Instantiate if pInstance does not exist
                 pInstance = constructor();
-                pInstance.Animation.spritesheets = pInstance.Create.Map();
-                pInstance.Animation.animations = pInstance.Create.Map();
                 
                 //pInstance.Animation.LoadJSON("images/spritesheets/animations.json");
             }
