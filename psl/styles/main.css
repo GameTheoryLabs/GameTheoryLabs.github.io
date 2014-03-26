@@ -1,12 +1,12 @@
-
+/*
 .Wrapper {
     position: absolute;
     top: 0px;
     left: 0px;
     width: 1024px;
     height: 768px;        
-}
-.background{
+}*/
+/*.background{
     position: absolute;
     top: 0px;
     left: 0px;
@@ -17,9 +17,9 @@
 	-o-background-size: cover;
 	background-size: cover;
     background: url(../images/Screens/menu.png) no-repeat center center fixed;
-}
+}*/
 
-.alert {
+/*.alert {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -127,7 +127,7 @@
 }
 
 
-
+*/
 .hide {
     display: none;
 }
