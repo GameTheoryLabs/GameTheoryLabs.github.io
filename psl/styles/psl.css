@@ -3,6 +3,12 @@
 	left: 0px;
 	width: 100%;
 	height: 100%;
+	position: absolute;
+	/*background-color: red;*/
+}
+.Entity {
+	position: absolute;
+	/*background-color: blue;*/
 }
 
 .GraphicsManager{
@@ -23,13 +29,15 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 1024px;
-    height: 768px;
+	width: 100%;
+	height: 100%;
+/*    width: 1024px;
+    height: 768px;*/
     -webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-    background: url(../images/Screens/menu.png) no-repeat center center fixed;
+    /*background: url(../images/Screens/menu.png) no-repeat center center fixed;*/
 }
 
 .alert {
@@ -46,7 +54,7 @@
 }
 
 
-.PracticeMenu{
+/*.PracticeMenu{
     background: url(../images/Screens/PracticeMenu.png) no-repeat center center fixed;
 }
 .PracticeMenuButton{
@@ -140,7 +148,7 @@
 }
 
 
-
+*/
 .hide {
     display: none;
 }
