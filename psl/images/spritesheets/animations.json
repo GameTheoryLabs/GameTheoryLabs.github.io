@@ -1,10 +1,10 @@
 [
   {
-    "src": "images/spritesheets/Dog_SS.png",
+    "src": "images/spritesheets/Dog_SS_1.png",
     "name": "dog",
     "ssWidth": 2720,
-    "ssHeight": 3360,
-    "rows": 12,
+    "ssHeight": 1119,
+    "rows": 4,
     "columns": 8,
     "cellWidth": 340,
     "cellHeight": 280,
@@ -64,47 +64,161 @@
         "startRow": 4,
         "startColumn": 1,
         "speed": 80
-      },
+      }
+    ]
+  },
+  {
+    "src": "images/spritesheets/Dog_SS_2.png",
+    "name": "dog",
+    "ssWidth": 2720,
+    "ssHeight": 1122,
+    "rows": 4,
+    "columns": 8,
+    "cellWidth": 340,
+    "cellHeight": 280,
+    "animations": [
       {
         "name": "right sad",
         "numberOfFrames": 11,
-        "startRow": 5,
+        "startRow": 1,
         "startColumn": 1,
         "speed": 80
       },
       {
         "name": "left sad",
         "numberOfFrames": 11,
-        "startRow": 6,
+        "startRow": 2,
         "startColumn": 4,
         "speed": 80
       },
       {
         "name": "turn left",
         "numberOfFrames": 9,
-        "startRow":  7,
+        "startRow":  3,
         "startColumn": 7,
         "speed": 80
-      },
+      }
+      
+    ]
+  },
+  {
+    "src": "images/spritesheets/Dog_SS_3.png",
+    "name": "dog",
+    "ssWidth": 2720,
+    "ssHeight": 1119,
+    "rows": 4,
+    "columns": 8,
+    "cellWidth": 340,
+    "cellHeight": 280,
+    "animations": [
       {
         "name": "turn right",
         "numberOfFrames": 9,
-        "startRow": 8,
+        "startRow": 1,
         "startColumn":  8,
         "speed": 80
       },
       {
         "name": "left flip",
         "numberOfFrames": 11,
-        "startRow": 10,
+        "startRow": 2,
         "startColumn": 1,
         "speed": 80
       },
       {
         "name": "right flip",
         "numberOfFrames": 11,
-        "startRow": 11,
+        "startRow": 3,
         "startColumn": 4,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/props/Balls/Ball_Sheet.png",
+    "name": "dog",
+    "ssWidth": 704,
+    "ssHeight": 64,
+    "rows": 1,
+    "columns": 11,
+    "cellWidth": 64,
+    "cellHeight": 64,
+    "animations": [
+      {
+        "name": "0",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "1",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 2,
+        "speed": 80
+      },
+      {
+        "name": "2",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 3,
+        "speed": 80
+      },
+      {
+        "name": "3",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 4,
+        "speed": 80
+      },
+      {
+        "name": "4",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 5,
+        "speed": 80
+      },
+      {
+        "name": "5",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 6,
+        "speed": 80
+      },
+      {
+        "name": "6",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 7,
+        "speed": 80
+      },
+      {
+        "name": "7",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 8,
+        "speed": 80
+      },
+      {
+        "name": "8",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 9,
+        "speed": 80
+      },
+      {
+        "name": "9",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 10,
+        "speed": 80
+      },
+      {
+        "name": "10",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 11,
         "speed": 80
       }
     ]

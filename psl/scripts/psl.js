@@ -20,6 +20,129 @@ com.playstylelabs = (function(){
         //
         //  Base Classes
         //
+        
+        //Priority Queue - https://github.com/STRd6/PriorityQueue.js
+            // var queue = PriorityQueue({low: true});
+        var CPriorityQueue = function(options) {
+            var contents = [];
+        
+            var sorted = false;
+            var sortStyle;
+        
+            if(options && options.low) {
+              sortStyle = prioritySortLow;
+            } else {
+              sortStyle = prioritySortHigh;
+            }
+        
+            /**
+             * @private
+             */
+            var sort = function() {
+              contents.sort(sortStyle);
+              sorted = true;
+            };
+        
+            var self = {
+              /**
+               * Removes and returns the next element in the queue.
+               * @member PriorityQueue
+               * @return The next element in the queue. If the queue is empty returns
+               * undefined.
+               *
+               * @see PrioirtyQueue#top
+               */
+              pop: function() {
+                if(!sorted) {
+                  sort();
+                }
+        
+                var element = contents.pop();
+        
+                if(element) {
+                  return element.object;
+                } else {
+                  return undefined;
+                }
+              },
+        
+              /**
+               * Returns but does not remove the next element in the queue.
+               * @member PriorityQueue
+               * @return The next element in the queue. If the queue is empty returns
+               * undefined.
+               *
+               * @see PriorityQueue#pop
+               */
+              top: function() {
+                if(!sorted) {
+                  sort();
+                }
+        
+                var element = contents[contents.length - 1];
+        
+                if(element) {
+                  return element.object;
+                } else {
+                  return undefined;
+                }
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @param object The object to check the queue for.
+               * @returns true if the object is in the queue, false otherwise.
+               */
+              includes: function(object) {
+                for(var i = contents.length - 1; i >= 0; i--) {
+                  if(contents[i].object === object) {
+                    return true;
+                  }
+                }
+        
+                return false;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @returns the current number of elements in the queue.
+               */
+              size: function() {
+                return contents.length;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @returns true if the queue is empty, false otherwise.
+               */
+              empty: function() {
+                return contents.length === 0;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @param object The object to be pushed onto the queue.
+               * @param priority The priority of the object.
+               */
+              push: function(object, priority) {
+                contents.push({object: object, priority: priority});
+                sorted = false;
+              },
+              clear: function(){
+                contents = [];
+              }
+            };
+        
+            return self;
+        }
+        var prioritySortLow = function(a, b) {
+          return b.priority - a.priority;
+        };
+
+        var prioritySortHigh = function(a, b) {
+          return a.priority - b.priority;
+        };
+        //AJAX Object
         var CXHRObject = function(){
             var xhrObj = false;
 
@@ -769,34 +892,168 @@ com.playstylelabs = (function(){
         var _KeyboardControlKeyEvents = new CMap();
         window.addEventListener("keydown", _InputEvents.Keyboard.Keydown, false);
         window.addEventListener("keyup", _InputEvents.Keyboard.Keyup, false);
+        //
+        //  EVENT Manager
+        //
+        var EventManager = function(){
+            
+        }
+        EventManager.prototype._nextID = 0;
+        EventManager.prototype.q = new CPriorityQueue({low: true});
+        EventManager.prototype.Clear = function(){
+            pInstance.Event.q.clear();
+        }
+        EventManager.prototype.Add = function(tag, delay, input, fn, scope){
+            var ev = new CEvent(pInstance.Event._nextID++, tag, delay, input, fn, scope);
+            pInstance.Event.q.push(ev, ev.deliveryTime)
+            
+        }
         
-        //var Animations = new CMap();
-        //var SpriteSheets = new CMap();
-        //var Sprites = new CMap();
+        EventManager.prototype.Update = function(dt){
+            //While q is not empty and top deliveryTime is >= currentTime
+            var currentTime = psl.Get.Time();
+            while(pInstance.Event.q.size() &&
+                  pInstance.Event.q.top().deliveryTime <= currentTime){
+                (pInstance.Event.q.pop()).Execute();
+            }
+        }
+        var CEvent = function(id, tag, delay, input, fn, scope){
+            this.id = id;
+            this.tag = tag;
+            this.delay = delay;
+            this.input = input;
+            this.exe = fn;
+            this.scope = scope;
+            
+            this.deliveryTime = psl.Get.Time() + delay;
+            
+            this.Execute = function(){
+                this.scope ? this.exe.apply(this.exe, [this]) : this.exe(this);
+            };//.bind(this);
+        }
         
         //
-        //  Sound API
+        //  AUDIO API
         //
-        var sounds = new CMap();
         
-        var CSound =  function(sKey){
-            var self = this;
-            this.key = sKey;
-            this.path = "";
-            this.loop = false;
-            this.autoplay = false;
-            this.type = "";
-            this.duration = "";
-            this.volume = "";
-            this.audio =  new CHTMLElement("audio");
+        var AudioManager = function(){}
+        AudioManager.prototype.map = new CMap();
+        //parameters = {
+        //    urls: ['sound.mp3', 'sound.ogg', 'sound.wav'],
+        //    autoplay: true,
+        //    loop: true,
+        //    volume: 0.5,
+        //    onend: function() {
+        //      alert('Finished!');
+        //    }
+        //}
+        AudioManager.prototype.Load = function(id, parameters){
+            var sound = new Howl(parameters);
+            pInstance.Audio.map.put(id, sound);
         }
-        CSound.prototype.Play = function(){
-            this.audio.html.play();
+        AudioManager.prototype.Play = function(id){
+            pInstance.Audio.map.get(id).play();
         }
-        CSound.prototype.Pause = function(){
-            this.audio.html.pause();
+        AudioManager.prototype.Pause = function(id){
+            pInstance.Audio.map.get(id).pause();
+        }
+        AudioManager.prototype.Stop = function(id){
+            pInstance.Audio.map.get(id).stop();
+        }
+        AudioManager.prototype.Volume = function(volume){
+            for(var i = 0; i < pInstance.Audio.map.size; i++, pInstance.Audio.map.next()){
+                pInstance.Audio.map.value().volume(volume);
+            }
         }
         
+        //
+        //  Memory Manager
+        //
+        var MemoryManager = function(){
+            
+        }
+        MemoryManager.prototype.getLocalStorage = function getLocalStorage(){
+            try {
+                if(window.localStorage) return window.localStorage;
+                else return undefined;
+            }
+            catch(e){
+                return undefined;
+            }
+        }
+        MemoryManager.prototype.getSessionStorage = function getSessionStorage(){
+            try {
+                if(window.sessionStorage) return window.sessionStorage;
+                else return undefined;
+            }
+            catch(e){
+                return undefined;
+            }
+        }
+        MemoryManager.prototype.localDB = MemoryManager.prototype.getLocalStorage();
+        MemoryManager.prototype.sessionDB = MemoryManager.prototype.getSessionStorage();
+        MemoryManager.prototype.Local = {
+            Add: function(key, value){
+                var data = {
+                    key: key,
+                    value: value
+                }
+                pInstance.Memory.localDB.setItem(key, JSON.stringify(data));
+            },
+            Update: function(key, value){
+                var data = {
+                    key: key,
+                    value: value
+                }
+                return pInstance.Memory.localDB.setItem(key, JSON.stringify(data));
+            },
+            Get: function(key){
+                try{
+                    return (JSON.parse(pInstance.Memory.localDB.getItem(key))).value;
+                }
+                catch(e){
+                    return null;
+                }
+               
+            },
+            Delete: function(key){
+                return pInstance.Memory.localDB.removeItem(key);
+            },
+            Clear: function(){
+                return pInstance.Memory.localDB.clear();
+            }
+        }
+        MemoryManager.prototype.Session = {
+            Add: function(key, value){
+                var data = {
+                    key: key,
+                    value: value
+                }
+                pInstance.Memory.sessionDB.setItem(key, JSON.stringify(data));
+            },
+            Update: function(key, value){
+                var data = {
+                    key: key,
+                    value: value
+                }
+                return pInstance.Memory.sessionDB.setItem(key, JSON.stringify(data));
+            },
+            Get: function(key){
+                try{
+                    return (JSON.parse(pInstance.Memory.sessionDB.getItem(key))).value;
+                }
+                catch(e){
+                    return null;
+                }
+               
+            },
+            Delete: function(key){
+                return pInstance.Memory.sessionDB.removeItem(key);
+            },
+            Clear: function(){
+                return pInstance.Memory.sessionDB.clear();
+            }
+        }
         
         //
         //  Base Entity
@@ -876,10 +1133,226 @@ com.playstylelabs = (function(){
         CEntity.prototype.AddGraphics = function(){
             pInstance.Graphics.Extend(this);
         }
+        CEntity.prototype.AddPhysics = function(){
+            pInstance.Physics.Extend(this);
+        }
+        CEntity.prototype.AddText = function(options){
+            pInstance.Font.Extend(this, options);
+        }
         CEntity.prototype.Update = function(dt){
             if(this.graphics){this.graphics.Update(dt)}
         }
         
+        
+        
+        //
+        //  Physcis
+        //
+        var PhysicsManager = function(){}
+        
+        PhysicsManager.prototype.world = (function(){
+            var worldAABB = new b2AABB();
+            worldAABB.minVertex.Set(-63, -832);
+            worldAABB.maxVertex.Set(1088, 832);
+            var gravity = new b2Vec2(0, 350);
+            var doSleep = true;
+            var world = new b2World(worldAABB, gravity, doSleep);
+            return world;
+        })();
+        PhysicsManager.prototype.map = new CMap();
+        PhysicsManager.prototype.Extend = function(oEntity){
+            oEntity.physics = new CPhysics(oEntity);
+            pInstance.Physics.map.put(oEntity.id, oEntity.physics);
+        }
+        PhysicsManager.prototype.Update = function(dt){
+            var timeStep = 1.0/60;
+            var iterations = 5;
+            
+            pInstance.Physics.world.Step(timeStep, iterations);
+            
+            for(var i = 0; i < pInstance.Physics.map.size; i++, pInstance.Physics.map.next()){
+                if(pInstance.Physics.map.value().body){
+                    pInstance.Physics.map.value().Update(dt);
+                }
+                
+            }
+        }
+         PhysicsManager.prototype.Draw = function(){
+            function drawWorld(world, context) {
+                for (var j = world.m_jointList; j; j = j.m_next) {
+                    drawJoint(j, context);
+                }
+                for (var b = world.m_bodyList; b; b = b.m_next) {
+                    for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
+                        drawShape(s, context);
+                    }
+                }
+            }
+            function drawJoint(joint, context) {
+                var b1 = joint.m_body1;
+                var b2 = joint.m_body2;
+                var x1 = b1.m_position;
+                var x2 = b2.m_position;
+                var p1 = joint.GetAnchor1();
+                var p2 = joint.GetAnchor2();
+                context.strokeStyle = '#00eeee';
+                context.beginPath();
+                switch (joint.m_type) {
+                case b2Joint.e_distanceJoint:
+                    context.moveTo(p1.x, p1.y);
+                    context.lineTo(p2.x, p2.y);
+                    break;
+             
+                case b2Joint.e_pulleyJoint:
+                    // TODO
+                    break;
+             
+                default:
+                    if (b1 == world.m_groundBody) {
+                        context.moveTo(p1.x, p1.y);
+                        context.lineTo(x2.x, x2.y);
+                    }
+                    else if (b2 == world.m_groundBody) {
+                        context.moveTo(p1.x, p1.y);
+                        context.lineTo(x1.x, x1.y);
+                    }
+                    else {
+                        context.moveTo(x1.x, x1.y);
+                        context.lineTo(p1.x, p1.y);
+                        context.lineTo(x2.x, x2.y);
+                        context.lineTo(p2.x, p2.y);
+                    }
+                    break;
+                }
+                context.stroke();
+            }
+            function drawShape(shape, context) {
+                context.strokeStyle = '#000000';
+                context.fillStyle = '#333333';
+                
+                switch (shape.m_type) {
+                case b2Shape.e_circleShape:
+                    {
+                        var circle = shape;
+                        var pos = circle.m_position;
+                        var r = circle.m_radius;
+                        var segments = 16.0;
+                        var theta = 0.0;
+                        var dtheta = 2.0 * Math.PI / segments;
+                        // draw circle
+                        context.moveTo(pos.x + r, pos.y);
+                        for (var i = 0; i < segments; i++) {
+                            var d = new b2Vec2(r * Math.cos(theta), r * Math.sin(theta));
+                            var v = b2Math.AddVV(pos, d);
+                            context.lineTo(v.x, v.y);
+                            theta += dtheta;
+                        }
+                        context.lineTo(pos.x + r, pos.y);
+                        
+                        // draw radius
+                        context.moveTo(pos.x, pos.y);
+                        var ax = circle.m_R.col1;
+                        var pos2 = new b2Vec2(pos.x + r * ax.x, pos.y + r * ax.y);
+                        context.lineTo(pos2.x, pos2.y);
+                        context.stroke();
+                        context.fill();
+                    }
+                    break;
+                case b2Shape.e_polyShape:
+                    {
+                        context.beginPath();
+                        var poly = shape;
+                        var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
+                        context.moveTo(tV.x, tV.y);
+                        for (var i = 0; i < poly.m_vertexCount; i++) {
+                            var v = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
+                            context.lineTo(v.x, v.y);
+                        }
+                        context.lineTo(tV.x, tV.y);
+                        context.stroke();
+                        context.fill();
+                    }
+                    break;
+                }
+                
+            }
+            
+            drawWorld(this.world, pInstance.Entity.ctx);
+        }
+        var CPhysics = function(oEntity){
+            var self = this;
+            this.shape = null;
+            this.body = null;
+            this.parent = oEntity;
+            this.canvas = null;
+            this.container = null;
+            this.world = pInstance.Physics.world;
+            
+            return this;
+        }
+        CPhysics.prototype.circleDef = new b2CircleDef();
+        CPhysics.prototype.boxDef = new b2BoxDef();
+        CPhysics.prototype.bodyDef = new b2BodyDef();
+        CPhysics.prototype.MakeCircle = function(radius){
+            this.circleDef.density = 1.0;
+            this.circleDef.radius = radius;
+            this.circleDef.restitution = 0.7;
+            this.circleDef.friction = 0.5;
+            this.circleDef.userData = this;
+            
+            this.bodyDef.shapes = [];
+            this.bodyDef.AddShape(this.circleDef);
+            this.bodyDef.position.Set(this.parent.position[0],this.parent.position[1]);
+            this.bodyDef.userData = this;
+            
+            this.body = this.world.CreateBody(this.bodyDef);
+            this.shape = this.body.GetShapeList();
+        }
+        CPhysics.prototype.MakeBox = function(halfWidth, halfHeight, fixed){
+            if (typeof(fixed) == 'undefined')
+                fixed = false;
+            if (!fixed){
+                this.boxDef.density = 1.0;
+            }
+            else{
+                this.boxDef.density = null;
+            }
+            this.boxDef.extents.Set(halfWidth, halfHeight);
+            this.boxDef.userData = this;
+            
+            this.bodyDef.shapes = [];
+            this.bodyDef.AddShape(this.boxDef);
+            this.bodyDef.position.Set(this.parent.position[0],this.parent.position[1]);
+            this.bodyDef.userData = this;
+            
+            this.body = this.world.CreateBody(this.bodyDef);
+            this.shape = this.body.GetShapeList();
+        }
+        CPhysics.prototype.Update = function(dt){
+            // Set the position and rotation of the graphics object to be
+            //  equal to the phyiscs object
+            var tempPos = this.body.GetCenterPosition();
+            this.parent.position[0] = tempPos.x;
+            this.parent.position[1] = tempPos.y;
+            
+            var tempRot = this.body.GetRotation();
+            this.parent.rotation[0] = tempRot;
+        }
+        CPhysics.prototype.GetPosition = function(){
+            return this.body.GetCenterPosition();
+        }
+        CPhysics.prototype.GetRotation = function(){
+            return this.body.GetRotation();
+        }
+        CPhysics.prototype.GetContactList = function(){
+            return this.body.GetContactList();
+        }
+        CPhysics.prototype.GetRadius = function(){
+            return this.shape.GetMaxRadius();
+        }
+        CPhysics.prototype.GetHalfExtents = function(){
+            // Need to find where the half extents are stored
+        }
         
         //
         //  Graphics 
@@ -912,18 +1385,21 @@ com.playstylelabs = (function(){
         }
         GraphicsManager.prototype.Extend = function(oEntity){
             oEntity.graphics = new CGraphics(oEntity);
+            pInstance.Graphics.map.put(oEntity.id, oEntity.graphics);
         }
         GraphicsManager.prototype.Update = function(dt){
-            for(var i = 0; i < pInstance.Entity.map.size; i++, pInstance.Entity.map.next()){
-                pInstance.Entity.map.value().graphics.Update(dt);
+            for(var i = 0; i < pInstance.Graphics.map.size; i++, pInstance.Graphics.map.next()){
+                if(pInstance.Graphics.map.value().Animation.currentAnimation)
+                    pInstance.Graphics.map.value().Update(dt);
             }
         }
         GraphicsManager.prototype.Draw = function(){
             pInstance.Entity.ctx.drawImage(pInstance.Entity.background.html, 0, 0);
             
             if(pInstance.Entity.useCanvas){
-                for(var i = 0; i < pInstance.Entity.map.size; i++, pInstance.Entity.map.next()){
-                    pInstance.Entity.map.value().graphics.Draw();
+                for(var i = 0; i < pInstance.Graphics.map.size; i++, pInstance.Graphics.map.next()){
+                    if(pInstance.Graphics.map.value().Animation.currentAnimation)
+                        pInstance.Graphics.map.value().Draw();
                 }
                 
             }
@@ -1098,8 +1574,17 @@ com.playstylelabs = (function(){
             this.matrix[2] = -sin * Sy;
             this.matrix[3] =  cos * Sy;
             
-            this.matrix[4] = -1 * Sx * cos * halfWidth + Sy * sin * halfHeight + (this.parent.position[0] + halfWidth * Sx);
-            this.matrix[5] = -1 * Sx * sin * halfWidth - Sy * cos * halfHeight + (this.parent.position[1] + halfHeight * Sy);
+            //this.matrix[4] = -1 * Sx * cos * this.parent.positionhalfWidth + Sy * sin * halfHeight + (this.parent.position[0] + halfWidth);
+            //this.matrix[5] = -1 * Sx * sin * halfWidth - Sy * cos * halfHeight + (this.parent.position[1] + halfHeight);
+            
+            //this.matrix[4] = Sx * cos * (this.parent.position[0] + halfWidth) - Sx * sin * (this.parent.position[1] + halfHeight) - halfWidth;
+            //this.matrix[5] = Sy * sin * (this.parent.position[0] + halfWidth) + Sy * cos * (this.parent.position[1] + halfHeight) - halfHeight;
+            
+            this.matrix[4] = -1 * Sx * cos * halfWidth + Sy * sin * halfHeight + (this.parent.position[0] );
+            this.matrix[5] = -1 * Sx * sin * halfWidth - Sy * cos * halfHeight + (this.parent.position[1] );
+            
+            //this.matrix[4] = -1 * Sx * cos * halfWidth + Sy * sin * halfHeight + (this.parent.position[0] + halfWidth * Sx);
+            //this.matrix[5] = -1 * Sx * sin * halfWidth - Sy * cos * halfHeight + (this.parent.position[1] + halfHeight * Sy);
 
         }
         CGraphics.prototype.DrawHTML = function(){
@@ -1375,12 +1860,191 @@ com.playstylelabs = (function(){
              
             pInstance.Animation.animations.put(this.name, this);
         }
-
+        
+        
+        //
+        //  Font Manager
+        //
+        var FontManager = function(){}
+        FontManager.prototype.map = new CMap();
+        FontManager.prototype.Extend = function(oEntity, options){
+            oEntity.font = new CFont(oEntity, options);
+            pInstance.Font.map.put(oEntity.id, oEntity.font);
+        }
+        FontManager.prototype.Draw = function(){
+            for(var i = 0; i < pInstance.Font.map.size; i++, pInstance.Font.map.next()){
+                pInstance.Font.map.value().Draw();
+            }
+        }
+        FontManager.prototype.Write = function(sText, x, y, font){
+            //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
+            var ent = pInstance.Entity.Create({position:[x,y,0]});
+            ent.AddText(font);
+            ent.font.text = sText || font.text || "No Text";
+            return ent.font;
+        }
+        FontManager.prototype.Remove = function(id){
+            pInstance.Font.map.remove(id);
+        }
+        
+        var CFont = function(oEntity, options){
+            var self = this;
+            this.canvas         = pInstance.Entity.canvas;
+            this.context        = pInstance.Entity.ctx;
+            this.parent         = oEntity;
+            
+            this.text           = options.text || "Hello World!";
+            this.fontStyle      = options.fontStyle || "normal";
+            this.fontVariant    = options.fontVariant || "normal";
+            this.fontWeight     = options.fontWeight || "normal";
+            this.fontFamily     = options.fontFamily || "Courier";
+            this.size           = options.size || "24px";
+            this.alignment      = options.alignment || "start";
+            this.baseline       = options.baseline || "alphabetic";
+            this.fontColor      = options.fontColor || "#000000";
+            this.strokeColor    = options.strokeColor || "#000000";
+            this.drawFill       = options.drawFill || true;
+            this.drawStroke     = options.drawStroke || false;
+            this.offset         = options.offset || [0,0,0];
+            
+            return this;
+        }
+        CFont.prototype.SetText = function(text){
+            this.text = text;
+        }
+        CFont.prototype.SetFontStyle = function(fontStyle){
+            this.fontStyle = fontStyle;
+        }
+        CFont.prototype.SetFontVariant = function(fontVariant){
+            this.fontVariant = fontVariant;
+        }
+        CFont.prototype.SetFontWeight = function(fontWeight){
+            this.fontWeight = fontWeight;
+        }
+        CFont.prototype.SetFontFamily = function(fontFamily){
+            this.fontFamily = fontFamily;
+        }
+        CFont.prototype.SetSize = function(size){
+            this.size = size;
+        }
+        CFont.prototype.SetAlignment = function(alignment){
+            this.alignment = alignment;
+        }
+        CFont.prototype.SetBaseline = function(baseline){
+            this.baseline = baseline;
+        }
+        CFont.prototype.SetColor = function(color){
+            this.fontColor = color;
+        }
+        CFont.prototype.SetStrokeColor = function(color){
+            this.strokeColor = color;
+        }
+        CFont.prototype.SetFillVisible = function(visible){
+            this.drawFill = visible;
+        }
+        CFont.prototype.SetStrokeVisible = function(visible){
+            this.drawStroke = visible;
+        }
+        CFont.prototype.SetOffset = function(offset){
+            this.offset = offset;
+        }
+        CFont.prototype.Draw = function(){
+            this.context.font = this.fontStyle + " " + this.fontVariant + " " + this.fontWeight + " " + this.size + " " + this.fontFamily;
+            this.context.textAlign = this.alignment;
+            this.context.textBaseline = this.baseline;
+            if (this.drawFill) {
+                this.context.fillStyle = this.fontColor;
+                this.context.fillText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
+            }
+            if (this.drawStroke) {
+                this.context.strokeStyle = this.strokeColor;
+                this.context.strokeText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
+            }
+        }
+        CFont.prototype.Delete = function(){
+            pInstance.Font.Remove(this.parent.id);
+            this.parent.font = null;
+        }
+        //
+        //  TWEEN
+        //
+        var TweenManager = function(){
+            var nextID = 0;
+            this.Create = function(start, stop, time, fn, onEnd){
+                tw = new CTween(nextID++, start, stop, time, fn, onEnd);
+                pInstance.Tween.map.put(tw.id, tw);
+                return tw;
+            }
+        }
+        TweenManager.prototype.map = new CMap();
+        TweenManager.prototype.Remove = function(id){
+            pInstance.Tween.map.remove(id)
+        }
+        TweenManager.prototype.Update = function(dt){
+            for(var i = pInstance.Tween.map.size; i; i--){
+                    //Update return active, if false, remove item from map
+                if(!pInstance.Tween.map.value().Update(dt)){
+                    //Removed object, decrement i since size is smaller
+                    pInstance.Tween.Remove(this.id);
+                    i--;
+                    //Only increment map if size is still > 0
+                    if(i > 0 ){pInstance.Tween.map.next()}
+                }
+                else{
+                    pInstance.Tween.map.next();
+                }
+                
+            }
+        }
+        
+        var CTween = function(id, start, stop, time, fn, onEnd){
+            this.id = id;
+            this.active = true;
+            this.fn = fn;
+            this.start = start;
+            this.stop = stop;
+            this.totalTime = time;
+            this.velocity = (stop - start) / time;
+            //this.totalSteps = ((start - stop) / step)|0;
+            this.count = 0;
+            this.timeElapsed = 0;
+            this.value = start;
+            this.callback = onEnd || function(){}
+            
+        }
+        CTween.prototype.Update = function(dt){
+            
+            this.timeElapsed += dt;
+            this.value = this.start + this.velocity * this.timeElapsed;
+            
+            if(this.value >= this.stop){
+                this.value = this.stop;
+                this.active = false;
+                this.fn(this.value);
+                this.callback(this);
+            }
+            else{
+                this.fn(this.value);
+                
+            }
+            
+            return this.active;
+            
+        }
+        CTween.prototype.Draw = function(){
+            
+        }
         //PUBLIC OBJECTS/METHODS
         return{
             Entity: new EntityManager(),
             Graphics: new GraphicsManager(),
             Animation: new AnimationManager(),
+            Physics: new PhysicsManager(),
+            Audio: new AudioManager(),
+            Font: new FontManager(),
+            Memory: new MemoryManager(),
+            Tween: new TweenManager(),
+            Event: new EventManager(),
             Get: {
                 Sprite: function(sName){
                     return Sprites.get(sName);
@@ -1442,12 +2106,12 @@ com.playstylelabs = (function(){
                 },
                 SpriteSheet: function(sName){
                     var sheet = new CSpriteSheet(sName);
-                    pInstance.spritesheets.put(sName, sheet);
+                    pInstance.Animation.spritesheets.put(sName, sheet);
                     
                     return sheet;   
                 },
-                Animation: function(sName,iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed){
-                    var ani = new CAnimation(sName,iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
+                Animation: function(sName,options){//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed){
+                    var ani = new CAnimation(sName, options);//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
                     pInstance.Animation.animations.put(sName, ani);
                     
                     return ani;
@@ -1643,122 +2307,7 @@ com.playstylelabs = (function(){
                     }
                 }
             },
-            Audio: {
-                Add: function(sKey, sPath, bLoop, bAutoplay, sType){       
-                    var snd = new CSound(sKey);
-                    snd.loop = bLoop;
-                    snd.autoplay = bAutoplay;
-                    
-                    if(sType){
-                        snd.type = sType;
-                        snd.path = sPath;
-                        var source = document.createElement('source');
-                        if(sType.toUpperCase() == "MP3"){
-                            
-                            if (snd.audio.html.canPlayType('audio/mpeg;')) {
-                                source.type= 'audio/mpeg';
-                                source.src= sPath;
-                                snd.audio.html.setAttribute('preload', 'auto');
-                                
-                                if(bLoop){snd.audio.html.setAttribute('loop', bLoop);}
-                                if(bAutoplay){snd.audio.html.setAttribute('autoplay', bAutoplay);}
-                                
-                                snd.audio.html.appendChild(source);
-                                
-                                sounds.put(sKey, snd);
-                            }
-                            else{
-                                //os.windows.Create.ErrorWindow(" Audio", "Audio File: " +  sKey + " not loaded <br/>Audio File Type: " + sType + " is not supported by browser")
-                            }
-                            
-                        }
-                        else if(sType.toUpperCase == "OGG"){
-                            
-                            if(snd.audio.html.canPlayType('audio/ogg;')) {
-                                source.type= 'audio/ogg';
-                                source.src= sPath;
-                                snd.audio.html.setAttribute('preload', 'auto');
-                                
-                                if(loop){snd.audio.html.setAttribute('loop', bLoop);}
-                                if(autoplay){snd.audio.html.setAttribute('autoplay', bAutoplay);}
-                                
-                                snd.audio.html.appendChild(source);
-                                
-                                sounds.put(sKey, snd);
-                            }
-                            else{
-                                //os.windows.Create.ErrorWindow(" Audio", "Audio File: " +  sKey + " not loaded <br/>Audio File Type: " + sType + " is not supported by browser")
-                            }
-                        }
-                    }
-                    else{
-                        snd.type = sType;
-                        snd.path = sPath;
-                        var source = document.createElement('source');
-                        
-                        if (snd.audio.html.canPlayType('audio/mpeg;')) {
-                            source.type= 'audio/mpeg';
-                            source.src= sPath + ".mp3";
-                            snd.audio.html.setAttribute('preload', 'auto');
-                            
-                            if(bLoop){snd.audio.html.setAttribute('loop', bLoop);}
-                            if(bAutoplay){snd.audio.html.setAttribute('autoplay', bAutoplay);}
-                            
-                            snd.audio.html.appendChild(source);
-                            
-                            sounds.put(sKey, snd);
-                        }
-                        else if(snd.audio.html.canPlayType('audio/ogg;')) {
-                            source.type= 'audio/ogg';
-                            source.src= sPath + ".ogg";
-                            snd.audio.html.setAttribute('preload', 'auto');
-                            
-                            if(bLoop){snd.audio.html.setAttribute('loop', bLoop);}
-                            if(bAutoplay){snd.audio.html.setAttribute('autoplay', bAutoplay);}
-                            
-                            snd.audio.html.appendChild(source);
-                            
-                            sounds.put(sKey, snd);
-                        }
-                        
-                    }
-                    
-                    snd.duration = snd.audio.html.duration;
-                    snd.volume = snd.audio.html.volume;
-                    
-                    return snd;
-                    
-                },
-                Get: {
-                    Volume: function(sKey){
-                        return sounds.get(sKey).volume;
-                    },
-                    Sound: function(sKey){
-                        return sounds.get(sKey);
-                    },
-                    Duration: function(sKey){
-                        return sounds.get(sKey).audio.html().duration;
-                    }
-                    
-                },
-                Set: {
-                    Volume: function(sKey, vol){
-                        var snd = sounds.get(sKey);
-                        snd.audio.html.volume = vol;
-                        snd.volume = vol;
-                    },
-                    CurrentTime: function(sKey, time){
-                        var snd = sounds.get(sKey);
-                        snd.audio.html.currentTime = time;
-                    }
-                },
-                Play: function(sKey){
-                    sounds.get(sKey).audio.html().play();
-                },
-                Pause: function(sKey){
-                    sounds.get(sKey).audio.html().pause();
-                }
-            },
+            
             Modules:{
                 
             },
