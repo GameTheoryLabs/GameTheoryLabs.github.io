@@ -497,135 +497,25 @@ com.playstylelabs = (function(){
                 return string;
         };
         
+        
         //
-        //  OLD SYSTEM
+        //  Artificial Intelligence
         //
-        var CSprite = function(sName){
-            var self = this;
-            this.name = sName;
-            this.graphic = pInstance.Create.HTML("div");
-            this.graphic.html.id = sName;
-            this.graphic.html.style.position = "absolute";
-            this.Position ={
-                x: 0,
-                y: 0,
-                z: 0
-            }
-            this.Rotation ={
-                x: 0,
-                y: 0,
-                z: 0
-            }
-            this.Move = {
-                Up: function(iDist){
-                    self.Position.y -= iDist;
-                    self.graphic.html.style.top = (self.Position.y).toFixed(0) + "px";
-                },
-                Down: function(iDist){
-                    self.Position.y += iDist;
-                    self.graphic.html.style.top = (self.Position.y).toFixed(0) + "px";
-                },
-                Left: function(iDist){
-                    self.Position.x -= iDist;
-                    self.graphic.html.style.left = (self.Position.x).toFixed(0) + "px";
-                },
-                Right: function(iDist){
-                    self.Position.x += iDist;
-                    self.graphic.html.style.left = (self.Position.x).toFixed(0) + "px";
-                },
-                ToPosition: function(iX, iY){
-                    self.Position.x = iX;
-                    self.Position.y = iY;
-                    
-                    if(self.graphic.html.style.webkitTransform != undefined)
-                        self.graphic.html.style.webkitTransform = "translate("+ (self.Position.x).toFixed(0) +"px,"+ (self.Position.y).toFixed(0) +"px)";
-                    else
-                        self.graphic.html.style.MozTransform = "translate("+ (self.Position.x).toFixed(0) +"px,"+ (self.Position.y).toFixed(0) +"px)";
-                    //self.graphic.html.style.left = (self.Position.x).toFixed(0) + "px";
-                    //self.graphic.html.style.top  = (self.Position.y).toFixed(0) + "px";
+        var AIManager = {
+            FSM: {
+                Create: function(oEntity){
+                    return new CFiniteStateMachine(oEntity);
                 }
-            }
-            
-            this.Rotate = function(deg){
-                self.graphic.html.style.webkitTransform = "rotate("+ deg +"deg)";
-            }
-            
-            this.Spin = {
-                X: function(deg){
-                    
-                },
-                Y: function(deg){
-                    
-                }
-            }
-            
-            
-            this.Animation = {
-                list: pInstance.Create.Map(),
-                Current: {
-                    animation: null,
-                    frames: 0,
-                    index: 0
-                },
-                loop: false,
-                lastUpdate: 0,
-                NextFrame: function(){//Transtion to next animation frame
-                    self.Animation.lastUpdate = pInstance.Get.Time();
-                    
-                    self.Animation.Current.index = self.Animation.Current.index == self.Animation.Current.animation.numOfFrames - 1 ? 0  : self.Animation.Current.index + 1;
-                    self.Animation.Current.frame = self.Animation.Current.animation.frames[self.Animation.Current.index];
-
-                    self.graphic.html.style.backgroundPosition = -self.Animation.Current.frame.x + "px " + -self.Animation.Current.frame.y + "px";
-                },
-                Update: function(){   //Transition to Next Frame, if ready
-                    
-                },
-                Start: function(){    //Auto Animate
-                    
-                },
-                Pause: function(){    //Pause Animation 
-                    
-                },
-                Reset: function(){    //Reset Animation to First Frame
-                    self.Animation.lastUpdate = new Date().getDate();
-                
-                    self.Animation.Current.index = 0;
-                    self.Animation.Current.frame = self.Animation.Current.animation.frames[0];
-                },
-                Load: function(oAnimation){     //Load New Animation into Sprite Object
-                    self.Animation.list.put(oAnimation.name, oAnimation);
-                },
-                SetActive: function(sName){//Set Animation
-                    //Remove Current Animation Class
-                    if(self.Animation.Current.animation)
-                        self.graphic.RemoveClass(self.Animation.Current.animation.sheet.GetClass());
-                    
-                    //Set new animation object
-                    self.Animation.Current.animation = self.Animation.list.get(sName);
-                    
-                    //Add animation class to html
-                    self.graphic.RemoveAllClasses();
-                    self.graphic.AppendClass(self.Animation.Current.animation.sheet.GetClass());
-                    
-                    //Update frame on graphic
-                    self.Animation.SetFrame(0);
-                },
-                SetFrame: function(iFrameNumber){ //Set To Specific Frame in Current Animation
-                    self.Animation.lastUpdate = new Date().getDate();
-                
-                    self.Animation.Current.index = iFrameNumber;
-                    self.Animation.Current.frame = self.Animation.Current.animation.frames[iFrameNumber];
-
-                    self.graphic.html.style.backgroundPosition = -self.Animation.Current.frame.x + "px " + -self.Animation.Current.frame.y + "px";
+            },
+            State: {
+                Create: function(sName){
+                    var state = new CState(sName);
+                    _States.put(sName, state);
+                    return state;
                 }
                 
             }
         }
-      
-        //
-        //  Artificial Intelligence
-        //
-        
         //  Finite State Machine
         var CFiniteStateMachine = function(cEntity){
             var owner = cEntity;
@@ -665,37 +555,245 @@ com.playstylelabs = (function(){
                 return _CurrentState.GetName();
             }
         }
+        //
+        //Holds all states created
+        // key: name, value: CState
+        var _States = new CMap();
         
         // States for FSM
         var CState = function(sName){
-            var _name = sName;
+            var _name = sName || "default";
             var self = this;
-            
-            this.Enter = function(cEntity, oMessage){
-                //Override this Method
-            }
-            
-            this.Exit = function(cEntity, oMessage){
-                //Override this Method
-            }
-            
-            this.Execute = function(cEntity, oMessage){
-                //Override this Method
-            }
-            
+
             this.GetName = function(){
                 return _name;
             }
 
         }
-        //Holds all states created
-        // key: name, value: CState
-        var _States = new CMap();
+        CState.prototype.Enter = function(cEntity, oMessage){
+            //Override this Method
+        }
+        
+        CState.prototype.Exit = function(cEntity, oMessage){
+            //Override this Method
+        }
+        
+        CState.prototype.Execute = function(cEntity, oMessage){
+            //Override this Method
+        }
+        
         
         
         //
         //  INPUT
         //
+        var InputManager = {
+            currentTime: 0,
+            previousTime: 0,
+            Get: {
+                State: {
+                    Mouse: function(){
+                        return _Mouse;
+                    },
+                    Touch: function(){
+                        return _Touch;
+                    },
+                    Keyboard: function(keyCode){
+                        return _KeyboardStates.get(keyCode);
+                    }
+                }
+            },
+            Register: {
+                Mouse: {
+                    Event: {
+                        Down: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _MouseEvents.get("DOWN").push(e);
+                            return e;
+                        },
+                        Up: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _MouseEvents.get("UP").push(e);
+                            return e;
+                        },
+                        Move: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _MouseEvents.get("MOVE").push(e);
+                            return e;
+                        }
+                    },
+                    State: {
+                        
+                    }
+                },
+                Touch: {
+                    Event: {
+                        Start: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _TouchEvents.get("START").push(e);
+                            return e;
+                        },
+                        End: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _TouchEvents.get("END").push(e);
+                            return e;
+                        },
+                        Move: function(fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            _TouchEvents.get("MOVE").push(e);
+                            return e;
+                        }
+                    },
+                    State: {
+                        
+                    }
+                },
+                Keyboard: {
+                    Event: {
+                        Keydown: function(Key, fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            var eventArray;
+                            
+                            if(isNaN(Key)){
+                                eventArray = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            else{
+                                eventArray = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            
+                            
+                            if(!eventArray){
+                                eventArray = [];
+                                if(isNaN(Key)){ _KeyDownEvents.put(Key, eventArray);}
+                                else{_KeyboardControlKeyEvents.put(Key, eventArray);}
+                                
+                            }
+                            eventArray.push(e);
+                            return e;
+                        },
+                        Keyup: function(Key, fFunction, oScope){
+                            var e = new CCallback(_eventID++, fFunction, oScope);
+                            var eventArray;
+                            
+                            if(isNaN(Key)){
+                                eventArray = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            else{
+                                eventArray = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            
+                            
+                            if(!eventArray){
+                                eventArray = [];
+                                if(isNaN(Key)){ _KeyUpEvents.put(Key, eventArray);}
+                                else{_KeyboardControlKeyEvents.put(Key, eventArray);}
+                                
+                            }
+                            eventArray.push(e);
+                            return e;
+                            
+                        }
+                    },
+                    State: {
+                        
+                    }
+                }
+            },
+            Remove: {
+                Mouse: {
+                    Event: {
+                        Down: function(id){
+                            var ev = _MouseEvents.get("DOWN");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        },
+                        Up: function(id){
+                            var ev = _MouseEvents.get("UP");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        },
+                        Move: function(id){
+                            var ev = _MouseEvents.get("MOVE");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        }
+                    }
+                },
+                Touch: {
+                    Event: {
+                        Start: function(){
+                            var ev = _TouchEvents.get("START");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        },
+                        End: function(iID){
+                            var ev = _TouchEvents.get("END");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        },
+                        Move: function(){
+                            var ev = _TouchEvents.get("MOVE");
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        }
+                    }
+                },
+                Keyboard: {
+                    Event: {
+                        Keydown: function(Key, iID){
+                            var ev;
+                            
+                            if(isNaN(Key)){
+                                ev =  _KeyDownEvents.get(Key);
+                            }
+                            else{
+                                ev = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        },
+                        Keyup: function(Key, iID){
+                            var ev;
+                            
+                            if(isNaN(Key)){
+                                ev =  _KeyUpEvents.get(Key);
+                            }
+                            else{
+                                ev = _KeyboardControlKeyEvents.get(Key);
+                            }
+                            for(var i = ev.length - 1; i >= 0; i--){
+                                if(ev[i].id == iID){
+                                    ev.splice(i,1);
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
         var _eventID = 0;
         
         var _InputEvents = {
@@ -895,28 +993,26 @@ com.playstylelabs = (function(){
         //
         //  EVENT Manager
         //
-        var EventManager = function(){
-            
-        }
-        EventManager.prototype._nextID = 0;
-        EventManager.prototype.q = new CPriorityQueue({low: true});
-        EventManager.prototype.Clear = function(){
-            pInstance.Event.q.clear();
-        }
-        EventManager.prototype.Add = function(tag, delay, input, fn, scope){
-            var ev = new CEvent(pInstance.Event._nextID++, tag, delay, input, fn, scope);
-            pInstance.Event.q.push(ev, ev.deliveryTime)
-            
-        }
-        
-        EventManager.prototype.Update = function(dt){
-            //While q is not empty and top deliveryTime is >= currentTime
-            var currentTime = psl.Get.Time();
-            while(pInstance.Event.q.size() &&
-                  pInstance.Event.q.top().deliveryTime <= currentTime){
-                (pInstance.Event.q.pop()).Execute();
+        var EventManager = {
+            q: new CPriorityQueue({low: true}),
+            Clear: function(){
+                EventManager.q.clear();
+            },
+            Add: function(tag, delay, input, fn, scope){
+                var ev = new CEvent(_nextEventID++, tag, delay, input, fn, scope);
+                EventManager.q.push(ev, ev.deliveryTime)
+                
+            },
+            Update: function(dt){
+                //While q is not empty and top deliveryTime is >= currentTime
+                var currentTime = psl.Get.Time();
+                while(EventManager.q.size() &&
+                      EventManager.q.top().deliveryTime <= currentTime){
+                    (EventManager.q.pop()).Execute();
+                }
             }
         }
+        var _nextEventID = 0;
         var CEvent = function(id, tag, delay, input, fn, scope){
             this.id = id;
             this.tag = tag;
@@ -925,7 +1021,7 @@ com.playstylelabs = (function(){
             this.exe = fn;
             this.scope = scope;
             
-            this.deliveryTime = psl.Get.Time() + delay;
+            this.deliveryTime = Date.now() + delay;
             
             this.Execute = function(){
                 this.scope ? this.exe.apply(this.exe, [this]) : this.exe(this);
@@ -936,43 +1032,41 @@ com.playstylelabs = (function(){
         //  AUDIO API
         //
         
-        var AudioManager = function(){}
-        AudioManager.prototype.map = new CMap();
-        //parameters = {
-        //    urls: ['sound.mp3', 'sound.ogg', 'sound.wav'],
-        //    autoplay: true,
-        //    loop: true,
-        //    volume: 0.5,
-        //    onend: function() {
-        //      alert('Finished!');
-        //    }
-        //}
-        AudioManager.prototype.Load = function(id, parameters){
-            var sound = new Howl(parameters);
-            pInstance.Audio.map.put(id, sound);
-        }
-        AudioManager.prototype.Play = function(id){
-            pInstance.Audio.map.get(id).play();
-        }
-        AudioManager.prototype.Pause = function(id){
-            pInstance.Audio.map.get(id).pause();
-        }
-        AudioManager.prototype.Stop = function(id){
-            pInstance.Audio.map.get(id).stop();
-        }
-        AudioManager.prototype.Volume = function(volume){
-            for(var i = 0; i < pInstance.Audio.map.size; i++, pInstance.Audio.map.next()){
-                pInstance.Audio.map.value().volume(volume);
+        var AudioManager = {
+            map: new CMap(),
+            //parameters = 
+            //    urls: ['sound.mp3', 'sound.ogg', 'sound.wav'],
+            //    autoplay: true,
+            //    loop: true,
+            //    volume: 0.5,
+            //    onend: function() {
+            //      alert('Finished!');
+            //    }
+            //
+            Load: function(id, parameters){
+                var sound = new Howl(parameters);
+                AudioManager.map.put(id, sound);
+            },
+            Play: function(id){
+                AudioManager.map.get(id).play();
+            },
+            Pause: function(id){
+                AudioManager.map.get(id).pause();
+            },
+            Stop: function(id){
+                AudioManager.map.get(id).stop();
+            },
+            Volume: function(volume){
+                for(var i = 0; i < AudioManager.map.size; i++, AudioManager.map.next()){
+                    AudioManager.map.value().volume(volume);
+                }
             }
         }
-        
+
         //
         //  Memory Manager
         //
-        var MemoryManager = function(){
-            
-        }
-        MemoryManager.prototype.getLocalStorage = function getLocalStorage(){
+        var getLocalStorage = function(){
             try {
                 if(window.localStorage) return window.localStorage;
                 else return undefined;
@@ -981,7 +1075,7 @@ com.playstylelabs = (function(){
                 return undefined;
             }
         }
-        MemoryManager.prototype.getSessionStorage = function getSessionStorage(){
+        var getSessionStorage = function(){
             try {
                 if(window.sessionStorage) return window.sessionStorage;
                 else return undefined;
@@ -990,123 +1084,123 @@ com.playstylelabs = (function(){
                 return undefined;
             }
         }
-        MemoryManager.prototype.localDB = MemoryManager.prototype.getLocalStorage();
-        MemoryManager.prototype.sessionDB = MemoryManager.prototype.getSessionStorage();
-        MemoryManager.prototype.Local = {
-            Add: function(key, value){
-                var data = {
-                    key: key,
-                    value: value
+        var MemoryManager = {
+            
+            localDB: getLocalStorage(),
+            sessionDB: getSessionStorage(),
+            Local: {
+                Add: function(key, value){
+                    var data = {
+                        key: key,
+                        value: value
+                    }
+                    MemoryManager.localDB.setItem(key, JSON.stringify(data));
+                },
+                Update: function(key, value){
+                    var data = {
+                        key: key,
+                        value: value
+                    }
+                    return MemoryManager.localDB.setItem(key, JSON.stringify(data));
+                },
+                Get: function(key){
+                    try{
+                        return (JSON.parse(MemoryManager.localDB.getItem(key))).value;
+                    }
+                    catch(e){
+                        return null;
+                    }
+                   
+                },
+                Delete: function(key){
+                    return MemoryManager.localDB.removeItem(key);
+                },
+                Clear: function(){
+                    return MemoryManager.localDB.clear();
                 }
-                pInstance.Memory.localDB.setItem(key, JSON.stringify(data));
             },
-            Update: function(key, value){
-                var data = {
-                    key: key,
-                    value: value
+            Session: {
+                Add: function(key, value){
+                    var data = {
+                        key: key,
+                        value: value
+                    }
+                    MemoryManager.sessionDB.setItem(key, JSON.stringify(data));
+                },
+                Update: function(key, value){
+                    var data = {
+                        key: key,
+                        value: value
+                    }
+                    return MemoryManager.sessionDB.setItem(key, JSON.stringify(data));
+                },
+                Get: function(key){
+                    try{
+                        return (JSON.parse(MemoryManager.sessionDB.getItem(key))).value;
+                    }
+                    catch(e){
+                        return null;
+                    }
+                   
+                },
+                Delete: function(key){
+                    return MemoryManager.sessionDB.removeItem(key);
+                },
+                Clear: function(){
+                    return MemoryManager.sessionDB.clear();
                 }
-                return pInstance.Memory.localDB.setItem(key, JSON.stringify(data));
-            },
-            Get: function(key){
-                try{
-                    return (JSON.parse(pInstance.Memory.localDB.getItem(key))).value;
-                }
-                catch(e){
-                    return null;
-                }
-               
-            },
-            Delete: function(key){
-                return pInstance.Memory.localDB.removeItem(key);
-            },
-            Clear: function(){
-                return pInstance.Memory.localDB.clear();
             }
         }
-        MemoryManager.prototype.Session = {
-            Add: function(key, value){
-                var data = {
-                    key: key,
-                    value: value
-                }
-                pInstance.Memory.sessionDB.setItem(key, JSON.stringify(data));
-            },
-            Update: function(key, value){
-                var data = {
-                    key: key,
-                    value: value
-                }
-                return pInstance.Memory.sessionDB.setItem(key, JSON.stringify(data));
-            },
-            Get: function(key){
-                try{
-                    return (JSON.parse(pInstance.Memory.sessionDB.getItem(key))).value;
-                }
-                catch(e){
-                    return null;
-                }
-               
-            },
-            Delete: function(key){
-                return pInstance.Memory.sessionDB.removeItem(key);
-            },
-            Clear: function(){
-                return pInstance.Memory.sessionDB.clear();
-            }
-        }
+        
         
         //
         //  Base Entity
         //
-            
-        var EntityManager = function(){
-            var nextID = 0;
-            this.useCanvas = false;
-            this.canvas = null;
-            this.ctx = null;
-            this.container = null;
-            this.background = null;
-            this.NextID = function(){return nextID++;}
-            
-            
-                    //options: {useCanvas: true, canvas: html element, background: img}
-            this.Initialize = function(options){
-                this.useCanvas = options.useCanvas;
-                this.canvas = options.canvas;
-                this.canvas.className = "background";
-                this.ctx = this.canvas.getContext('2d');
-                this.background = options.background || null;
+        var _nextEntityID = 0;
+        var EntityManager = {
+            useCanvas: false,
+            canvas: null,
+            ctx: null,
+            container: null,
+            background: null,
+            map: new CMap(),
+            //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
+            Create: function(options){
                 
-                CEntity.prototype.canvas = this.canvas;
-                CEntity.prototype.ctx = this.canvas.getContext("2d");
+                // Determine options
+                var width = options ? options.width || 0 : 0;
+                var height = options ? options.height || 0 : 0;
+                var position = options ? options.position || [0,0] : [0,0];
+                
+                    //options: id: int, canvas: html element, width: 0px, height: 0px, position: [0,0]
+                var ent = new CEntity({id: _nextEntityID++, canvas: EntityManager.canvas, width: width, height: height, position: position });
+                
+                //Place in Map
+                EntityManager.map.put(ent.id, ent);
+                
+                //Return Entity
+                return ent;
+                
+            },
+            Initialize: function(options){//options: {useCanvas: true, canvas: html element, background: img}
+                EntityManager.useCanvas = options.useCanvas;
+                EntityManager.canvas = options.canvas;
+                EntityManager.canvas.className = "background";
+                EntityManager.ctx = this.canvas.getContext('2d');
+                EntityManager.background = options.background || null;
+                
+                CEntity.prototype.canvas = EntityManager.canvas;
+                CEntity.prototype.ctx = EntityManager.canvas.getContext("2d");
                 
                 if(!options.useCanvas){
-                    this.container = new CHTMLElement("div");
-                    this.container.AppendClass("EntityManager");
-                    this.container.AppendToHTML(document.body);
+                    EntityManager.container = new CHTMLElement("div");
+                    EntityManager.container.AppendClass("EntityManager");
+                    EntityManager.container.AppendToHTML(document.body);
                 }
             }
             
         }
-        EntityManager.prototype.map = new CMap();
-        //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
-        EntityManager.prototype.Create = function(options){
-            
-            // Determine options
-            var width = options ? options.width || 0 : 0;
-            var height = options ? options.height || 0 : 0;
-            var position = options ? options.position || [0,0] : [0,0];
-            
-                //options: id: int, canvas: html element, width: 0px, height: 0px, position: [0,0]
-            var ent = new CEntity({id: this.NextID(), canvas: this.canvas, width: width, height: height, position: position });
-            
-            //Place in Map
-            this.map.put(ent.id, ent);
-            
-            //Return Entity
-            return ent;
-            
-        }
+        
         
         //options:  id: int, canvas: html element, width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
         var CEntity = function(options){
@@ -1118,26 +1212,26 @@ com.playstylelabs = (function(){
             
             
             //Not using canvas, create a Div
-            if(!pInstance.Entity.useCanvas){
+            if(!EntityManager.useCanvas){
                 this.container = new CHTMLElement("div");
                 this.container.html.id = options.id;
                 this.container.AppendClass("Entity");
-                this.container.AppendToHTML(pInstance.Entity.container.html);
+                this.container.AppendToHTML(EntityManager.container.html);
 
             }
 
-            pInstance.Entity.map.put(this.id, this);
+            EntityManager.map.put(this.id, this);
         }
         CEntity.prototype.canvas = null;
         CEntity.prototype.ctx = null;
         CEntity.prototype.AddGraphics = function(){
-            pInstance.Graphics.Extend(this);
+            GraphicsManager.Extend(this);
         }
         CEntity.prototype.AddPhysics = function(){
-            pInstance.Physics.Extend(this);
+            PhysicsManager.Extend(this);
         }
         CEntity.prototype.AddText = function(options){
-            pInstance.Font.Extend(this, options);
+            FontManager.Extend(this, options);
         }
         CEntity.prototype.Update = function(dt){
             if(this.graphics){this.graphics.Update(dt)}
@@ -1148,137 +1242,140 @@ com.playstylelabs = (function(){
         //
         //  Physcis
         //
-        var PhysicsManager = function(){}
-        
-        PhysicsManager.prototype.world = (function(){
-            var worldAABB = new b2AABB();
-            worldAABB.minVertex.Set(-63, -832);
-            worldAABB.maxVertex.Set(1088, 832);
-            var gravity = new b2Vec2(0, 350);
-            var doSleep = true;
-            var world = new b2World(worldAABB, gravity, doSleep);
-            return world;
-        })();
-        PhysicsManager.prototype.map = new CMap();
-        PhysicsManager.prototype.Extend = function(oEntity){
-            oEntity.physics = new CPhysics(oEntity);
-            pInstance.Physics.map.put(oEntity.id, oEntity.physics);
-        }
-        PhysicsManager.prototype.Update = function(dt){
-            var timeStep = 1.0/60;
-            var iterations = 5;
-            
-            pInstance.Physics.world.Step(timeStep, iterations);
-            
-            for(var i = 0; i < pInstance.Physics.map.size; i++, pInstance.Physics.map.next()){
-                if(pInstance.Physics.map.value().body){
-                    pInstance.Physics.map.value().Update(dt);
-                }
+        var generatePhysicsWorld = function(){
+                var worldAABB = new b2AABB();
+                worldAABB.minVertex.Set(-63, -832);
+                worldAABB.maxVertex.Set(1088, 832);
+                var gravity = new b2Vec2(0, 350);
+                var doSleep = true;
+                var world = new b2World(worldAABB, gravity, doSleep);
+                return world;
+            }
+        var PhysicsManager = {
+            world: generatePhysicsWorld(),
+            map: new CMap(),
+            Extend: function(oEntity){
+                oEntity.physics = new CPhysics(oEntity);
+                PhysicsManager.map.put(oEntity.id, oEntity.physics);
+            },
+            Update: function(dt){
+                var timeStep = 1.0/60;
+                var iterations = 5;
                 
-            }
-        }
-         PhysicsManager.prototype.Draw = function(){
-            function drawWorld(world, context) {
-                for (var j = world.m_jointList; j; j = j.m_next) {
-                    drawJoint(j, context);
+                PhysicsManager.world.Step(timeStep, iterations);
+                
+                for(var i = 0; i < PhysicsManager.map.size; i++, PhysicsManager.map.next()){
+                    if(PhysicsManager.map.value().body){
+                        PhysicsManager.map.value().Update(dt);
+                    }
+                    
                 }
-                for (var b = world.m_bodyList; b; b = b.m_next) {
-                    for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
-                        drawShape(s, context);
+            },
+            Draw: function(){
+                function drawWorld(world, context) {
+                    for (var j = world.m_jointList; j; j = j.m_next) {
+                        drawJoint(j, context);
+                    }
+                    for (var b = world.m_bodyList; b; b = b.m_next) {
+                        for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
+                            drawShape(s, context);
+                        }
                     }
                 }
-            }
-            function drawJoint(joint, context) {
-                var b1 = joint.m_body1;
-                var b2 = joint.m_body2;
-                var x1 = b1.m_position;
-                var x2 = b2.m_position;
-                var p1 = joint.GetAnchor1();
-                var p2 = joint.GetAnchor2();
-                context.strokeStyle = '#00eeee';
-                context.beginPath();
-                switch (joint.m_type) {
-                case b2Joint.e_distanceJoint:
-                    context.moveTo(p1.x, p1.y);
-                    context.lineTo(p2.x, p2.y);
-                    break;
-             
-                case b2Joint.e_pulleyJoint:
-                    // TODO
-                    break;
-             
-                default:
-                    if (b1 == world.m_groundBody) {
+                function drawJoint(joint, context) {
+                    var b1 = joint.m_body1;
+                    var b2 = joint.m_body2;
+                    var x1 = b1.m_position;
+                    var x2 = b2.m_position;
+                    var p1 = joint.GetAnchor1();
+                    var p2 = joint.GetAnchor2();
+                    context.strokeStyle = '#00eeee';
+                    context.beginPath();
+                    switch (joint.m_type) {
+                    case b2Joint.e_distanceJoint:
                         context.moveTo(p1.x, p1.y);
-                        context.lineTo(x2.x, x2.y);
-                    }
-                    else if (b2 == world.m_groundBody) {
-                        context.moveTo(p1.x, p1.y);
-                        context.lineTo(x1.x, x1.y);
-                    }
-                    else {
-                        context.moveTo(x1.x, x1.y);
-                        context.lineTo(p1.x, p1.y);
-                        context.lineTo(x2.x, x2.y);
                         context.lineTo(p2.x, p2.y);
-                    }
-                    break;
-                }
-                context.stroke();
-            }
-            function drawShape(shape, context) {
-                context.strokeStyle = '#000000';
-                context.fillStyle = '#333333';
-                
-                switch (shape.m_type) {
-                case b2Shape.e_circleShape:
-                    {
-                        var circle = shape;
-                        var pos = circle.m_position;
-                        var r = circle.m_radius;
-                        var segments = 16.0;
-                        var theta = 0.0;
-                        var dtheta = 2.0 * Math.PI / segments;
-                        // draw circle
-                        context.moveTo(pos.x + r, pos.y);
-                        for (var i = 0; i < segments; i++) {
-                            var d = new b2Vec2(r * Math.cos(theta), r * Math.sin(theta));
-                            var v = b2Math.AddVV(pos, d);
-                            context.lineTo(v.x, v.y);
-                            theta += dtheta;
+                        break;
+                 
+                    case b2Joint.e_pulleyJoint:
+                        // TODO
+                        break;
+                 
+                    default:
+                        if (b1 == world.m_groundBody) {
+                            context.moveTo(p1.x, p1.y);
+                            context.lineTo(x2.x, x2.y);
                         }
-                        context.lineTo(pos.x + r, pos.y);
-                        
-                        // draw radius
-                        context.moveTo(pos.x, pos.y);
-                        var ax = circle.m_R.col1;
-                        var pos2 = new b2Vec2(pos.x + r * ax.x, pos.y + r * ax.y);
-                        context.lineTo(pos2.x, pos2.y);
-                        context.stroke();
-                        context.fill();
-                    }
-                    break;
-                case b2Shape.e_polyShape:
-                    {
-                        context.beginPath();
-                        var poly = shape;
-                        var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
-                        context.moveTo(tV.x, tV.y);
-                        for (var i = 0; i < poly.m_vertexCount; i++) {
-                            var v = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
-                            context.lineTo(v.x, v.y);
+                        else if (b2 == world.m_groundBody) {
+                            context.moveTo(p1.x, p1.y);
+                            context.lineTo(x1.x, x1.y);
                         }
-                        context.lineTo(tV.x, tV.y);
-                        context.stroke();
-                        context.fill();
+                        else {
+                            context.moveTo(x1.x, x1.y);
+                            context.lineTo(p1.x, p1.y);
+                            context.lineTo(x2.x, x2.y);
+                            context.lineTo(p2.x, p2.y);
+                        }
+                        break;
                     }
-                    break;
+                    context.stroke();
+                }
+                function drawShape(shape, context) {
+                    context.strokeStyle = '#000000';
+                    context.fillStyle = '#333333';
+                    
+                    switch (shape.m_type) {
+                    case b2Shape.e_circleShape:
+                        {
+                            var circle = shape;
+                            var pos = circle.m_position;
+                            var r = circle.m_radius;
+                            var segments = 16.0;
+                            var theta = 0.0;
+                            var dtheta = 2.0 * Math.PI / segments;
+                            // draw circle
+                            context.moveTo(pos.x + r, pos.y);
+                            for (var i = 0; i < segments; i++) {
+                                var d = new b2Vec2(r * Math.cos(theta), r * Math.sin(theta));
+                                var v = b2Math.AddVV(pos, d);
+                                context.lineTo(v.x, v.y);
+                                theta += dtheta;
+                            }
+                            context.lineTo(pos.x + r, pos.y);
+                            
+                            // draw radius
+                            context.moveTo(pos.x, pos.y);
+                            var ax = circle.m_R.col1;
+                            var pos2 = new b2Vec2(pos.x + r * ax.x, pos.y + r * ax.y);
+                            context.lineTo(pos2.x, pos2.y);
+                            context.stroke();
+                            context.fill();
+                        }
+                        break;
+                    case b2Shape.e_polyShape:
+                        {
+                            context.beginPath();
+                            var poly = shape;
+                            var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
+                            context.moveTo(tV.x, tV.y);
+                            for (var i = 0; i < poly.m_vertexCount; i++) {
+                                var v = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
+                                context.lineTo(v.x, v.y);
+                            }
+                            context.lineTo(tV.x, tV.y);
+                            context.stroke();
+                            context.fill();
+                        }
+                        break;
+                    }
+                    
                 }
                 
+                drawWorld(this.world, EntityManager.ctx);
             }
-            
-            drawWorld(this.world, pInstance.Entity.ctx);
         }
+        
+        
         var CPhysics = function(oEntity){
             var self = this;
             this.shape = null;
@@ -1286,7 +1383,8 @@ com.playstylelabs = (function(){
             this.parent = oEntity;
             this.canvas = null;
             this.container = null;
-            this.world = pInstance.Physics.world;
+            this.world = PhysicsManager.world;
+            this.onCollision = null;
             
             return this;
         }
@@ -1296,6 +1394,7 @@ com.playstylelabs = (function(){
         CPhysics.prototype.MakeCircle = function(radius){
             this.circleDef.density = 1.0;
             this.circleDef.radius = radius;
+            this.radius = radius;
             this.circleDef.restitution = 0.7;
             this.circleDef.friction = 0.5;
             this.circleDef.userData = this;
@@ -1318,6 +1417,7 @@ com.playstylelabs = (function(){
                 this.boxDef.density = null;
             }
             this.boxDef.extents.Set(halfWidth, halfHeight);
+            this.halfExtents = [halfWidth, halfHeight];
             this.boxDef.userData = this;
             
             this.bodyDef.shapes = [];
@@ -1337,78 +1437,160 @@ com.playstylelabs = (function(){
             
             var tempRot = this.body.GetRotation();
             this.parent.rotation[0] = tempRot;
+            
+            if((this.body.GetContactList() != null) && this.onCollision){
+                this.onCollision(this.body.GetContactList());
+            }
         }
+        
         CPhysics.prototype.GetPosition = function(){
-            return this.body.GetCenterPosition();
+            var tempPos = this.body.GetCenterPosition();
+            return [tempPos.x, tempPos.y];
+        }
+        CPhysics.prototype.GetOriginPosition = function(){
+            var tempPos = this.body.GetOriginPosition();
+            return [tempPos.x, tempPos.y];
         }
         CPhysics.prototype.GetRotation = function(){
             return this.body.GetRotation();
         }
+        CPhysics.prototype.GetLinearVelocity = function(){
+            var tempVel = this.body.GetLinearVelocity();
+            return [tempVel.x, tempVel.y];
+        }
+        CPhysics.prototype.GetAngularVelocity = function(){
+            var tempVel = this.body.GetAngularVelocity();
+            return [tempVel.x, tempVel.y];
+        }
+        
+        CPhysics.prototype.SetPosition = function(position){
+            //this.body.m_position.x = position[0];
+            //this.body.m_position.y = position[1]
+            var tempPos = new b2Vec2(position[0], position[1]);
+            this.body.SetCenterPosition(tempPos, this.body.GetRotation());
+        }
+        CPhysics.prototype.SetOriginPosition = function(position){
+            var tempPos = new b2Vec2(position[0], postion[1]);
+            this.body.SetOriginPosition(tempPos, this.body.GetRotation());
+        }
+        CPhysics.prototype.SetRotation = function(rotation){
+            this.body.m_rotation = rotation;//SetCenterPosition(this.body.GetCenterPosition, rotation);
+        }
+        CPhysics.prototype.SetLinearVelocity = function(velocity){
+            var tempVel = new b2Vec2(velocity[0], velocity[1]);
+            this.body.SetLinearVelocity(tempVel);
+        }
+        CPhysics.prototype.SetAngularVelocity = function(velocity){
+            this.body.SetAngularVelocity(velocity);
+        }
+        
+        CPhysics.prototype.AddForce = function(force, worldPoint){
+            if (typeof(force) != 'object' || force.length < 2) {
+                force = [0,0];
+            }
+            if (typeof(worldPoint) != 'object' || worldPoint.length < 2) {
+                worldPoint = [this.body.GetCenterPosition().x, this.body.GetCenterPosition().y];
+            }
+            var _force = new b2Vec2(force[0], force[1]);
+            var _point = new b2Vec2(worldPoint[0], worldPoint[1]);
+            
+            body.AddForce(_force, _point);
+        }
+        CPhysics.prototype.AddTorque = function(torque){
+            body.AddTorque(torque);
+        }
+        
+        CPhysics.prototype.GetRadius = function(){
+            return this.radius;
+        }
+        CPhysics.prototype.GetHalfExtents = function(){
+            return this.halfExtents;
+        }
+        CPhysics.prototype.GetMass = function(){
+            return this.body.GetMass();
+        }
+        
         CPhysics.prototype.GetContactList = function(){
             return this.body.GetContactList();
         }
-        CPhysics.prototype.GetRadius = function(){
-            return this.shape.GetMaxRadius();
+        
+        CPhysics.prototype.Freeze = function(){
+            this.body.Freeze();
         }
-        CPhysics.prototype.GetHalfExtents = function(){
-            // Need to find where the half extents are stored
+        CPhysics.prototype.IsFrozen = function(){
+            return this.body.IsFrozen();
+        }
+        CPhysics.prototype.IsSleeping = function(){
+            return this.body.IsSleeping();
+        }
+        CPhysics.prototype.AllowSleeping = function(allowSleep){
+            this.body.AllowSleeping(allowSleep);
+        }
+        CPhysics.prototype.WakeUp = function(){
+            this.body.WakeUp();
         }
         
         //
         //  Graphics 
         //
-        var GraphicsManager = function(){
-                        
-        }
-        GraphicsManager.prototype.map = new CMap();
-        GraphicsManager.prototype.spritesheets = new CMap();
-        GraphicsManager.prototype.aniamtions = new CMap();
-        GraphicsManager.prototype.images = new CMap();
-        GraphicsManager.prototype.LoadImage = function(sURL,callback){
-            var img = new CHTMLElement("img");
-            
-            img.html.src = sURL;
-            img.html.onload = callback;
-            pInstance.Graphics.images.put(sURL, img);
-            
-            return img;
-            
-        }
-        GraphicsManager.prototype.CreateSpriteSheet = function(){
-            
-        }
-        GraphicsManager.prototype.CreateAnimation = function(){
-            
-        }
-        GraphicsManager.prototype.CreateSequence = function(){
-            
-        }
-        GraphicsManager.prototype.Extend = function(oEntity){
-            oEntity.graphics = new CGraphics(oEntity);
-            pInstance.Graphics.map.put(oEntity.id, oEntity.graphics);
-        }
-        GraphicsManager.prototype.Update = function(dt){
-            for(var i = 0; i < pInstance.Graphics.map.size; i++, pInstance.Graphics.map.next()){
-                if(pInstance.Graphics.map.value().Animation.currentAnimation)
-                    pInstance.Graphics.map.value().Update(dt);
-            }
-        }
-        GraphicsManager.prototype.Draw = function(){
-            pInstance.Entity.ctx.drawImage(pInstance.Entity.background.html, 0, 0);
-            
-            if(pInstance.Entity.useCanvas){
-                for(var i = 0; i < pInstance.Graphics.map.size; i++, pInstance.Graphics.map.next()){
-                    if(pInstance.Graphics.map.value().Animation.currentAnimation)
-                        pInstance.Graphics.map.value().Draw();
-                }
+        var GraphicsManager = {
+            map: new CMap(),
+            spritesheets: new CMap(),
+            aniamtions: new CMap(),
+            images: new CMap(),
+            LoadImage: function(sURL,callback){
+                var img = new CHTMLElement("img");
                 
+                img.html.src = sURL;
+                img.html.onload = callback;
+                GraphicsManager.images.put(sURL, img);
+                
+                return img;
+                
+            },
+            Create: {
+                SpriteSheet: function(sName){
+                    var sheet = new CSpriteSheet(sName);
+                    AnimationManager.spritesheets.put(sName, sheet);
+                    return sheet; 
+                },
+                Animation: function(sName, options){
+                    var ani = new CAnimation(sName, options);//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
+                    AnimationManager.animations.put(sName, ani);
+                    
+                    return ani;
+                }
+            },
+            Extend: function(oEntity){
+                oEntity.graphics = new CGraphics(oEntity);
+                GraphicsManager.map.put(oEntity.id, oEntity.graphics);
+            },
+            Update: function(dt){
+                for(var i = 0; i < GraphicsManager.map.size; i++, GraphicsManager.map.next()){
+                    if(GraphicsManager.map.value().Animation.currentAnimation)
+                        GraphicsManager.map.value().Update(dt);
+                }
+            },
+            Draw: function(){
+                EntityManager.ctx.drawImage(EntityManager.background.html, 0, 0);
+                
+                if(EntityManager.useCanvas){
+                    for(var i = 0; i < GraphicsManager.map.size; i++, GraphicsManager.map.next()){
+                        var ent = GraphicsManager.map.value();
+                        if(ent.Animation.currentAnimation && ent.enabled)
+                            ent.Draw();
+                    }
+                    
+                }
+            },
+            DrawBackground: function(){
+                EntityManager.ctx.drawImage(EntityManager.background.html, 0, 0);
             }
         }
-        
-        
-        //HTML Element
+
         var CGraphics = function(oEntity){
             var self = this;
+            this.enabled = true;
             this.scale      = [1,1,1];
             this.offset     = [0,0,0];
             this.matrix     = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
@@ -1436,7 +1618,7 @@ com.playstylelabs = (function(){
                 onStart:            null,
                 onStartScope:       null,
                 Add:     function(sName){
-                    var ani = pInstance.Animation.animations.get(sName);
+                    var ani = AnimationManager.animations.get(sName);
                     self.Animation.list.put(ani.name, ani);
                 },
                 Remove: function(sName){
@@ -1491,7 +1673,7 @@ com.playstylelabs = (function(){
                             else{
                                 //Cancel Animation
                                 self.Animation.active = false;
-                                self.Animation.currentFrame = -1;
+                                self.Animation.currentFrame = 0;
                                 //Trigger Stop Event if present
                                 if(self.Animation.onStop){
                                     self.Animation.onStopScope ? self.Animation.onStop.apply(self.Animation.onStopScope, [self]) : self.Animation.onStop(self);
@@ -1514,7 +1696,7 @@ com.playstylelabs = (function(){
 
             
             //using canvas
-            if(pInstance.Entity.useCanvas){
+            if(EntityManager.useCanvas){
                 this.canvas = this.parent.canvas;
                 //Set proper Update, Scale, and Draw Functions
                 this.Update = this.UpdateCanvas;
@@ -1538,8 +1720,14 @@ com.playstylelabs = (function(){
             
             
             
-            pInstance.Graphics.map.put(this.parent.id, this);
+            GraphicsManager.map.put(this.parent.id, this);
             return this;
+        }
+        CGraphics.prototype.Disable = function(){
+            this.enabled = false;
+        }
+        CGraphics.prototype.Enable = function(){
+            this.enabled = true;
         }
         CGraphics.prototype.UpdateMatrixHTML = function(){
             this.matrix[0] = this.scale[0] * Math.cos(this.parent.rotation[0]);
@@ -1592,26 +1780,28 @@ com.playstylelabs = (function(){
             this.container.html.style.webkitTransform = "matrix3d(" + this.matrix.join(",") + ")";
         }
         CGraphics.prototype.DrawCanvas = function(){
-
-            this.parent.ctx.save();
-            //this.parent.ctx.translate(-1 * (this.parent.position[0] + (((1 - this.scale[0]) * this.Animation.currentAnimation.sheet.cellWidth)/2)|0), -1 * (this.parent.position[1] + (((1 - this.scale[1]) * this.Animation.currentAnimation.sheet.cellHeight)/2)|0));
-            //this.parent.ctx.translate(-1 *(this.parent.position[0] + this.offset[0]), -1 *(this.parent.position[1] + this.offset[1]))
-            this.parent.ctx.setTransform(this.matrix[0], this.matrix[1], this.matrix[2], this.matrix[3], this.matrix[4], this.matrix[5]);
+            if(this.enabled){
+                this.parent.ctx.save();
+                //this.parent.ctx.translate(-1 * (this.parent.position[0] + (((1 - this.scale[0]) * this.Animation.currentAnimation.sheet.cellWidth)/2)|0), -1 * (this.parent.position[1] + (((1 - this.scale[1]) * this.Animation.currentAnimation.sheet.cellHeight)/2)|0));
+                //this.parent.ctx.translate(-1 *(this.parent.position[0] + this.offset[0]), -1 *(this.parent.position[1] + this.offset[1]))
+                this.parent.ctx.setTransform(this.matrix[0], this.matrix[1], this.matrix[2], this.matrix[3], this.matrix[4], this.matrix[5]);
+                
+                //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+                this.parent.ctx.drawImage(this.Animation.currentAnimation.sheet.img,
+                            this.Animation.currentAnimation.frames[this.Animation.currentFrame].x,
+                            this.Animation.currentAnimation.frames[this.Animation.currentFrame].y,
+                            this.Animation.currentAnimation.frames[this.Animation.currentFrame].width,
+                            this.Animation.currentAnimation.frames[this.Animation.currentFrame].height,
+                            0,
+                            0,
+                            (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
+                            (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);
+                //this.parent.ctx.fillRect(0,0,
+                //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
+                //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);   // Draw a rectangle with default settings
+                this.parent.ctx.restore();
+            }
             
-            //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-            this.parent.ctx.drawImage(this.Animation.currentAnimation.sheet.img,
-                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].x,
-                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].y,
-                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].width,
-                        this.Animation.currentAnimation.frames[this.Animation.currentFrame].height,
-                        0,
-                        0,
-                        (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
-                        (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);
-            //this.parent.ctx.fillRect(0,0,
-            //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].width)|0,
-            //                (this.Animation.currentAnimation.frames[this.Animation.currentFrame].height)|0);   // Draw a rectangle with default settings
-            this.parent.ctx.restore();
         }
         CGraphics.prototype.UpdateHTML = function(dt){
             //If Animating, update frame
@@ -1633,11 +1823,14 @@ com.playstylelabs = (function(){
             this.scale[1] = scale[1];
             this.scale[2] = scale[2];
             
-            var width = this.Animation.currentAnimation.sheet.cellWidth;
-            var height = this.Animation.currentAnimation.sheet.cellHeight;
+            //if(this.Animation.currentAnimation){
+                var width = this.Animation.currentAnimation.sheet.cellWidth;
+                var height = this.Animation.currentAnimation.sheet.cellHeight;
+                
+                this.offset[0] = ((width *  scale[0]) / 2)|0;
+                this.offset[1] = ((height * scale[1]) / 2)|0;
+            //}
             
-            this.offset[0] = ((width *  scale[0]) / 2)|0;
-            this.offset[1] = ((height * scale[1]) / 2)|0;
 
         }
         CGraphics.prototype.ScaleHTML = function(scale){
@@ -1675,451 +1868,112 @@ com.playstylelabs = (function(){
         //
         
         //Manager
-        var AnimationManager = function(){
-            
-        }
-        AnimationManager.prototype.spritesheets = new CMap();
-        AnimationManager.prototype.animations = new CMap();
-        AnimationManager.prototype.LoadJSON = function(sURL, callback, scope){
-            var xhr = new CXHRObject();
-            
-            xhr.open('GET',sURL,false);
-            
-            xhr.onreadystatechange = function(){
-              if(xhr.readyState==4){ //4==DONE
-                    if(xhr.status == 200)
-                    {
-                        try{
-                            animations = JSON.parse(xhr.responseText);
-                            
-                            for(var i = 0; i < animations.length; i++){
-                                var data = animations[i];
-                                
-                                var ss = new CSpriteSheet(data.name);
-
-                                ss.width = data.ssWidth;
-                                ss.height = data.ssHeight;
-                                ss.cellWidth = data.cellWidth;
-                                ss.cellHeight = data.cellHeight;
-                                ss.rows = data.rows;
-                                ss.columns = data.columns;
-                                ss.path = data.src;
-                                ss.BuildClass(data.name);
-                                
-                                var options = {
-                                    name: "",
-                                    numOfFrames: 0,
-                                    startRow: 0,
-                                    startColumn: 0,
-                                    spriteSheet: ss,
-                                    speed: 0
-                                }
-                                
-                                for(var j = 0; j < data.animations.length; j++){
-                                    var ani = data.animations[j];
-                                    
-                                    options.name = ani.name;
-                                    options.numOfFrames = ani.numberOfFrames;
-                                    options.startRow = ani.startRow;
-                                    options.startColumn = ani.startColumn;
-                                    options.speed = ani.speed;
-                                    
-                                    
-                                    //CreateAnimation(Animation Name, number of frames, startRow, startColumn, SS, speed)
-                                    new CAnimation(options.name, options);
-                                    //new CAnimation(ani.name, ani.numberOfFrames, ani.startRow, ani.startColumn, ss, ani.speed);
-                                }
-                            }
-                            
-                            if(callback){
-                                scope ? callback.apply(scope, [animations]) : callback(animations);
-                            }
-
-                            //pInstance.Demo();
-                        }
-                        catch(e){
-                            console.error("Error parsing Animation Description: " + e);   
-                        }
-                    }
-                    else{
-                        console.error("Error loading Animation Description at: " + sURL);
-                    }
-              }
+        var AnimationManager = {
+            spritesheets: new CMap(),
+            animations: new CMap(),
+            LoadJSON: function(sURL, callback, scope){
+                var xhr = new CXHRObject();
                 
-            }.bind(this);
-            
-            xhr.send();
-        }
-        AnimationManager.prototype.AddFrames = function(target, source){
-            for(var i = 0; i < source.frames.length; i++){
-                target.frames.push(source.frames[i]);
+                xhr.open('GET',sURL,false);
+                
+                xhr.onreadystatechange = function(){
+                  if(xhr.readyState==4){ //4==DONE
+                        if(xhr.status == 200)
+                        {
+                            try{
+                                animations = JSON.parse(xhr.responseText);
+                                
+                                for(var i = 0; i < animations.length; i++){
+                                    var data = animations[i];
+                                    
+                                    var ss = new CSpriteSheet(data.name);
+    
+                                    ss.width = data.ssWidth;
+                                    ss.height = data.ssHeight;
+                                    ss.cellWidth = data.cellWidth;
+                                    ss.cellHeight = data.cellHeight;
+                                    ss.rows = data.rows;
+                                    ss.columns = data.columns;
+                                    ss.path = data.src;
+                                    ss.BuildClass(data.name);
+                                    
+                                    var options = {
+                                        name: "",
+                                        numOfFrames: 0,
+                                        startRow: 0,
+                                        startColumn: 0,
+                                        spriteSheet: ss,
+                                        speed: 0
+                                    }
+                                    
+                                    for(var j = 0; j < data.animations.length; j++){
+                                        var ani = data.animations[j];
+                                        
+                                        options.name = ani.name;
+                                        options.numOfFrames = ani.numberOfFrames;
+                                        options.startRow = ani.startRow;
+                                        options.startColumn = ani.startColumn;
+                                        options.speed = ani.speed;
+                                        
+                                        
+                                        //CreateAnimation(Animation Name, number of frames, startRow, startColumn, SS, speed)
+                                        new CAnimation(options.name, options);
+                                        //new CAnimation(ani.name, ani.numberOfFrames, ani.startRow, ani.startColumn, ss, ani.speed);
+                                    }
+                                }
+                                
+                                if(callback){
+                                    scope ? callback.apply(scope, [animations]) : callback(animations);
+                                }
+    
+                                //pInstance.Demo();
+                            }
+                            catch(e){
+                                console.error("Error parsing Animation Description: " + e);   
+                            }
+                        }
+                        else{
+                            console.error("Error loading Animation Description at: " + sURL);
+                        }
+                  }
+                    
+                }.bind(this);
+                
+                xhr.send();
+            },
+            AddFrames: function(target, source){
+                for(var i = 0; i < source.frames.length; i++){
+                    target.frames.push(source.frames[i]);
+                }
+            },
+            AddFramesReverse: function(target, source){
+                for(var i = source.frames.length - 1; i >= 0; i--){
+                    target.frames.push(source.frames[i]);
+                }
+            },
+            ReverseFrames: function(source){
+                //Create temp array to hold frames
+                var temp = [];
+                
+                //Store source frames in temp array, in reverse order
+                for(var i = source.frames.length - 1; i >= 0; i--){
+                    temp.push(source.frames[i]);
+                }
+                
+                //Clear out source frames array
+                source.frames = [];
+                
+                //Push frames back to source via temp (in reverse order)
+                for(var i = 0; i < temp.length; i++){
+                    source.frames.push(temp[i]);
+                }
             }
         }
-        AnimationManager.prototype.AddFramesReverse = function(target, source){
-            for(var i = source.frames.length - 1; i >= 0; i--){
-                target.frames.push(source.frames[i]);
-            }
-        }
-        AnimationManager.prototype.ReverseFrames = function(source){
-            //Create temp array to hold frames
-            var temp = [];
-            
-            //Store source frames in temp array, in reverse order
-            for(var i = source.frames.length - 1; i >= 0; i--){
-                temp.push(source.frames[i]);
-            }
-            
-            //Clear out source frames array
-            source.frames = [];
-            
-            //Push frames back to source via temp (in reverse order)
-            for(var i = 0; i < temp.length; i++){
-                source.frames.push(temp[i]);
-            }
-        }
+        
         
         //  Animation Objects
         //
-        var CSpriteSheet = function(sName){
-            var self = this;
-            this.img = null;
-            this.width = 0;
-            this.height = 0;
-            this.cellWidth = 0;
-            this.cellHeight = 0;
-            this.rows = 0;
-            this.columns = 0;
-            this.path = "";
-            this.id = 0;
-            this.name = sName;
-            var className = ""
-            this.BuildClass = function(sClassName){
-                className = sClassName ? sClassName.replace(/\s/g, "_") : self.name;
-                this.img = new Image();
-                this.img.src = this.path;
-                
-                var style = "position: absolute; ";
-                style += "overflow: hidden;";
-                style += "background: url('"+ window.location.href + this.path + "'); ";
-                style += "width: " + this.cellWidth +"px;";
-                style += "height: " + this.cellHeight + "px;";
-                
-                pInstance.Create.CSSClass("."+className, style);
-                pInstance.Animation.spritesheets.put(this.name, this);
-            }
-            this.GetClass = function(){
-                return className;
-            }
-        }
-        var CAnimationFrame = function(iX, iY, iWidth, iHeight,iRow, iColumn, oSheet){
-            this.x = iX;
-            this.y = iY;
-            this.width = iWidth;
-            this.height = iHeight;
-            this.frame = 0;         //Sprite Sheet Frame Number
-            this.row = iRow;
-            this.column = iColumn;
-            this.sheet = oSheet;
-        }
-        var CAnimation = function(sName, options){
-            var self = this;
-            this.frames         = [];
-            this.name           = sName.replace(/\s/g, "_");
-            this.sheet          = "",
-            this.numOfFrames    = "";
-            this.speed          = 0;
-            this.loop           = false;
-            
-                                        
-            if(options){
-                this.sheet          = options.spriteSheet;
-                this.numOfFrames    = options.numOfFrames;
-                this.speed          = options.speed ? options.speed : 0;
-                this.loop           = options.loop ? options.loop : false; 
-                
-                
-                //Populate frames array
-                var _frame = 0;
-                
-                //need to have initial starting point, will be reset to 0 afterwards
-                var _iStartColumn = options.startColumn;
-                
-                // runs through rows (y) and columns (x) and adds them to the frames array
-                for(var y = options.startRow; y <= this.sheet.rows && _frame < this.numOfFrames; y++){
-                    for (var x = _iStartColumn; x <= this.sheet.columns && _frame < this.numOfFrames; x++,_frame++){
-                        var fr = new CAnimationFrame((x - 1)*this.sheet.cellWidth,(y - 1)*this.sheet.cellHeight,this.sheet.cellWidth,this.sheet.cellHeight, y, x, this.sheet);
-                        fr.frame = _frame;
-                        self.frames.push(fr);
-                    }
-                    // resetting starting column (x) to 0, so it goes through all following columns
-                    _iStartColumn = 1;
-
-                }
-
-            }
-             
-            pInstance.Animation.animations.put(this.name, this);
-        }
-        
-        
-        //
-        //  Font Manager
-        //
-        var FontManager = function(){}
-        FontManager.prototype.map = new CMap();
-        FontManager.prototype.Extend = function(oEntity, options){
-            oEntity.font = new CFont(oEntity, options);
-            pInstance.Font.map.put(oEntity.id, oEntity.font);
-        }
-        FontManager.prototype.Draw = function(){
-            for(var i = 0; i < pInstance.Font.map.size; i++, pInstance.Font.map.next()){
-                pInstance.Font.map.value().Draw();
-            }
-        }
-        FontManager.prototype.Write = function(sText, x, y, font){
-            //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
-            var ent = pInstance.Entity.Create({position:[x,y,0]});
-            ent.AddText(font);
-            ent.font.text = sText || font.text || "No Text";
-            return ent.font;
-        }
-        FontManager.prototype.Remove = function(id){
-            pInstance.Font.map.remove(id);
-        }
-        
-        var CFont = function(oEntity, options){
-            var self = this;
-            this.canvas         = pInstance.Entity.canvas;
-            this.context        = pInstance.Entity.ctx;
-            this.parent         = oEntity;
-            
-            this.text           = options.text || "Hello World!";
-            this.fontStyle      = options.fontStyle || "normal";
-            this.fontVariant    = options.fontVariant || "normal";
-            this.fontWeight     = options.fontWeight || "normal";
-            this.fontFamily     = options.fontFamily || "Courier";
-            this.size           = options.size || "24px";
-            this.alignment      = options.alignment || "start";
-            this.baseline       = options.baseline || "alphabetic";
-            this.fontColor      = options.fontColor || "#000000";
-            this.strokeColor    = options.strokeColor || "#000000";
-            this.drawFill       = options.drawFill || true;
-            this.drawStroke     = options.drawStroke || false;
-            this.offset         = options.offset || [0,0,0];
-            
-            return this;
-        }
-        CFont.prototype.SetText = function(text){
-            this.text = text;
-        }
-        CFont.prototype.SetFontStyle = function(fontStyle){
-            this.fontStyle = fontStyle;
-        }
-        CFont.prototype.SetFontVariant = function(fontVariant){
-            this.fontVariant = fontVariant;
-        }
-        CFont.prototype.SetFontWeight = function(fontWeight){
-            this.fontWeight = fontWeight;
-        }
-        CFont.prototype.SetFontFamily = function(fontFamily){
-            this.fontFamily = fontFamily;
-        }
-        CFont.prototype.SetSize = function(size){
-            this.size = size;
-        }
-        CFont.prototype.SetAlignment = function(alignment){
-            this.alignment = alignment;
-        }
-        CFont.prototype.SetBaseline = function(baseline){
-            this.baseline = baseline;
-        }
-        CFont.prototype.SetColor = function(color){
-            this.fontColor = color;
-        }
-        CFont.prototype.SetStrokeColor = function(color){
-            this.strokeColor = color;
-        }
-        CFont.prototype.SetFillVisible = function(visible){
-            this.drawFill = visible;
-        }
-        CFont.prototype.SetStrokeVisible = function(visible){
-            this.drawStroke = visible;
-        }
-        CFont.prototype.SetOffset = function(offset){
-            this.offset = offset;
-        }
-        CFont.prototype.Draw = function(){
-            this.context.font = this.fontStyle + " " + this.fontVariant + " " + this.fontWeight + " " + this.size + " " + this.fontFamily;
-            this.context.textAlign = this.alignment;
-            this.context.textBaseline = this.baseline;
-            if (this.drawFill) {
-                this.context.fillStyle = this.fontColor;
-                this.context.fillText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
-            }
-            if (this.drawStroke) {
-                this.context.strokeStyle = this.strokeColor;
-                this.context.strokeText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
-            }
-        }
-        CFont.prototype.Delete = function(){
-            pInstance.Font.Remove(this.parent.id);
-            this.parent.font = null;
-        }
-        //
-        //  TWEEN
-        //
-        var TweenManager = function(){
-            var nextID = 0;
-            this.Create = function(start, stop, time, fn, onEnd){
-                tw = new CTween(nextID++, start, stop, time, fn, onEnd);
-                pInstance.Tween.map.put(tw.id, tw);
-                return tw;
-            }
-        }
-        TweenManager.prototype.map = new CMap();
-        TweenManager.prototype.Remove = function(id){
-            pInstance.Tween.map.remove(id)
-        }
-        TweenManager.prototype.Update = function(dt){
-            for(var i = pInstance.Tween.map.size; i; i--){
-                    //Update return active, if false, remove item from map
-                if(!pInstance.Tween.map.value().Update(dt)){
-                    //Removed object, decrement i since size is smaller
-                    pInstance.Tween.Remove(this.id);
-                    i--;
-                    //Only increment map if size is still > 0
-                    if(i > 0 ){pInstance.Tween.map.next()}
-                }
-                else{
-                    pInstance.Tween.map.next();
-                }
-                
-            }
-        }
-        
-        var CTween = function(id, start, stop, time, fn, onEnd){
-            this.id = id;
-            this.active = true;
-            this.fn = fn;
-            this.start = start;
-            this.stop = stop;
-            this.totalTime = time;
-            this.velocity = (stop - start) / time;
-            //this.totalSteps = ((start - stop) / step)|0;
-            this.count = 0;
-            this.timeElapsed = 0;
-            this.value = start;
-            this.callback = onEnd || function(){}
-            
-        }
-        CTween.prototype.Update = function(dt){
-            
-            this.timeElapsed += dt;
-            this.value = this.start + this.velocity * this.timeElapsed;
-            
-            if(this.value >= this.stop){
-                this.value = this.stop;
-                this.active = false;
-                this.fn(this.value);
-                this.callback(this);
-            }
-            else{
-                this.fn(this.value);
-                
-            }
-            
-            return this.active;
-            
-        }
-        CTween.prototype.Draw = function(){
-            
-        }
-        //PUBLIC OBJECTS/METHODS
-        return{
-            Entity: new EntityManager(),
-            Graphics: new GraphicsManager(),
-            Animation: new AnimationManager(),
-            Physics: new PhysicsManager(),
-            Audio: new AudioManager(),
-            Font: new FontManager(),
-            Memory: new MemoryManager(),
-            Tween: new TweenManager(),
-            Event: new EventManager(),
-            Get: {
-                Sprite: function(sName){
-                    return Sprites.get(sName);
-                },
-                SpriteSheet: function(sName){
-                    return SpriteSheets.get(sName)
-                },
-                Animation: function(sName){
-                    return Animations.get(sName);
-                },
-                Time: function(){
-                    return Date.now();
-                },
-                State: function(sName){
-                    return _States.get(sName);  
-                },
-                Name: function(){
-                    return NAME;
-                },
-                Version: function(){
-                    return VERSION;
-                },
-                Path: function(){
-                    return PATH;
-                }
-            },
-            Remove: {
-                Sprite: function(sName){
-                    return Sprites.drop(sName);
-                },
-                SpriteSheet: function(sName){
-                    return SpriteSheets.drop(sName)
-                },
-                Animation: function(sName){
-                    return Animations.drop(sName);
-                }
-            },
-            
-            Create: {
-                HTML: function(tag){
-                    return new CHTMLElement(tag);
-                },
-                Map: function(){
-                    return new CMap();
-                },
-                FSM: function(cEntity){
-                    return new CFiniteStateMachine(cEntity);
-                    
-                },
-                State: function(sName){
-                    var state = new CState(sName);
-                    _States.put(sName, state);
-                    return state;
-                },
-                Entity: function(options){
-                    //options: width: 0px, height: 0px, position: [0,0]
-                    var ent = pInstance.Entity.Create(options);
-                    return ent;
-                },
-                SpriteSheet: function(sName){
-                    var sheet = new CSpriteSheet(sName);
-                    pInstance.Animation.spritesheets.put(sName, sheet);
-                    
-                    return sheet;   
-                },
-                Animation: function(sName,options){//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed){
-                    var ani = new CAnimation(sName, options);//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
-                    pInstance.Animation.animations.put(sName, ani);
-                    
-                    return ani;
-                },
-                AnimationFrame: function(iX, iY, iWidth, iHeight){
-                    return new CAnimationFrame(iX, iY, iWidth, iHeight);
-                },
-                CSSClass: function(sClass, sStyle) {
+        var CreateCSSClass = function(sClass, sStyle) {
                     if (!document.styleSheets) {
                         return;
                     }
@@ -2192,142 +2046,364 @@ com.playstylelabs = (function(){
                         styleSheet.insertRule(sClass + "{" + sStyle + "}", 0);
                     }
                 }
+        var CSpriteSheet = function(sName){
+            var self = this;
+            this.img = null;
+            this.width = 0;
+            this.height = 0;
+            this.cellWidth = 0;
+            this.cellHeight = 0;
+            this.rows = 0;
+            this.columns = 0;
+            this.path = "";
+            this.id = 0;
+            this.name = sName;
+            var className = ""
+            this.BuildClass = function(sClassName){
+                className = sClassName ? sClassName.replace(/\s/g, "_") : self.name;
+                this.img = new Image();
+                this.img.src = this.path;
                 
+                var style = "position: absolute; ";
+                style += "overflow: hidden;";
+                style += "background: url('"+ window.location.href + this.path + "'); ";
+                style += "width: " + this.cellWidth +"px;";
+                style += "height: " + this.cellHeight + "px;";
+                
+                CreateCSSClass("."+className, style);
+                AnimationManager.spritesheets.put(this.name, this);
+            }
+            this.GetClass = function(){
+                return className;
+            }
+        }
+        var CAnimationFrame = function(iX, iY, iWidth, iHeight,iRow, iColumn, oSheet){
+            this.x = iX;
+            this.y = iY;
+            this.width = iWidth;
+            this.height = iHeight;
+            this.frame = 0;         //Sprite Sheet Frame Number
+            this.row = iRow;
+            this.column = iColumn;
+            this.sheet = oSheet;
+        }
+        var CAnimation = function(sName, options){
+            var self = this;
+            this.frames         = [];
+            this.name           = sName.replace(/\s/g, "_");
+            this.sheet          = "",
+            this.numOfFrames    = "";
+            this.speed          = 0;
+            this.loop           = false;
+            
+                                        
+            if(options){
+                this.sheet          = options.spriteSheet;
+                this.numOfFrames    = options.numOfFrames;
+                this.speed          = options.speed ? options.speed : 0;
+                this.loop           = options.loop ? options.loop : false; 
+                
+                
+                //Populate frames array
+                var _frame = 0;
+                
+                //need to have initial starting point, will be reset to 0 afterwards
+                var _iStartColumn = options.startColumn;
+                
+                // runs through rows (y) and columns (x) and adds them to the frames array
+                for(var y = options.startRow; y <= this.sheet.rows && _frame < this.numOfFrames; y++){
+                    for (var x = _iStartColumn; x <= this.sheet.columns && _frame < this.numOfFrames; x++,_frame++){
+                        var fr = new CAnimationFrame((x - 1)*this.sheet.cellWidth,(y - 1)*this.sheet.cellHeight,this.sheet.cellWidth,this.sheet.cellHeight, y, x, this.sheet);
+                        fr.frame = _frame;
+                        self.frames.push(fr);
+                    }
+                    // resetting starting column (x) to 0, so it goes through all following columns
+                    _iStartColumn = 1;
+
+                }
+
+            }
+             
+            AnimationManager.animations.put(this.name, this);
+        }
+        
+        
+        //
+        //  Font Manager
+        //
+        var FontManager = {
+            map: new CMap(),
+            Extend: function(oEntity, options){
+                oEntity.font = new CFont(oEntity, options);
+                FontManager.map.put(oEntity.id, oEntity.font);
             },
-            Input: {
-                currentTime: 0,
-                previousTime: 0,
-                Get: {
-                    State: {
-                        Mouse: function(){
-                            return _Mouse;
-                        },
-                        Touch: function(){
-                            return _Touch;
-                        },
-                        Keyboard: function(keyCode){
-                            return _KeyboardStates.get(keyCode);
-                        }
-                    }
-                },
-                Register: {
-                    Mouse: {
-                        Event: {
-                            Down: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _MouseEvents.get("DOWN").push(e);
-                                return e;
-                            },
-                            Up: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _MouseEvents.get("UP").push(e);
-                                return e;
-                            },
-                            Move: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _MouseEvents.get("MOVE").push(e);
-                                return e;
-                            }
-                        },
-                        State: {
-                            
-                        }
-                    },
-                    Touch: {
-                        Event: {
-                            Start: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _TouchEvents.get("START").push(e);
-                                return e;
-                            },
-                            End: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _TouchEvents.get("END").push(e);
-                                return e;
-                            },
-                            Move: function(fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                _TouchEvents.get("MOVE").push(e);
-                                return e;
-                            }
-                        },
-                        State: {
-                            
-                        }
-                    },
-                    Keyboard: {
-                        Event: {
-                            Keydown: function(Key, fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                var eventArray;
-                                
-                                if(isNaN(Key)){
-                                    eventArray = _KeyboardControlKeyEvents.get(Key);
-                                }
-                                else{
-                                    eventArray = _KeyboardControlKeyEvents.get(Key);
-                                }
-                                
-                                
-                                if(!eventArray){
-                                    eventArray = [];
-                                    if(isNaN(Key)){ _KeyDownEvents.put(Key, eventArray);}
-                                    else{_KeyboardControlKeyEvents.put(Key, eventArray);}
-                                    
-                                }
-                                eventArray.push(e);
-                                return e;
-                            },
-                            Keyup: function(Key, fFunction, oScope){
-                                var e = new CCallback(_eventID++, fFunction, oScope);
-                                var eventArray;
-                                
-                                if(isNaN(Key)){
-                                    eventArray = _KeyboardControlKeyEvents.get(Key);
-                                }
-                                else{
-                                    eventArray = _KeyboardControlKeyEvents.get(Key);
-                                }
-                                
-                                
-                                if(!eventArray){
-                                    eventArray = [];
-                                    if(isNaN(Key)){ _KeyUpEvents.put(Key, eventArray);}
-                                    else{_KeyboardControlKeyEvents.put(Key, eventArray);}
-                                    
-                                }
-                                eventArray.push(e);
-                                return e;
-                                
-                            }
-                        },
-                        State: {
-                            
-                        }
-                    }
+            Draw: function(){
+                for(var i = 0; i < FontManager.map.size; i++, FontManager.map.next()){
+                    FontManager.map.value().Draw();
                 }
             },
+            Write: function(sText, x, y, font){
+                //options: width: 0px, height: 0px, position: [0,0,0], rotation: [0,0,0]
+                var ent = EntityManager.Create({position:[x,y,0]});
+                ent.AddText(font);
+                ent.font.text = sText || font.text || "No Text";
+                return ent.font;
+            },
+            Remove: function(id){
+                FontManager.map.remove(id);
+            }
+        }
+        
+        
+        var CFont = function(oEntity, options){
+            var self = this;
+            this.canvas         = EntityManager.canvas;
+            this.context        = EntityManager.ctx;
+            this.parent         = oEntity;
+            this.enabled        = true;
             
-            Modules:{
+            this.text           = options.text || "Hello World!";
+            this.fontStyle      = options.fontStyle || "normal";
+            this.fontVariant    = options.fontVariant || "normal";
+            this.fontWeight     = options.fontWeight || "normal";
+            this.fontFamily     = options.fontFamily || "Courier";
+            this.size           = options.size || "24px";
+            this.alignment      = options.alignment || "start";
+            this.baseline       = options.baseline || "alphabetic";
+            this.fontColor      = options.fontColor || "#000000";
+            this.strokeColor    = options.strokeColor || "#000000";
+            this.drawFill       = options.drawFill || true;
+            this.drawStroke     = options.drawStroke || false;
+            this.offset         = options.offset || [0,0,0];
+            
+            return this;
+        }
+        CFont.prototype.SetText = function(text){
+            this.text = text;
+        }
+        CFont.prototype.SetFontStyle = function(fontStyle){
+            this.fontStyle = fontStyle;
+        }
+        CFont.prototype.SetFontVariant = function(fontVariant){
+            this.fontVariant = fontVariant;
+        }
+        CFont.prototype.SetFontWeight = function(fontWeight){
+            this.fontWeight = fontWeight;
+        }
+        CFont.prototype.SetFontFamily = function(fontFamily){
+            this.fontFamily = fontFamily;
+        }
+        CFont.prototype.SetSize = function(size){
+            this.size = size;
+        }
+        CFont.prototype.SetAlignment = function(alignment){
+            this.alignment = alignment;
+        }
+        CFont.prototype.SetBaseline = function(baseline){
+            this.baseline = baseline;
+        }
+        CFont.prototype.SetColor = function(color){
+            this.fontColor = color;
+        }
+        CFont.prototype.SetStrokeColor = function(color){
+            this.strokeColor = color;
+        }
+        CFont.prototype.SetFillVisible = function(visible){
+            this.drawFill = visible;
+        }
+        CFont.prototype.SetStrokeVisible = function(visible){
+            this.drawStroke = visible;
+        }
+        CFont.prototype.SetOffset = function(offset){
+            this.offset = offset;
+        }
+        CFont.prototype.Draw = function(){
+            if(this.enabled){
+                this.context.font = this.fontStyle + " " + this.fontVariant + " " + this.fontWeight + " " + this.size + " " + this.fontFamily;
+                this.context.textAlign = this.alignment;
+                this.context.textBaseline = this.baseline;
+                if (this.drawFill) {
+                    this.context.fillStyle = this.fontColor;
+                    this.context.fillText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
+                }
+                if (this.drawStroke) {
+                    this.context.strokeStyle = this.strokeColor;
+                    this.context.strokeText(this.text, this.parent.position[0] + this.offset[0], this.parent.position[1] + this.offset[1]);
+                }
+            }
+        }
+        CFont.prototype.Delete = function(){
+            FontManager.Remove(this.parent.id);
+            this.parent.font = null;
+        }
+        //
+        //  TWEEN
+        //
+        var _nextTweenID = 0;
+        var TweenManager = {
+            map: new CMap(),
+            Remove: function(id){
+                TweenManager.map.remove(id)
+            },
+            Update: function(dt){
+                for(var i = TweenManager.map.size; i>0; i--){
+                        //Update return active, if false, remove item from map
+                    if(!TweenManager.map.value().Update(dt)){
+                        //Removed object, decrement i since size is smaller
+                        TweenManager.Remove(TweenManager.map.value().id);
+                        i--;
+                        //Only increment map if size is still > 0
+                        if(i > 0 ){TweenManager.map.next()}
+                    }
+                    else{
+                        TweenManager.map.next();
+                    }
+                    
+                }
+            },
+            Create: function(start, stop, time, fn, onEnd){
+                tw = new CTween(_nextTweenID++, start, stop, time, fn, onEnd);
+                TweenManager.map.put(tw.id, tw);
+                return tw;
+            }
+        }
+
+        var CTween = function(id, start, stop, time, fn, onEnd){
+            this.id = id;
+            this.active = true;
+            this.fn = fn;
+            this.start = start;
+            this.stop = stop;
+            this.totalTime = time;
+            this.velocity = (stop - start) / time;
+            //this.totalSteps = ((start - stop) / step)|0;
+            this.count = 0;
+            this.timeElapsed = 0;
+            this.value = start;
+            this.callback = onEnd || function(){}
+            
+        }
+        CTween.prototype.Update = function(dt){
+            
+            this.timeElapsed += dt;
+            this.value = this.start + this.velocity * this.timeElapsed;
+            
+            if(this.timeElapsed >= this.totalTime){
+                this.value = this.stop;
+                this.active = false;
+                this.fn(this.value);
+                this.callback(this);
+            }
+            else{
+                this.fn(this.value);
                 
+            }
+            
+            return this.active;
+            
+        }
+        CTween.prototype.Draw = function(){
+            
+    }
+        //PUBLIC OBJECTS/METHODS
+        return{
+            Entity: EntityManager,
+            Graphics: GraphicsManager,
+            Animation: AnimationManager,
+            Physics: PhysicsManager,
+            AI: AIManager,
+            Audio: AudioManager,
+            Font: FontManager,
+            Memory: MemoryManager,
+            Tween: TweenManager,
+            Event: EventManager,
+            Input: InputManager,
+            Get: {
+                SpriteSheet: function(sName){
+                    return pInstance.Graphics.spritesheets.get(sName)
+                },
+                Animation: function(sName){
+                    return pInstance.Graphics.animations.get(sName);
+                },
+                Time: function(){
+                    return Date.now();
+                },
+                State: function(sName){
+                    return _States.get(sName);  
+                },
+                Name: function(){
+                    return NAME;
+                },
+                Version: function(){
+                    return VERSION;
+                },
+                Path: function(){
+                    return PATH;
+                }
+            },
+            Remove: {
+                SpriteSheet: function(sName){
+                    return pInstance.Graphics.spritesheets.remove(sName)
+                },
+                Animation: function(sName){
+                    return pInstance.Graphics.animations.remove(sName);
+                }
+            },          
+            Create: {
+                HTML: function(tag){
+                    return new CHTMLElement(tag);
+                },
+                Map: function(){
+                    return new CMap();
+                },
+                FSM: function(cEntity){
+                    return new CFiniteStateMachine(cEntity);
+                    
+                },
+                State: function(sName){
+                    var state = new CState(sName);
+                    _States.put(sName, state);
+                    return state;
+                },
+                Entity: function(options){
+                    //options: width: 0px, height: 0px, position: [0,0]
+                    var ent = pInstance.Entity.Create(options);
+                    return ent;
+                },
+                SpriteSheet: function(sName){
+                    var sheet = new CSpriteSheet(sName);
+                    AnimationManager.spritesheets.put(sName, sheet);
+                    
+                    return sheet;   
+                },
+                Animation: function(sName,options){//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed){
+                    var ani = new CAnimation(sName, options);//iNumOfFrames,iStartRow, iStartColumn,oSpriteSheet, speed);
+                    AnimationManager.animations.put(sName, ani);
+                    
+                    return ani;
+                },
+                CSSClass: CreateCSSClass
             },
             Classes: {
-                HTMLElement:  CHTMLElement
+                HTMLElement:  CHTMLElement,
+                PriorityQueue: CPriorityQueue,
+                Map: CMap
             }
                 
         }
     }
+    
     return {
         //Instantiates Objects and Returns
         //  Insures a single object
-        Instance: function()
-        {
+        Instance: function(){
+            
             if(!pInstance)
             {
                 //Instantiate if pInstance does not exist
                 pInstance = constructor();
                 
-                //pInstance.Animation.LoadJSON("images/spritesheets/animations.json");
+                //AnimationManager.LoadJSON("images/spritesheets/animations.json");
             }
             
             return pInstance;

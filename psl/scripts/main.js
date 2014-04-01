@@ -7,18 +7,18 @@ window.onload = function(){
     
     
     psl = com.playstylelabs.Instance();
-    
+
     psl.Demo = function(){
         //
         //  Load Image       
         //
-        bkgrnd = psl.Graphics.LoadImage("images/backgrounds/Level_1.png", function(){
+        bkgrnd = psl.Graphics.LoadImage("images/backgrounds/Level1/Level1.png", function(){
                 psl.Entity.canvas.width = 1024; //"1024px";
                 psl.Entity.canvas.height = 768; //"768px";
                 psl.Entity.ctx.drawImage(bkgrnd.html, 0, 0);
                 
-                psl.Entity.canvas.width = 1024; //"1024px";
-                psl.Entity.canvas.height = 768; //"768px";
+                //psl.Entity.canvas.width = 1024; //"1024px";
+                //psl.Entity.canvas.height = 768; //"768px";
                 
             });    
         
@@ -129,7 +129,8 @@ window.onload = function(){
             dog.graphics.Animation.onStop = SetLeftRun;
         }
         
-        SetRightRun();
+        //SetRightRun();
+        dog.graphics.Animation.Set("right_flip");
         //dog.graphics.Scale([0.25,0.25,1]);
         dog.position[0] = 150;
         dog.position[1] = 150;
@@ -330,6 +331,34 @@ window.onload = function(){
     psl.Animation.LoadJSON("images/spritesheets/animations.json", psl.Demo);
     
 }
+
+
+// The CEntity object of the ceiling
+var ceilingEntity; 
+// The current entity we are checking
+var currentEntity;
+
+// Get the contactList of our current entity
+var contactNode = currentEntity.physics.GetContactList();
+// Variable for the do-while loop
+var startNode = contactNode;
+
+do{
+ // If the CEntity object of the contacted physics object is
+ // the ceilingEntity, then we freeze our current object
+ if(contactNode.other.GetUserData().parent == ceilingEntity){
+  // This could also set the object's velocity to 0 like this
+  // currentEntity.physics.SetLinearVelocity([0,0]);
+  // currentEntity.physics.SetAngularVelocity( 0 );
+  currentEntity.physics.Freeze();
+ }
+ // Move the contactNode to the next contact
+ contactNode = contactNode.next;
+ 
+}while(contactNode != startNode);
+// If the contactNode equals the startNode after executing once,
+//  the we know the contact list has been looped through
+
 
 //http://phrogz.net/tmp/image_move_sprites_css.html
 function rotateDog(deg){
