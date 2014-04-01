@@ -135,6 +135,274 @@
     ]
   },
   {
+    "src": "images/spritesheets/Lock_Animation.png",
+    "name": "lock",
+    "ssWidth": 1589,
+    "ssHeight": 194,
+    "rows": 1,
+    "columns": 7,
+    "cellWidth": 227,
+    "cellHeight": 194,
+    "animations": [
+      {
+        "name": "open_lock",
+        "numberOfFrames": 7,
+        "startRow": 1,
+        "startColumn":  1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/spritesheets/Particle_Effects_SS.png",
+    "name": "particles",
+    "ssWidth": 360,
+    "ssHeight": 288,
+    "rows": 4,
+    "columns": 5,
+    "cellWidth": 72,
+    "cellHeight": 72,
+    "animations": [
+      {
+        "name": "sparkle_full_basket",
+        "numberOfFrames": 5,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "sparkle_empty_basket",
+        "numberOfFrames": 5,
+        "startRow": 2,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "dirt_right",
+        "numberOfFrames": 5,
+        "startRow": 3,
+        "startColumn": 1,
+        "speed": 80
+      },
+      {
+        "name": "dirt_left",
+        "numberOfFrames": 5,
+        "startRow": 4,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MainMenu/DogShowButton.png",
+    "name": "dogShowButton",
+    "ssWidth": 532,
+    "ssHeight": 166,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 532,
+    "cellHeight": 166,
+    "animations":[
+      {
+        "name": "dogShowButton",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/props/dogHouse.png",
+    "name": "dogShowButton",
+    "ssWidth": 512,
+    "ssHeight": 512,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 512,
+    "cellHeight": 512,
+    "animations":[
+      {
+        "name": "dogHouse",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/props/bowl.png",
+    "name": "dogShowButton",
+    "ssWidth": 150,
+    "ssHeight": 50,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 150,
+    "cellHeight": 50,
+    "animations":[
+      {
+        "name": "bowl",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MainMenu/PetShopButton.png",
+    "name": "petshopButton",
+    "ssWidth": 532,
+    "ssHeight": 166,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 532,
+    "cellHeight": 166,
+    "animations":[
+      {
+        "name": "petshopButton",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MainMenu/PlayButton.png",
+    "name": "playButton",
+    "ssWidth": 532,
+    "ssHeight": 166,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 532,
+    "cellHeight": 166,
+    "animations":[
+      {
+        "name": "playButton",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MainMenu/SettingsButton.png",
+    "name": "settingsButton",
+    "ssWidth": 532,
+    "ssHeight": 166,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 532,
+    "cellHeight": 166,
+    "animations":[
+      {
+        "name": "settingsButton",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MainMenu/TrainingButton.png",
+    "name": "trainingButton",
+    "ssWidth": 532,
+    "ssHeight": 166,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 532,
+    "cellHeight": 166,
+    "animations":[
+      {
+        "name": "trainingButton",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MissionMap/MissionMap.png",
+    "name": "missionMap",
+    "ssWidth": 1024,
+    "ssHeight": 591,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 1024,
+    "cellHeight": 591,
+    "animations":[
+      {
+        "name": "missionMap",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MissionMap/MissionMapHomeButton.png",
+    "name": "missionMapHome",
+    "ssWidth": 328,
+    "ssHeight": 210,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 328,
+    "cellHeight": 210,
+    "animations":[
+      {
+        "name": "missionMapHome",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MissionMap/MissionMapPetshopButton.png",
+    "name": "missionMapPetshop",
+    "ssWidth": 316,
+    "ssHeight": 209,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 316,
+    "cellHeight": 209,
+    "animations":[
+      {
+        "name": "missionMapPetshop",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
+    "src": "images/backgrounds/MissionMap/MissionMapSettingsButton.png",
+    "name": "missionMapSettings",
+    "ssWidth": 327,
+    "ssHeight": 215,
+    "rows": 1,
+    "columns": 1,
+    "cellWidth": 327,
+    "cellHeight": 215,
+    "animations":[
+      {
+        "name": "missionMapSettings",
+        "numberOfFrames": 1,
+        "startRow": 1,
+        "startColumn": 1,
+        "speed": 80
+      }
+    ]
+  },
+  {
     "src": "images/props/Balls/Ball_Sheet.png",
     "name": "dog",
     "ssWidth": 704,
