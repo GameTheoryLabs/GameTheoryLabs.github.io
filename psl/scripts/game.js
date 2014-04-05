@@ -11,7 +11,6 @@ window.onload = function(){
     Game.Init();
     
     
-    
 }
 Game = {
     Init: function(){
@@ -184,7 +183,7 @@ Game = {
         },
         Sounds: function(){
             var parameters = {
-                urls: ['sounds/button-click.wav'],
+                urls: ['sounds/button-click.mp3'],
                 autoplay: false,
                 loop: false,
                 volume: 0.5,
@@ -205,7 +204,7 @@ Game = {
             parameters.urls = ["sounds/dog-bark.mp3"];
             psl.Audio.Load("bark", parameters);
             
-            parameters.urls = ["sounds/dog-whine.wav"];
+            parameters.urls = ["sounds/dog-whine.mp3"];
             psl.Audio.Load("whine", parameters);
             
             parameters.urls = ["sounds/yay.mp3"];
@@ -371,6 +370,7 @@ Game = {
             Game.Entity.bowl.graphics.Disable();
             Game.Entity.bowl.AddPhysics();
             Game.Entity.bowl.physics.MakeBox(Game.Entity.bowl.graphics.Animation.currentAnimation.sheet.cellWidth/2 * Game.Entity.bowl.graphics.scale[0], Game.Entity.bowl.graphics.scale[1] * Game.Entity.bowl.graphics.Animation.currentAnimation.sheet.cellHeight/2, false);
+            Game.Entity.bowl.physics.Pause();
             var fontOptions = {
                 text: "Treats: " + psl.Memory.Local.Get("timesPlayed"),
                 fontFamily: "Calibri",
@@ -396,7 +396,7 @@ Game = {
                 Game.Entity.balls[i].graphics.Disable();
                 Game.Entity.balls[i].AddPhysics();
                 Game.Entity.balls[i].physics.MakeCircle(16);
-                //Game.Entity.balls[i].physics.Freeze();
+                Game.Entity.balls[i].physics.Pause();
             }
                 //Basket
             Game.Entity.basket = psl.Entity.Create({width: 0, height: 0, position: [440,125,0], rotation:[0,0,0]});
@@ -408,6 +408,7 @@ Game = {
             Game.Entity.basket.graphics.Disable();
             Game.Entity.basket.AddPhysics();
             Game.Entity.basket.physics.MakeBox(Game.Entity.basket.graphics.Animation.currentAnimation.sheet.cellWidth/2 * Game.Entity.basket.graphics.scale[0], Game.Entity.basket.graphics.scale[1] * Game.Entity.basket.graphics.Animation.currentAnimation.sheet.cellHeight/2, true);
+            Game.Entity.basket.physics.Pause();
                 //Dirt
             Game.Entity.dirt = psl.Entity.Create({width: 0, height: 0, position: [440,125,0], rotation:[0,0,0]});
             Game.Entity.dirt.AddGraphics();
@@ -678,14 +679,16 @@ Game = {
                 Game.Entity.bowl.position[1] = 100;
                 Game.Entity.bowl.physics.SetRotation(30 * Math.PI / 180);
                 Game.Entity.bowl.physics.SetPosition([100,100]);
-                Game.Entity.bowl.physics.WakeUp();
+                //Game.Entity.bowl.physics.WakeUp();
+                Game.Entity.bowl.physics.UnPause();
                 Game.Entity.bowl.graphics.Enable();
                 Game.Entity.bowl.font.enabled = true;
                     //Basket
                 Game.Entity.basket.position[0] = 500;
                 Game.Entity.basket.position[1] = 675;
                 Game.Entity.basket.physics.SetPosition([513,714]);
-                Game.Entity.basket.physics.WakeUp();
+                Game.Entity.basket.physics.UnPause();
+                //Game.Entity.basket.physics.WakeUp();
                 Game.Entity.basket.graphics.Enable();
                 
                 
@@ -700,6 +703,9 @@ Game = {
                 //Game.States.Level1.ThrowBalls();
             }
             Game.States.Level1.Exit = function(){
+                //Clear Event Q
+                psl.Event.Clear();
+                
                 //Disable Physics
                 Game.physicsEnabled = false;
                 
@@ -713,12 +719,15 @@ Game = {
                 Game.Entity.dirt.graphics.Disable();
                     //Bowl
                 Game.Entity.bowl.graphics.Disable();
+                Game.Entity.bowl.physics.Pause();
                 Game.Entity.bowl.font.enabled = false;
                     //Basket
                 Game.Entity.basket.graphics.Disable();
+                Game.Entity.basket.physics.Pause();
                     //Balls
                 for(var i = 0; i <= 10; i++){
                     Game.Entity.balls[i].graphics.Disable();
+                    Game.Entity.balls[i].physics.Pause();
                 } 
                 //Delete Font
                 psl.Font.Remove(Game.States.Level1.font.parent.id);
@@ -726,6 +735,13 @@ Game = {
                 //Remove Touch Event
                 psl.Input.Remove.Touch.Event.End(Game.States.Level1.callbackTouchEndObject.id);
                 psl.Input.Remove.Touch.Event.End(Game.States.Level1.callbackTouchMoveObject.id);
+                
+                //Make sure no sounds are playing
+                psl.Audio.Stop("whine");
+                psl.Audio.Stop("dig");
+                
+                //Stop any remaining Tweens
+                Game.States.Level1.tween ? psl.Tween.Remove(Game.States.Level1.tween.id): null;
             }
             Game.States.Level1.Execute = function(owner, dt){
                 if(dt){
@@ -753,6 +769,7 @@ Game = {
             }
             Game.States.Level1.callbackTouchEndObject;
             Game.States.Level1.callbackTouchMoveObject;
+            Game.States.Level1.tween = null;
             Game.States.Level1.Instructions = function(){
                     //Font
                 var fontOptions = {
@@ -766,8 +783,9 @@ Game = {
                         drawStroke: true
                     }
                 Game.States.Level1.font = psl.Font.Write("Catch all of the 5's", 525, 450,fontOptions);
-                psl.Tween.Create(32,100,5000,
+                Game.States.Level1.tween = psl.Tween.Create(32,100,5000,
                                 function(size){
+                                    size = size|0;
                                     Game.States.Level1.font.size = size + "px";
                                 },
                                 function(){
@@ -777,18 +795,13 @@ Game = {
                 
             }
             Game.States.Level1.ThrowBalls = function(){
-                Game.Entity.PhysicsWorld.ceiling.physics.onCollision = null;
-                //function(contactNode){
-                //    var startNode = contactNode;
-                //
-                //    do{
-                //        //contactNode.other.GetUserData().Freeze();
-                //    
-                //        // Move the contactNode to the next contact
-                //        contactNode = contactNode.next ? contactNode.next : contactNode;
-                //     
-                //    }while(contactNode != startNode);
-                //}
+                Game.Entity.PhysicsWorld.ceiling.physics.onCollision = function(contactList){
+                    
+                    for(var i = contactList.length - 1; i >= 0; i--){
+                        contactList[i].physics.Pause();
+                    }
+
+                }
                 Game.Entity.dog.graphics.Animation.Set("right_dig");
                     //Dirt
                 Game.Entity.dirt.position[0] = 885;//805;
@@ -802,7 +815,8 @@ Game = {
                         Game.Entity.balls[ev.input|0].position[1] = 745;
                         Game.Entity.balls[ev.input|0].physics.SetPosition([900,745]);
                         Game.Entity.balls[ev.input|0].physics.SetLinearVelocity([-1500,-2500])
-                        Game.Entity.balls[ev.input|0].physics.WakeUp();
+                        Game.Entity.balls[ev.input|0].physics.UnPause();
+                        //Game.Entity.balls[ev.input|0].physics.WakeUp();
                         Game.Entity.balls[ev.input|0].graphics.Enable(); 
                     })            
                 }
@@ -816,37 +830,50 @@ Game = {
                 })
             }
             Game.States.Level1.DropBalls = function(){
-                Game.Entity.basket.physics.onCollision = null;
-                //function(contactNode){
-                //    var startNode = contactNode;
-                //
-                //    do{
-                //        if(contactNode.other.GetUserData().parent.graphics.Animation.currentAnimation.name == "5"){
-                //            psl.Audio.Play("happy");
-                //            contactNode.other.GetUserData().Freeze();
-                //            Game.Entity.dog.graphics.Animation.Set("left_flip");
-                //            Game.Entity.dog.graphics.Animation.onStop = function(){
-                //                Game.Entity.dog.graphics.Animation.Set("left_flip");
-                //                Game.Entity.dog.graphics.Animation.active = false;
-                //                Game.Entity.dog.graphics.Animation.onStop = null;
-                //            }
-                //            
-                //        }
-                //        //else{
-                //        //    psl.Audio.Play("sad");
-                //        //    Game.Entity.dog.graphics.Animation.Set("left_sad");
-                //        //    Game.Entity.dog.graphics.Animation.onStop = function(){
-                //        //        Game.Entity.dog.graphics.Animation.Set("left_flip");
-                //        //        Game.Entity.dog.graphics.Animation.active = false;
-                //        //        Game.Entity.dog.graphics.Animation.onStop = null;
-                //        //    }
-                //        //}
-                //    
-                //        // Move the contactNode to the next contact
-                //        contactNode = contactNode.next ? contactNode.next : contactNode;
-                //     
-                //    }while(contactNode != startNode);
-                //}
+                Game.Entity.basket.physics.onCollision = function(contactList){
+                    for(var i = contactList.length -1; i >= 0; i--){
+                        if(contactList[i].graphics && (contactList[i].physics.type == "circle")){
+                           
+                           if(contactList[i].graphics.Animation.currentAnimation.name == "5"){
+                                psl.Audio.Play("happy");
+                                contactList[i].physics.Pause();
+                                contactList[i].graphics.Disable();
+                                Game.Entity.basket.graphics.Animation.active = true;
+                                Game.Entity.dog.graphics.Animation.Set("left_flip");
+                                Game.Entity.dog.graphics.Animation.onStop = function(){
+                                    Game.Entity.dog.graphics.Animation.Set("left_flip");
+                                    Game.Entity.dog.graphics.Animation.active = false;
+                                    Game.Entity.dog.graphics.Animation.onStop = null;
+                                }
+                            }
+                            else{
+                                psl.Audio.Play("whine");
+                                contactList[i].physics.Pause();
+                                contactList[i].graphics.Disable();
+                                Game.Entity.dog.graphics.Animation.Set("left_sad");
+                                Game.Entity.dog.graphics.Animation.onStop = function(){
+                                    Game.Entity.dog.graphics.Animation.Set("left_flip");
+                                    Game.Entity.dog.graphics.Animation.active = false;
+                                    Game.Entity.dog.graphics.Animation.onStop = null;
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+
+                }
+                for(var i = 0; i <= 10; i++){
+                    psl.Event.Add(i.toString(),i * 500, i, function(ev){
+                        //Game.Entity.balls[ev.input|0].position[0] = 900;
+                        //Game.Entity.balls[ev.input|0].position[1] = 745;
+                        //Game.Entity.balls[ev.input|0].physics.SetPosition([900,745]);
+                        Game.Entity.balls[ev.input|0].physics.SetLinearVelocity([0,0])
+                        Game.Entity.balls[ev.input|0].physics.UnPause();
+                        //Game.Entity.balls[ev.input|0].physics.WakeUp();
+                        Game.Entity.balls[ev.input|0].graphics.Enable(); 
+                    })            
+                }
             }
             Game.States.Level1.TouchMove = function(e){
                 var st  = psl.Input.Get.State.Touch();
