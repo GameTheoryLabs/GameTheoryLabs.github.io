@@ -392,10 +392,10 @@ Game = {
                 Game.Entity.balls[i].graphics.Animation.Add(i.toString());
                 Game.Entity.balls[i].graphics.Animation.Set(i.toString());
                 Game.Entity.balls[i].graphics.Animation.active = false;
-                Game.Entity.balls[i].graphics.Scale([0.5,0.5,0.5]);
+                Game.Entity.balls[i].graphics.Scale([1,1,1]);
                 Game.Entity.balls[i].graphics.Disable();
                 Game.Entity.balls[i].AddPhysics();
-                Game.Entity.balls[i].physics.MakeCircle(16);
+                Game.Entity.balls[i].physics.MakeCircle(32);
                 Game.Entity.balls[i].physics.Pause();
             }
                 //Basket
@@ -814,7 +814,7 @@ Game = {
                         Game.Entity.balls[ev.input|0].position[0] = 900;
                         Game.Entity.balls[ev.input|0].position[1] = 745;
                         Game.Entity.balls[ev.input|0].physics.SetPosition([900,745]);
-                        Game.Entity.balls[ev.input|0].physics.SetLinearVelocity([-1500,-2500])
+                        Game.Entity.balls[ev.input|0].physics.SetLinearVelocity([-1000,-2000])
                         Game.Entity.balls[ev.input|0].physics.UnPause();
                         //Game.Entity.balls[ev.input|0].physics.WakeUp();
                         Game.Entity.balls[ev.input|0].graphics.Enable(); 
@@ -864,14 +864,23 @@ Game = {
 
                 }
                 for(var i = 0; i <= 10; i++){
-                    psl.Event.Add(i.toString(),i * 500, i, function(ev){
+                    psl.Event.Add(i.toString(),i * 1500 + 500, i, function(ev){
                         //Game.Entity.balls[ev.input|0].position[0] = 900;
                         //Game.Entity.balls[ev.input|0].position[1] = 745;
                         //Game.Entity.balls[ev.input|0].physics.SetPosition([900,745]);
-                        Game.Entity.balls[ev.input|0].physics.SetLinearVelocity([0,0])
-                        Game.Entity.balls[ev.input|0].physics.UnPause();
+                        var index = ev.input|0;
+                        Game.Entity.balls[index].physics.onCollision = function(contactList, self){
+                            self.Pause();
+                            self.parent.graphics.Disable();
+                            self.onCollision = null;
+                        }
+                        Game.Entity.balls[index].physics.SetPosition([index * 80, -50])
+                        Game.Entity.balls[index].physics.SetLinearVelocity([0,5]);
+                        Game.Entity.balls[index].physics.SetAngularVelocity(0)
+                        Game.Entity.balls[index].physics.UnPause();
+                        Game.Entity.balls[index].physics.SetRotation(0);
                         //Game.Entity.balls[ev.input|0].physics.WakeUp();
-                        Game.Entity.balls[ev.input|0].graphics.Enable(); 
+                        Game.Entity.balls[index].graphics.Enable(); 
                     })            
                 }
             }

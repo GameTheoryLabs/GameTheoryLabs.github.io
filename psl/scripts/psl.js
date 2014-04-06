@@ -1591,7 +1591,7 @@ com.playstylelabs = (function(){
                 this.parent.rotation[0] = tempRot;
                 
                 if(this.onCollision && this.Contacted()){
-                    this.onCollision(this.GetContactList());
+                    this.onCollision(this.GetContactList(), this);
                 }
             }
         }
