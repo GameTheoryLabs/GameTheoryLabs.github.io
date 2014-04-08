@@ -387,7 +387,7 @@ CaPTIVE = {
     Load: {
         Password: function(){
             var html = "<h2>Enter Password</h2>";
-            html += "<p><input class='textbox' type='text' id='pword' ></p><br/>";
+            html += "<p><input class='textbox' type='password' id='pword' ></p><br/>";
             html += '<a class="button" onclick="CaPTIVE.ProcessPassword()">Submit</a>'
             document.getElementById("modalContent").innerHTML = html;
             document.getElementById("modalCloseButton").style.display = "none";
