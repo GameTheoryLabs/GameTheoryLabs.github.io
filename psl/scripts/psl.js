@@ -19,6 +19,7 @@ com.playstylelabs = (function(){
         
         //
         //  Base Classes
+        //      These are interal to engine
         //
         
         //Priority Queue - https://github.com/STRd6/PriorityQueue.js
@@ -129,7 +130,7 @@ com.playstylelabs = (function(){
                 sorted = false;
               },
               clear: function(){
-                contents = [];
+                return contents.length = 0;
               }
             };
         
@@ -138,7 +139,6 @@ com.playstylelabs = (function(){
         var prioritySortLow = function(a, b) {
           return b.priority - a.priority;
         };
-
         var prioritySortHigh = function(a, b) {
           return a.priority - b.priority;
         };
@@ -305,8 +305,7 @@ com.playstylelabs = (function(){
             
                     return map.listKeys();
             }                                    
-        };
-        
+        }; 
         CMap.prototype.disableLinking = function(){
             this.isLinked = false;
             this.link = Map.noop;
@@ -324,13 +323,11 @@ com.playstylelabs = (function(){
         
             return this;
         };
-        
         CMap.prototype.hash = function(value){
             return value instanceof Object ? (value.__hash ||
                     (value.__hash = 'object ' + ++arguments.callee.current)) :
                     (typeof value) + ' ' + String(value);
         };
-        
         CMap.prototype.hash.current = 0;            
         CMap.prototype.link = function(entry){
                 if(this.size === 0) {
@@ -345,7 +342,6 @@ com.playstylelabs = (function(){
                         this.current.prev = entry;
                 }
         };
-        
         CMap.prototype.unlink = function(entry) {
                 if(this.size === 0)
                         this.current = undefined;
@@ -356,12 +352,10 @@ com.playstylelabs = (function(){
                                 this.current = entry.next;
                 }
         };
-        
         CMap.prototype.get = function(key) {
                 var entry = this[this.hash(key)];
                 return typeof entry === 'undefined' ? undefined : entry.value;
         };
-        
         CMap.prototype.put = function(key, value) {
                 var hash = this.hash(key);
         
@@ -377,7 +371,6 @@ com.playstylelabs = (function(){
         
                 return this;
         };
-        
         CMap.prototype.remove = function(key) {
                 var hash = this.hash(key);
         
@@ -390,36 +383,29 @@ com.playstylelabs = (function(){
         
                 return this;
         };
-        
         CMap.prototype.removeAll = function() {
                 while(this.size)
                         this.remove(this.key());
         
                 return this;
         };
-        
         CMap.prototype.contains = function(key) {
                 return this.hasOwnProperty(this.hash(key));
         };
-       
         CMap.prototype.isUndefined = function(key) {
                 var hash = this.hash(key);
                 return this.hasOwnProperty(hash) ?
                         typeof this[hash] === 'undefined' : false;
         };
-        
         CMap.prototype.next = function() {
                 this.current = this.current.next;
         };
-        
         CMap.prototype.key = function() {
                 return this.current.key;
         };
-        
         CMap.prototype.value = function() {
                 return this.current.value;
         };
-       
         CMap.prototype.each = function(func, thisArg) {
                 if(typeof thisArg === 'undefined')
                         thisArg = this;
@@ -432,7 +418,6 @@ com.playstylelabs = (function(){
         
                 return this;
         };
-        
         CMap.prototype.flip = function(linkEntries) {
                 var map = new Map(linkEntries);
         
@@ -446,7 +431,6 @@ com.playstylelabs = (function(){
         
                 return map;
         };
-        
         CMap.prototype.drop = function(func, thisArg) {
                 if(typeof thisArg === 'undefined')
                         thisArg = this;
@@ -461,7 +445,6 @@ com.playstylelabs = (function(){
         
                 return this;
         };
-        
         CMap.prototype.listValues = function() {
                 var list = [];
         
@@ -470,7 +453,6 @@ com.playstylelabs = (function(){
         
                 return list;
         }
-        
         CMap.prototype.listKeys = function() {
                 var list = [];
         
@@ -479,7 +461,6 @@ com.playstylelabs = (function(){
         
                 return list;
         }
-        
         CMap.prototype.toString = function() {
                 var string = '[object Map';
         
@@ -512,6 +493,9 @@ com.playstylelabs = (function(){
                     var state = new CState(sName);
                     _States.put(sName, state);
                     return state;
+                },
+                Get: function(sName){
+                    return _States.get(sName);
                 }
                 
             }
@@ -524,11 +508,9 @@ com.playstylelabs = (function(){
             var _Enter = function(oMessage){
                 _CurrentState.Enter(owner, oMessage);
             }
-            
             var _Exit = function(oMessage){
                 _CurrentState.Exit(owner, oMessage);
             }
-            
             var _Execute = function(oMessage){
                 _CurrentState.Execute(owner, oMessage);
             }
@@ -573,15 +555,12 @@ com.playstylelabs = (function(){
         CState.prototype.Enter = function(cEntity, oMessage){
             //Override this Method
         }
-        
         CState.prototype.Exit = function(cEntity, oMessage){
             //Override this Method
         }
-        
         CState.prototype.Execute = function(cEntity, oMessage){
             //Override this Method
         }
-        
         
         
         //
@@ -730,7 +709,7 @@ com.playstylelabs = (function(){
                 },
                 Touch: {
                     Event: {
-                        Start: function(){
+                        Start: function(iID){
                             var ev = _TouchEvents.get("START");
                             for(var i = ev.length - 1; i >= 0; i--){
                                 if(ev[i].id == iID){
@@ -746,7 +725,7 @@ com.playstylelabs = (function(){
                                 }
                             }
                         },
-                        Move: function(){
+                        Move: function(iID){
                             var ev = _TouchEvents.get("MOVE");
                             for(var i = ev.length - 1; i >= 0; i--){
                                 if(ev[i].id == iID){
@@ -1047,11 +1026,12 @@ com.playstylelabs = (function(){
 				var sound = new Audio;
 				sound.src = parameters.urls[0];
 				sound.loop = parameters.loop;
-				sound.volume = parameters.volume;
+				sound.volume = +parameters.volume;
 				sound.addEventListener("error", function(){
 					console.log("Error loading sound");
 				});
 				sound.addEventListener("ended", parameters.onend);
+                sound.addEventListener("loadeddata", parameters.onload);
 				sound.load();
                 AudioManager.map.put(id, sound);
             },
@@ -1062,8 +1042,12 @@ com.playstylelabs = (function(){
                 AudioManager.map.get(id).pause();
             },
             Stop: function(id){
-				AudioManager.map.get(id).pause();
-				AudioManager.map.get(id).currentTime = 0;
+                var snd = AudioManager.map.get(id);
+				snd.pause();
+                if (snd.readState == 4) {
+                    snd.currentTime = 0;
+                }
+				
             },
             Volume: function(volume){
                 for(var i = 0; i < AudioManager.map.size; i++, AudioManager.map.next()){
@@ -1179,10 +1163,10 @@ com.playstylelabs = (function(){
                 // Determine options
                 var width = options ? options.width || 0 : 0;
                 var height = options ? options.height || 0 : 0;
-                var position = options ? options.position || [0,0] : [0,0];
-                
+                var position = options ? options.position || [0,0,0] : [0,0,0];
+                var rotation = options ? options.rotation || [0,0,0] : [0,0,0];
                     //options: id: int, canvas: html element, width: 0px, height: 0px, position: [0,0]
-                var ent = new CEntity({id: _nextEntityID++, canvas: EntityManager.canvas, width: width, height: height, position: position });
+                var ent = new CEntity({id: _nextEntityID++, canvas: EntityManager.canvas, width: width, height: height, position: position, rotation: rotation });
                 
                 //Place in Map
                 EntityManager.map.put(ent.id, ent);
@@ -1247,142 +1231,9 @@ com.playstylelabs = (function(){
         }
         
         
-        
         //
         //  Physcis
         //
-        var generatePhysicsWorld = function(){
-                var worldAABB = new b2AABB();
-                worldAABB.minVertex.Set(-63, -832);
-                worldAABB.maxVertex.Set(1088, 832);
-                var gravity = new b2Vec2(0, 350);
-                var doSleep = true;
-                var world = new b2World(worldAABB, gravity, doSleep);
-                return world;
-            }
-        var PhysicsManager = {
-            world: generatePhysicsWorld(),
-            map: new CMap(),
-            Extend: function(oEntity){
-                oEntity.physics = new CPhysics(oEntity);
-                PhysicsManager.map.put(oEntity.id, oEntity.physics);
-            },
-            Update: function(dt){
-                var timeStep = 1.0/60;
-                var iterations = 5;
-                
-                PhysicsManager.world.Step(dt/1000, iterations);
-                
-                for(var i = 0; i < PhysicsManager.map.size; i++, PhysicsManager.map.next()){
-                    if(PhysicsManager.map.value().body){
-                        PhysicsManager.map.value().Update(dt);
-                    }
-                    
-                }
-            },
-            Draw: function(){
-                function drawWorld(world, context) {
-                    for (var j = world.m_jointList; j; j = j.m_next) {
-                        drawJoint(j, context);
-                    }
-                    for (var b = world.m_bodyList; b; b = b.m_next) {
-                        for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
-                            drawShape(s, context);
-                        }
-                    }
-                }
-                function drawJoint(joint, context) {
-                    var b1 = joint.m_body1;
-                    var b2 = joint.m_body2;
-                    var x1 = b1.m_position;
-                    var x2 = b2.m_position;
-                    var p1 = joint.GetAnchor1();
-                    var p2 = joint.GetAnchor2();
-                    context.strokeStyle = '#00eeee';
-                    context.beginPath();
-                    switch (joint.m_type) {
-                    case b2Joint.e_distanceJoint:
-                        context.moveTo(p1.x, p1.y);
-                        context.lineTo(p2.x, p2.y);
-                        break;
-                 
-                    case b2Joint.e_pulleyJoint:
-                        // TODO
-                        break;
-                 
-                    default:
-                        if (b1 == world.m_groundBody) {
-                            context.moveTo(p1.x, p1.y);
-                            context.lineTo(x2.x, x2.y);
-                        }
-                        else if (b2 == world.m_groundBody) {
-                            context.moveTo(p1.x, p1.y);
-                            context.lineTo(x1.x, x1.y);
-                        }
-                        else {
-                            context.moveTo(x1.x, x1.y);
-                            context.lineTo(p1.x, p1.y);
-                            context.lineTo(x2.x, x2.y);
-                            context.lineTo(p2.x, p2.y);
-                        }
-                        break;
-                    }
-                    context.stroke();
-                }
-                function drawShape(shape, context) {
-                    context.strokeStyle = '#000000';
-                    context.fillStyle = '#333333';
-                    
-                    switch (shape.m_type) {
-                    case b2Shape.e_circleShape:
-                        {
-                            var circle = shape;
-                            var pos = circle.m_position;
-                            var r = circle.m_radius;
-                            var segments = 16.0;
-                            var theta = 0.0;
-                            var dtheta = 2.0 * Math.PI / segments;
-                            // draw circle
-                            context.moveTo(pos.x + r, pos.y);
-                            for (var i = 0; i < segments; i++) {
-                                var d = new b2Vec2(r * Math.cos(theta), r * Math.sin(theta));
-                                var v = b2Math.AddVV(pos, d);
-                                context.lineTo(v.x, v.y);
-                                theta += dtheta;
-                            }
-                            context.lineTo(pos.x + r, pos.y);
-                            
-                            // draw radius
-                            context.moveTo(pos.x, pos.y);
-                            var ax = circle.m_R.col1;
-                            var pos2 = new b2Vec2(pos.x + r * ax.x, pos.y + r * ax.y);
-                            context.lineTo(pos2.x, pos2.y);
-                            context.stroke();
-                            context.fill();
-                        }
-                        break;
-                    case b2Shape.e_polyShape:
-                        {
-                            context.beginPath();
-                            var poly = shape;
-                            var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
-                            context.moveTo(tV.x, tV.y);
-                            for (var i = 0; i < poly.m_vertexCount; i++) {
-                                var v = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
-                                context.lineTo(v.x, v.y);
-                            }
-                            context.lineTo(tV.x, tV.y);
-                            context.stroke();
-                            context.fill();
-                        }
-                        break;
-                    }
-                    
-                }
-                
-                drawWorld(this.world, EntityManager.ctx);
-            }
-        }
         var generatePhysicsWorld = function(){
                 var worldAABB = new b2AABB();
                 worldAABB.minVertex.Set(-2000, -2000);
@@ -1516,7 +1367,6 @@ com.playstylelabs = (function(){
             }
         }
         
-        
         var CPhysics = function(oEntity){
             var self = this;
             this.shape = null;
@@ -1594,8 +1444,7 @@ com.playstylelabs = (function(){
                     this.onCollision(this.GetContactList(), this);
                 }
             }
-        }
-        
+        } 
         CPhysics.prototype.GetPosition = function(){
             var tempPos = this.body.GetCenterPosition();
             return [tempPos.x, tempPos.y];
@@ -1614,7 +1463,6 @@ com.playstylelabs = (function(){
         CPhysics.prototype.GetAngularVelocity = function(){
             return this.body.GetAngularVelocity();
         }
-        
         CPhysics.prototype.SetPosition = function(position){
             this.parent.position[0] = position[0];
             this.parent.position[1] = position[1];
@@ -1653,7 +1501,6 @@ com.playstylelabs = (function(){
                 this.body.SetAngularVelocity(velocity);
             }
         }
-        
         CPhysics.prototype.AddForce = function(force, worldPoint){
             // force multiplier so that there is an actual change when trying to add a force of [0,10] to go up 
             var multiplier = 1000000;
@@ -1675,7 +1522,6 @@ com.playstylelabs = (function(){
             this.body.WakeUp();
             this.body.ApplyTorque(torque * multiplier);
         }
-        
         CPhysics.prototype.GetRadius = function(){
             return this.radius;
         }
@@ -1685,7 +1531,6 @@ com.playstylelabs = (function(){
         CPhysics.prototype.GetMass = function(){
             return this.body.GetMass();
         }
-        
         CPhysics.prototype.GetContactList = function(){
             var contacts = [];
             var contactNode = this.body.GetContactList();
@@ -1718,7 +1563,6 @@ com.playstylelabs = (function(){
                 return false;
             }
         }
-        
         CPhysics.prototype.Freeze = function(){
             // This will remove the object from collision detection forever
             // Seemingly no way to get it back other than to recreate the object
@@ -1776,8 +1620,6 @@ com.playstylelabs = (function(){
         //
         var GraphicsManager = {
             map: new CMap(),
-            spritesheets: new CMap(),
-            aniamtions: new CMap(),
             images: new CMap(),
             LoadImage: function(sURL,callback){
                 var img = new CHTMLElement("img");
@@ -2064,14 +1906,11 @@ com.playstylelabs = (function(){
             this.scale[1] = scale[1];
             this.scale[2] = scale[2];
             
-            //if(this.Animation.currentAnimation){
                 var width = this.Animation.currentAnimation.sheet.cellWidth;
                 var height = this.Animation.currentAnimation.sheet.cellHeight;
                 
                 this.offset[0] = ((width *  scale[0]) / 2)|0;
-                this.offset[1] = ((height * scale[1]) / 2)|0;
-            //}
-            
+                this.offset[1] = ((height * scale[1]) / 2)|0;            
 
         }
         CGraphics.prototype.ScaleHTML = function(scale){
@@ -2182,17 +2021,25 @@ com.playstylelabs = (function(){
                 
                 xhr.send();
             },
-            AddFrames: function(target, source){
+            AddFrames: function(sTarget, sSource){
+                var target = AnimationManager.animations.get(sTarget);
+                var source = AnimationManager.animations.get(sSource);
+                
                 for(var i = 0; i < source.frames.length; i++){
                     target.frames.push(source.frames[i]);
                 }
+                target.numOfFrames = target.frames.length;
             },
-            AddFramesReverse: function(target, source){
+            AddFramesReverse: function(sTarget, sSource){
+                var target = AnimationManager.animations.get(sTarget);
+                var source = AnimationManager.animations.get(sSource);
+                
                 for(var i = source.frames.length - 1; i >= 0; i--){
                     target.frames.push(source.frames[i]);
                 }
             },
-            ReverseFrames: function(source){
+            ReverseFrames: function(sSource){
+                var source = AnimationManager.animations.get(sSource);
                 //Create temp array to hold frames
                 var temp = [];
                 
@@ -2544,9 +2391,7 @@ com.playstylelabs = (function(){
             return this.active;
             
         }
-        CTween.prototype.Draw = function(){
-            
-    }
+
         //PUBLIC OBJECTS/METHODS
         return{
             Entity: EntityManager,

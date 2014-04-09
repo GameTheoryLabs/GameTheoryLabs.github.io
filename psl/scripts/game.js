@@ -1,20 +1,22 @@
 window.onload = function(){
-    //Have to create canvas with JavaScript for Ludei to work properly
-    var canvas = document.createElement("canvas");
-    canvas.id = "background";
-    canvas.className = "background";
-    document.body.appendChild(canvas);
     
-    
-    psl = com.playstylelabs.Instance();
-    psl.Entity.canvas = canvas;
     Game.Init();
+    
     
     
 }
 Game = {
     Init: function(){
+        //Have to create canvas with JavaScript for Ludei to work properly
+        var canvas = document.createElement("canvas");
+        canvas.id = "background";
+        canvas.className = "background";
+        document.body.appendChild(canvas);
         
+        
+        psl = com.playstylelabs.Instance();
+        psl.Entity.canvas = canvas;
+    
         //Set up Entity system to use canvas
         psl.Entity.Initialize({useCanvas: true, canvas: psl.Entity.canvas});
         
@@ -172,7 +174,7 @@ Game = {
                 function(){
                     // transform, edit, or create any animations
                         //Right Sit frames are in reverse order
-                    psl.Animation.ReverseFrames(psl.Animation.animations.get("right_sit"));
+                    psl.Animation.ReverseFrames("right_sit");
                     
                     psl.Animation.animations.get("left_dig").loop = true;
                     psl.Animation.animations.get("right_dig").loop = true;
