@@ -31,6 +31,7 @@ CaPTIVE = {
         },
         scene: null,
         model: null,
+        alpha: 1.0,
         Cancers: [],
         Layers: [],
         Dimensions: {
@@ -180,6 +181,7 @@ CaPTIVE = {
                 CaPTIVE.Entity.Sensitivity.yaw = +e.target.value;  
             },
             Alpha: function(e){
+                CaPTIVE.Entity.alpha = +e.target.value;
                 CaPTIVE.Entity.model.Graphics.Set.alphaValue(+e.target.value);
             },
             Scale: function(e){
@@ -2467,9 +2469,35 @@ CaPTIVE = {
                 }
             }
             CaPTIVE.States.S3DViewer.Draw = function(){
-                os.graphics.gl.disable(os.graphics.gl.CULL_FACE);
+                //os.graphics.gl.disable(os.graphics.gl.CULL_FACE);
+                //
+                //if(CaPTIVE.Entity.Cancers.length > 0){
+                //    for(var i = 0; i < CaPTIVE.Entity.Cancers.length; i++){
+                //        if(CaPTIVE.Entity.Cancers[i]){
+                //            CaPTIVE.Entity.Cancers[i].Graphics.Draw();
+                //        }
+                //   }
+                //}
+                //
+                //if(CaPTIVE.Entity.model){
+                //    CaPTIVE.Entity.Orientation.arrows.Graphics.Draw();
+                //    
+                //    os.graphics.gl.enable(os.graphics.gl.CULL_FACE);
+                //    //os.graphics.gl.frontFace(os.graphics.gl.CCW);
+                //    
+                //    os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE);
+                //    
+                //    os.graphics.gl.disable(os.graphics.gl.DEPTH_TEST);
+                //    
+                //    CaPTIVE.Entity.model.Graphics.Draw();
+                //    
+                //    os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE_MINUS_SRC_ALPHA);
+                //    
+                //    os.graphics.gl.enable(os.graphics.gl.DEPTH_TEST);
+                //    
+                //}
                 
-                if(CaPTIVE.Entity.Cancers.length > 0){
+                 if(CaPTIVE.Entity.Cancers.length > 0){
                     for(var i = 0; i < CaPTIVE.Entity.Cancers.length; i++){
                         if(CaPTIVE.Entity.Cancers[i]){
                             CaPTIVE.Entity.Cancers[i].Graphics.Draw();
@@ -2480,18 +2508,18 @@ CaPTIVE = {
                 if(CaPTIVE.Entity.model){
                     CaPTIVE.Entity.Orientation.arrows.Graphics.Draw();
                     
-                    os.graphics.gl.enable(os.graphics.gl.CULL_FACE);
+                    if(CaPTIVE.Entity.alpha < 1.0) {os.graphics.gl.enable(os.graphics.gl.CULL_FACE);}
                     //os.graphics.gl.frontFace(os.graphics.gl.CCW);
                     
-                    os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE);
+                    //os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE);
                     
-                    os.graphics.gl.disable(os.graphics.gl.DEPTH_TEST);
+                    //os.graphics.gl.disable(os.graphics.gl.DEPTH_TEST);
                     
                     CaPTIVE.Entity.model.Graphics.Draw();
                     
-                    os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE_MINUS_SRC_ALPHA);
+                    //os.graphics.gl.blendFunc(os.graphics.gl.SRC_ALPHA, os.graphics.gl.ONE_MINUS_SRC_ALPHA);
                     
-                    os.graphics.gl.enable(os.graphics.gl.DEPTH_TEST);
+                    if(CaPTIVE.Entity.alpha < 1.0) {os.graphics.gl.disable(os.graphics.gl.CULL_FACE);}
                     
                 }
             }
