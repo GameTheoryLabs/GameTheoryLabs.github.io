@@ -1986,8 +1986,8 @@ com.jahova.os.Instance().Cores.Instance().Graphics = (function()
         
                 //Set Clear Color (r,g,b,a)
                 //gl.clearColor(0.0, 0.0, 0.0, 1.0);
-                //gl.clearColor(0.2745, 0.435, 0.812, 1.0);
-                gl.clearColor(0.6275, 0.2353, 0.7843, 1.0);
+                gl.clearColor(0.2745, 0.435, 0.812, 1.0);
+                //gl.clearColor(0.6275, 0.2353, 0.7843, 1.0);
                 
                 //Enable Depth Testing
                 gl.enable(gl.DEPTH_TEST);
