@@ -7,3 +7,5 @@ var worker = new Worker('nested.js');
 worker.addEventListener('message', function(e) {
     self.postMessage('Nested Worker said: '+ e.data);
   }, false);
+
+self.postMessage('Worker Says: Online');
