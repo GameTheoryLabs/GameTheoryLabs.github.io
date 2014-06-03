@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Nested Web Worker Demo</title>
+</head>
+
+<body>
+<p id="log"></p>
+
+<script>
+    var log = document.getElementById("log");
+    
+    log.innerHTML += "Script Loaded";
+    
+    var worker = new Worker('worker.js');
+    
+    worker.addEventListener('message', function(e) {
+        log.innerHTML += '<br/>' + e.data;
+      }, false);
+    
+    worker.postMessage("StartUp");
+</script>
+</body>
+</html>
