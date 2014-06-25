@@ -1,0 +1,57 @@
+<html>
+<head>
+	<title>Remote Console</title>
+	<script type="text/javascript" src="jscolor/jscolor.js"></script>
+	<script src="http://color.gametheorylabs.com:8080/socket.io/socket.io.js"></script>
+	<!--<script src="http://10.0.1.15:8080/socket.io/socket.io.js"></script>-->
+<!--	<script src="http://10.7.68.109:8080/socket.io/socket.io.js"></script>-->
+	<style>
+	.button{
+		box-shadow: 3px 3px 5px #000;
+		background-color: rgb(86, 137, 201);
+		border-radius: 5px;
+		padding-right: 10px;
+		padding-left: 10px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		display: inline-block;
+		margin-left: 10px;
+		font-weight: bolder;
+		cursor: pointer;
+	}
+	.button:hover{
+		box-shadow: 5px 5px 5px #000;
+	
+	}
+	</style>
+</head>
+<body style="background-color: #EBFAFF">
+
+<p id="log">Remote Console <br/></p>
+	<script type="text/javascript">
+	
+		var log = document.getElementById("log");
+
+		
+		//socket = io.connect('10.7.68.109:8080');
+		socket = io.connect('color.gametheorylabs.com:8080');
+		
+		socket.on('connect', function(){
+			socket.send("CONSOLE");
+		});
+		
+		socket.on('message', function(msg){
+			try{
+				log.innerHTML += msg + "<br/>";
+			}
+			catch(e){
+				console.log("Error Setting Color: " + e.toString());
+			}
+			
+		});
+		
+
+	</script>
+
+</body>
+</html>

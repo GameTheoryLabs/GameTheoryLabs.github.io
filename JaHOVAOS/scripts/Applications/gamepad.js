@@ -2174,6 +2174,10 @@ var GPLoad = {
                 os.audio.Play("chirp");
                 os.audio.Pause(GPObject.CurrentSong);
             }
+            else if(String.fromCharCode(e.keyCode) == "L"){  //Disable Lighting
+                os.audio.Play("chirp");
+                
+            }
             else if(e.keyCode == 27){                       //Pause Game and show Menu
                 os.graphics.Pause();
                 //Add Targeting Reticles
@@ -2259,6 +2263,7 @@ var GPLoad = {
         os.input.Register.Keyboard.Event.Keydown("O",Actions);
         os.input.Register.Keyboard.Event.Keydown("P",Actions);
         os.input.Register.Keyboard.Event.Keydown("Z",Actions);
+        os.input.Register.Keyboard.Event.Keydown("L",Actions);
         os.input.Register.Keyboard.Event.Keydown(27,Actions);
         
         os.input.Register.Gamepad.Event.Connected(GPConnected);
