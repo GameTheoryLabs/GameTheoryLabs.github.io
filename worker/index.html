@@ -12,7 +12,14 @@
     var log = document.getElementById("log");
     
     log.innerHTML += "Script Loaded";
+    if(SharedWorker){
+        log.innerHTML +="<br/>Shared Worker IS supported";
+    }
+    else{
+        log.innerHTML += "<br/>SharedWorker NOT supported";
+    }
     
+    log.innerHTML += "<br/>Creating Worker";
     var worker = new Worker('worker.js');
     
     worker.addEventListener('message', function(e) {
