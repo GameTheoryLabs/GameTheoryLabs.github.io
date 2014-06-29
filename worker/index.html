@@ -12,12 +12,18 @@
     var log = document.getElementById("log");
     
     log.innerHTML += "Script Loaded";
-    if(SharedWorker){
-        log.innerHTML +="<br/>Shared Worker IS supported";
+    try{
+        if(SharedWorker){
+            log.innerHTML +="<br/>Shared Worker IS supported";
+        }
+        else{
+            log.innerHTML += "<br/>SharedWorker NOT supported";
+        }
     }
-    else{
+    catch(e){
         log.innerHTML += "<br/>SharedWorker NOT supported";
     }
+
     
     log.innerHTML += "<br/>Creating Worker";
     var worker = new Worker('worker.js');
