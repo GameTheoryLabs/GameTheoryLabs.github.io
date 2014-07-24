@@ -1,0 +1,1 @@
+[{"name":"Dodecahedron","price":2.95,"description":" multiple sides","canPurchase":true,"reviews":[{"stars":5,"body":"I love this product","author":"me@domain.com"}]},{"name":"Pentagon","price":5.95,"description":" 5 sides ","canPurchase":true,"reviews":[]},{"name":"Hexagon","price":6.95,"description":" 6 sides","canPurchase":false,"reviews":[]}] 
