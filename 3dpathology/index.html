@@ -1,127 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+  <meta charset="utf-8">
+  <title>3D Pathology</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
 
-    <title>Scrolling Nav - Start Bootstrap Template</title>
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/scrolling-nav.css" rel="stylesheet">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="img/favicon.png">
+  
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+	<script type="text/javascript" src="js/scrolling-nav.js"></script>
+	<script type="text/javascript" src="js/scripts.js"></script>
 </head>
 
-<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+<body id='home'>
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+<div class="container">
+  <!--<video class="videobg" autoplay="" loop="" muted="">
+	<source src="img/CaPTIVE.mp4" type="video/mp4">
+  </video>-->
+  
+  
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+			<!--<nav class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">-->
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand page-scroll" href="#home">3DPathology</a>
+				</div>
+				
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li >
+							<a class='page-scroll' href="#technique">Technique</a>
+						</li>
+						<li>
+							<a class='page-scroll' href="#benefits">Benefits</a>
+						</li>
+						<li>
+							<a class='page-scroll' href="#contact">Contact</a>
+						</li>
+						
+					</ul>
+					
+					
+				</div>
+				
+			</nav>
+		  
+		</div>
+	</div>
+	<div  class="row clearfix">
+		<div class="col-md-6 column">
+		  <video class="video" autoplay="" loop="" muted="">
+			<!--<source src="https://secure152.inmotionhosting.com/~urbang13/static/video/intromovie.webm" type="video/webm">-->
+			<source src="img/CancerModel.mp4" type="video/mp4">
+		  </video>
+		</div>
+		<div class="col-md-6 column">
+		  <!--http://bootsnipp.com/snippets/featured/fade-quote-carousel-->
+			  <section id="carousel">    				
+						<div class="quote"><i class="fa fa-quote-left fa-4x"></i></div>
+						<div class="carousel slide" id="fade-quote-carousel" data-ride="carousel" data-interval="3000">
+						  <!-- Carousel indicators -->
+						  <ol class="carousel-indicators">
+							<li data-target="#fade-quote-carousel" data-slide-to="0" class="active"></li>
+							<li data-target="#fade-quote-carousel" data-slide-to="1"></li>
+							<li data-target="#fade-quote-carousel" data-slide-to="2"></li>
+							<li data-target="#fade-quote-carousel" data-slide-to="3"></li>
+							<li data-target="#fade-quote-carousel" data-slide-to="4"></li>
+							<li data-target="#fade-quote-carousel" data-slide-to="5"></li>
+						  </ol>
+						  <!-- Carousel items -->
+						  <div class="carousel-inner">
+							<div class="active item">
+								<blockquote>
+									<p>There are over 300,000 new breast cancer cases <br/>each year in the United States</p>
+								</blockquote>
+								
+							</div>
+							<div class="item">
+								<blockquote>
+									<p>Breast Cancer is the most common <br/>non-skin cancer in women</p>
+								</blockquote>
+								
+							</div>
+							<div class="item">
+								<blockquote>
+									<p>Breast Cancer is the second leading cause of cancer-related deat in women (behind lung cancer)</p>
+								</blockquote>
+								
+							</div>
+							<div class="item">
+								<blockquote>
+									<p>Greater than 95% of new diagnosed cases <br/>will undergo surgery</p>
+								</blockquote>
+								
+							</div>
+							<div class="item">
+								<blockquote>
+									<p>Approximately 75% of newly diagnosed cases are candidates for Breast Conserving Surgery (Lumpectomy or Partial Mastecomy)</p>
+								</blockquote>
+								
+							</div>
+							<div class="item">
+								<blockquote>
+									<p>Lumpectomy followed by Radiation Therapy is equal to Mastectomy in Survival Rate</p>
+								</blockquote>
+								
+							</div>
+						  </div>
+						</div>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Start Bootstrap</a>
-            </div>
+		</section>
+		</div>
+	</div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav">
-                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-                    <li class="hidden">
-                        <a class="page-scroll" href="#page-top"></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#services">Services</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+	</div>
+	<div id='technique'></div>
+	<br/>
+	<div  class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<h3 class="well text-left">
+						TECHNIQUE
+					</h3>
+				</div>
+			</div>
+			<div class="row clearfix">
+				<div class="col-md-6 column">
+					<div class="media">
+						 <div class="">
+						  <video class="video" autoplay="" loop="" muted="">
+							<!--<source src="https://secure152.inmotionhosting.com/~urbang13/static/video/intromovie.webm" type="video/webm">-->
+							<source src="img/CaPTIVE.mp4" type="video/mp4">
+						  </video>
+						 </div>
+						<div class="media-body">
+							
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 column">
+					<ol class="boxes-list">
+						<li>
+							Intact Specimen - 3D Scanned
+						</li>
+						<li>
+							Entire specimen cross-sectioned and totally submitted for microscopic examination
+						</li>
+						<li>
+							Each parallel cross-section oriented into consecutive layers
+						</li>
+						<li>
+							Layers with tumor "inserted" into 3D Pathology Framework
+						</li>
+						<li>
+							Distance from outer surface of tumor to outer surface of biopsy maintained
+						</li>
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+<div id='benefits'></div>
+	<br/>
+	<div  class="row clearfix">
+		<div class="col-md-12 column">
+		  <h3 class="well text-left">
+						BENEFITS
+		  </h3>
+		</div>
+	</div>
+	<div id='contact'></div>
+	<br/>
+	<div class="row clearfix">
+		
+		<div class="col-md-6 column">
+		  <ul class="list-group">
+			<li class="list-group-item">Patient can <u>see</u> results first hand</li>
+			<li class="list-group-item">Margin status is quantified - "ruler" for thickness of normal surrounding tissue</li>
+			<li class="list-group-item">Surgeon better understands the completeness of the srugical removal</li>
+			<li class="list-group-item">Improved surgical selection technique following incomplete removal</li>
+			<li class="list-group-item">Malpractice defense</li>
+			<li class="list-group-item">Selection for superior surgical skills</li>
+			<li class="list-group-item">Surgical resident training</li>
+		  </ul>
+		</div>
+		<div class="col-md-6 column">
+		  <img class="img-responsive" src="img/slice.jpg">
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+		  <h3 class="well text-left">
+						CONTACT
+		  </h3>
+		</div>
+	</div>
+	<div class="row clearfix">
+	  <div class="col-md-6 column ">
+		<p class="lead text-center "><br/><br/><br/><br/>Please use the contact form to request information on the exciting opporotunies avaliable from 3DPathology </p>
+	  </div>
+	  <div class="col-md-6 column">
+		  <script type="text/javascript">var submitted=false;</script>
+		  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){window.location='https://docs.google.com/forms/d/1pYZIuF6cOaUsfoPVbbzvoEFO2vYSo3GLoLtcGCZEFwY/formResponse';}"></iframe>
+		  <form class='form-inline' action="https://docs.google.com/forms/d/1pYZIuF6cOaUsfoPVbbzvoEFO2vYSo3GLoLtcGCZEFwY/formResponse" method="post" target="hidden_iframe" onsubmit="submitted=true;">
+			<div class="form-group">
+			<ol role="list" class="ss-question-list" style="padding-left: 0">
+			<div class="ss-form-question errorbox-good" role="listitem">
+			<div dir="ltr" class="ss-item ss-item-required ss-paragraph-text"><div class="ss-form-entry">
+			<label class="ss-q-item-label" for="entry_201882793"><div class="ss-q-title">Please enter your contact information 
+			<label for="itemView.getDomIdToLabel()" aria-label="(Required field)"></label>
+			<span class="ss-required-asterisk" aria-hidden="true">*</span></div>
+			<div class="ss-q-help ss-secondary-text" dir="ltr"></div></label>
+			<textarea class="form-control" name="entry.201882793" rows="8" cols="0" class="ss-q-long" id="entry_201882793" dir="auto" aria-label="Please enter your contact information " aria-required="true" required=""></textarea>
+			<div class="error-message" id="178304517_errorMessage"></div></div></div></div>
+			</div>
 
-    <!-- Intro Section -->
-    <section id="intro" class="intro-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Scrolling Nav</h1>
-                    <p><strong>Usage Instructions:</strong> Make sure to include the <code>scrolling-nav.js</code>, <code>jquery.easing.min.js</code>, and <code>scrolling-nav.css</code> files. To make a link smooth scroll to another section on the page, give the link the <code>.page-scroll</code> class and set the link target to a corresponding ID on the page.</p>
-                    <a class="btn btn-default page-scroll" href="#about">Click Me to Scroll Down!</a>
-                </div>
-            </div>
-        </div>
-    </section>
+			<div class="ss-form-question errorbox-good" role="listitem">
+			<div dir="ltr" class="ss-item  ss-paragraph-text"><div class="ss-form-entry">
+			<label class="ss-q-item-label" for="entry_1618919617"><div class="ss-q-title">Enter request below
+			</div>
+			<div class="ss-q-help ss-secondary-text " dir="ltr"></div></label>
+			<textarea class="form-control" name="entry.1618919617" rows="8" cols="0" class="ss-q-long" id="entry_1618919617" dir="auto" aria-label="Enter request below Enter request below "></textarea>
+			<div class="error-message" id="1977159495_errorMessage"></div>
+			
+			</div></div></div>
+			<input type="hidden" name="draftResponse" value="[,,&quot;-2947256516617666435&quot;]
+			">
+			<input type="hidden" name="pageHistory" value="0">
+			
+			
+			<input type="hidden" name="fbzx" value="-2947256516617666435">
 
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>About Section</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Services Section</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Contact Section</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-
-    <!-- Scrolling Nav JavaScript -->
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/scrolling-nav.js"></script>
-
+			<div class="ss-item ss-navigate"><table id="navigation-table"><tbody><tr><td class="ss-form-entry goog-inline-block" id="navigation-buttons" dir="ltr">
+			<input type="submit" name="submit" value="Submit" id="ss-submit" class="jfk-button jfk-button-action btn btn-primary">
+			<div class="ss-password-warning ss-secondary-text">Never submit passwords through Google Forms.</div></td>
+			</tr></tbody></table></div></ol>
+			</div>
+		  </form>
+		</div>
+		
+	</div>
+		
+		
+</div>
 </body>
-
 </html>
