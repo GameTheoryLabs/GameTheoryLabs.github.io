@@ -784,47 +784,47 @@ var GPLoad = {
             this.type = ((rawGamepad.id).toUpperCase()).indexOf("PLAYSTATION") < 0 ? "XBOX" : "PLAYSTATION";
             this.Dpad ={
                 Up: function(){
-                    return raw.buttons[self.indicies.Dpad.up]
+                    return raw.buttons[self.indicies.Dpad.up].value;
                 },
                 Down: function(){
-                    return raw.buttons[self.indicies.Dpad.down]
+                    return raw.buttons[self.indicies.Dpad.down].value;
                 },
                 Left: function(){
-                    return raw.buttons[self.indicies.Dpad.left]
+                    return raw.buttons[self.indicies.Dpad.left].value;
                 },
                 Right: function(){
-                    return raw.buttons[self.indicies.Dpad.right]
+                    return raw.buttons[self.indicies.Dpad.right].value;
                 }
             }
             this.LeftShoulder ={
                 Top: function(){
-                    return raw.buttons[self.indicies.LeftShoulder.top]
+                    return raw.buttons[self.indicies.LeftShoulder.top].value;
                 },
                 Bottom: function(){
-                    return raw.buttons[self.indicies.LeftShoulder.bottom]
+                    return raw.buttons[self.indicies.LeftShoulder.bottom].value;
                 }
             }           
             this.RightShoulder ={
                 Top: function(){
-                    return raw.buttons[self.indicies.RightShoulder.top]
+                    return raw.buttons[self.indicies.RightShoulder.top].value;
                 },
                 Bottom: function(){
-                    return raw.buttons[self.indicies.RightShoulder.bottom]
+                    return raw.buttons[self.indicies.RightShoulder.bottom].value;
                 }
             }
             
             this.Buttons = {
                 Top: function(){
-                    return raw.buttons[self.indicies.Buttons.top]
+                    return raw.buttons[self.indicies.Buttons.top].value;
                 },
                 Bottom: function(){
-                    return raw.buttons[self.indicies.Buttons.bottom]
+                    return raw.buttons[self.indicies.Buttons.bottom].value;
                 },
                 Left: function(){
-                    return raw.buttons[self.indicies.Buttons.left]
+                    return raw.buttons[self.indicies.Buttons.left].value;
                 },
                 Right: function(){
-                    return raw.buttons[self.indicies.Buttons.right]
+                    return raw.buttons[self.indicies.Buttons.right].value;
                 }
             }
             this.LeftStick = {
@@ -835,7 +835,7 @@ var GPLoad = {
                     return raw.axes[self.indicies.LeftStick.y]
                 },
                 Button: function(){
-                    return raw.buttons[self.indicies.LeftStick.button]
+                    return raw.buttons[self.indicies.LeftStick.button].value;
                 }
             }
             this.RightStick ={
@@ -846,12 +846,12 @@ var GPLoad = {
                     return raw.axes[self.indicies.RightStick.y]
                 },
                 Button: function(){
-                    return raw.buttons[self.indicies.RightStick.button]
+                    return raw.buttons[self.indicies.RightStick.button].value;
                 }
             }
             
-            this.Select = function(){ return raw.buttons[self.indicies.select];}
-            this.Start =  function(){ return raw.buttons[self.indicies.start];}
+            this.Select = function(){ return raw.buttons[self.indicies.select].value;}
+            this.Start =  function(){ return raw.buttons[self.indicies.start].value;}
 
             this.Delete = function(){
                 os.input.Gamepads.current.remove(this.id);
