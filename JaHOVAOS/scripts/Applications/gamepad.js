@@ -1153,9 +1153,9 @@ var GPLoad = {
                     // is the most modern one, the second is there for compatibility with
                     // slightly older versions of Chrome, but it shouldn’t be necessary
                     // for long.
-                    os.input.Gamepads.Raw.current =
-                        (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
-                        navigator.webkitGamepads;
+                    os.input.Gamepads.Raw.current = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+                        // (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
+                        // navigator.webkitGamepads;
                 
                     if (os.input.Gamepads.Raw.current) {
                       // We don’t want to use rawGamepads coming straight from the browser,
