@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Tesh Sports: Team Overview</title>
+<!--
+    <script src="http://127.0.0.1:8000/socket.io/socket.io.js"></script>
+    <script src="http://10.0.1.15:8000/socket.io/socket.io.js"></script>
+    <script src="http://gametheorylabs.com:8000/socket.io/socket.io.js"></script>-->   
+    <script type="text/javascript" src="scripts/Applications/application.js" ></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/app.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/gtlMenu.css" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/icon.ico" />
+    <link rel="apple-touch-icon" href="images/icon.png"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-startup-image" href="images/logo.png"/>
+</head>
+
+<body>
+    <div id="overview">
+        <div id="vs">
+            <div class="circle darkblue"></div>
+            <div class="font">VS</div>
+            <div class="circle gold"></div>
+        </div>
+        <div id="teams" class="teams darkblue">
+            <div id="blueTeam" class="team">
+                
+                <div class="cardHolder">
+                    <div class="idWrapper">
+                        <div class="teamID">BLUE</div>
+                    </div>
+                    <div id='p1' class="playerCard" >
+                        <div id="p1Front" class="max">
+                            <img src="images/Players/p1.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led green"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Online
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="p1Back" class="max hide">
+                            <div id="data1"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                    </div>
+                    <div id='p2' class="playerCard" >
+                        <div id="p2Front" class="max">
+                            <img src="images/Players/p2.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led green"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Online
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="p2Back" class="max hide">
+                            <div id="data2"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                    </div>
+                    <div id='p3' class="playerCard" >
+                        <div id="front" class="max">
+                            <img src="images/Players/p3.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Ofline
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="back" class="max hide">
+                            <div id="data"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                    </div>
+                    
+                </div>
+        </div>
+            
+            <div id="goldTeam" class="team">
+                <div class="cardHolder">
+                    <div class="idWrapper">
+                        <div class="teamID">GOLD</div>
+                    </div>
+                    <div id='p4' class="playerCard" >
+                        <div id="front" class="max">
+                            <img src="images/Players/p4.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Offline
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="back" class="max hide">
+                            <div id="data"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                    </div>
+                    <div id='p5' class="playerCard" >
+                        <div id="front" class="max">
+                            <img src="images/Players/p5.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Offline
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="back" class="max hide">
+                            <div id="data"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                        </div>
+                    <div id='p6' class="playerCard" >
+                        <div id="front" class="max">
+                            <img src="images/Players/p6.png"/>
+                            <div class='lights'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Offline
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led yellow"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Team Placement
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="led red"></div>
+                                        </td>
+                                        <td class="cardFont">
+                                            Overall Placement
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="stats" class="datagrid">
+                                <p>Standings</p>
+                                <table>
+                                    <tbody>
+                                        <tr class="alt">
+                                            <td>Intensity</td>
+                                            <td id="">85%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% Complete</td>
+                                            <td id="">50%</td>
+                                        </tr>
+                                        <tr class="alt">
+                                            <td>Standing</td>
+                                            <td id="">5 of 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Heart Rate</td>
+                                            <td id="">120bpm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>             
+                            </div>
+                        </div>
+                        <div id="back" class="max hide">
+                            <div id="data"></div>
+                            <a href="#" title="Close" class="close">X</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+<div id='p1' class="playerCard hide" style="position:absolute; top: 50px;">
+    <div id="front" class="max">
+        <img src="images/Players/p1.png"/>
+        <div class='lights'>
+            <table>
+                <tr>
+                    <td>
+                        <div class="led green"></div>
+                    </td>
+                    <td class="cardFont">
+                        Online
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="led yellow"></div>
+                    </td>
+                    <td class="cardFont">
+                        Team Placement
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="led red"></div>
+                    </td>
+                    <td class="cardFont">
+                        Overall Placement
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="stats" class="datagrid">
+            <p>Standings</p>
+            <table>
+                <tbody>
+                    <tr class="alt">
+                        <td>Intensity</td>
+                        <td id="">85%</td>
+                    </tr>
+                    <tr>
+                        <td>% Complete</td>
+                        <td id="">50%</td>
+                    </tr>
+                    <tr class="alt">
+                        <td>Standing</td>
+                        <td id="">5 of 6</td>
+                    </tr>
+                    <tr>
+                        <td>Avg Heart Rate</td>
+                        <td id="">120bpm</td>
+                    </tr>
+                </tbody>
+            </table>             
+        </div>
+    </div>
+    <div id="back" class="max hide">
+        <div id="data"></div>
+        <a href="#" title="Close" class="close">X</a>
+    </div>
+</div>
+<script>
+/**
+ * Dark blue theme for Highcharts JS
+ * @author Torstein H¿nsi
+ */
+
+Highcharts.theme = {
+   colors: ["#DDDF0D", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, 'rgb(48, 48, 96)'],
+            [1, 'rgb(0, 0, 0)']
+         ]
+      },
+      borderColor: '#000000',
+      borderWidth: 2,
+      className: 'dark-container',
+      plotBackgroundColor: 'rgba(255, 255, 255, .1)',
+      plotBorderColor: '#CCCCCC',
+      plotBorderWidth: 1
+   },
+   title: {
+      style: {
+         color: '#C0C0C0',
+         font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#666666',
+         font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#333333',
+      gridLineWidth: 1,
+      labels: {
+         style: {
+            color: '#A0A0A0'
+         }
+      },
+      lineColor: '#A0A0A0',
+      tickColor: '#A0A0A0',
+      title: {
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#333333',
+      labels: {
+         style: {
+            color: '#A0A0A0'
+         }
+      },
+      lineColor: '#A0A0A0',
+      minorTickInterval: null,
+      tickColor: '#A0A0A0',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   toolbar: {
+      itemStyle: {
+         color: 'silver'
+      }
+   },
+   plotOptions: {
+      line: {
+         dataLabels: {
+            color: '#CCC'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      spline: {
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      scatter: {
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      candlestick: {
+         lineColor: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         font: '9pt Trebuchet MS, Verdana, sans-serif',
+         color: '#A0A0A0'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#444'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#CCC'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         hoverSymbolStroke: '#FFFFFF',
+         theme: {
+            fill: {
+               linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+               stops: [
+                  [0.4, '#606060'],
+                  [0.6, '#333333']
+               ]
+            },
+            stroke: '#000000'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+         stroke: '#000000',
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold'
+         },
+         states: {
+            hover: {
+               fill: {
+                  linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                  stops: [
+                     [0.4, '#BBB'],
+                     [0.6, '#888']
+                  ]
+               },
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: {
+                  linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                  stops: [
+                     [0.1, '#000'],
+                     [0.3, '#333']
+                  ]
+               },
+               stroke: '#000000',
+               style: {
+                  color: 'yellow'
+               }
+            }
+         }
+      },
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(16, 16, 16, 0.5)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+      barBorderColor: '#CCC',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+      buttonBorderColor: '#CCC',
+      rifleColor: '#FFF',
+      trackBackgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+         stops: [
+            [0, '#000'],
+            [1, '#333']
+         ]
+      },
+      trackBorderColor: '#666'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   legendBackgroundColorSolid: 'rgb(35, 35, 70)',
+   dataLabelsColor: '#444',
+   textColor: '#C0C0C0',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
+$(function () {
+    $(document).ready(function() {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+    
+        var chart;
+        $('#data1').highcharts({
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                events: {
+                    load: function() {
+    
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        setInterval(function() {
+                            var x = (new Date()).getTime(), // current time
+                                y = Math.random();
+                            series.addPoint([x, y], true, true);
+                        }, 1000);
+                    },
+                    
+                }
+            },
+            events: {
+                
+            }, 
+            title: {
+                text: 'Live Random Data'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+    
+                }
+            },
+            series: [{
+                name: 'Activity Data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+    
+                    for (i = -19; i <= 0; i++) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                })()
+            }]
+
+        });
+        
+        $('#data2').highcharts({
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                events: {
+                    load: function() {
+    
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        setInterval(function() {
+                            var x = (new Date()).getTime(), // current time
+                                y = Math.random();
+                            series.addPoint([x, y], true, true);
+                        }, 1000);
+                    },
+                    
+                }
+            },
+            events: {
+                
+            }, 
+            title: {
+                text: 'Live Random Data'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+    
+                }
+            },
+            series: [{
+                name: 'Activity Data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+    
+                    for (i = -19; i <= 0; i++) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                })()
+            }]
+
+        });
+        $('#data1').highcharts().chartHeight = 275;
+        $('#data1').highcharts().chartWidth = 450;
+        
+        $('#data2').highcharts().chartHeight = 275;
+        $('#data2').highcharts().chartWidth = 450;
+        
+        document.getElementById("p1").addEventListener("click", function(e){
+            e.stopPropagation();
+            var el = document.getElementById("p1");
+            if(el.className.search("landscape") >= 0){
+                document.getElementById("p1Front").className = "max";
+                document.getElementById("p1Back").className = "max hide";
+                el.className = "playerCard";
+            }
+            else{
+                document.getElementById("p1Front").className = "max hide";
+                document.getElementById("p1Back").className = "max";
+                el.className = "playerCard landscape";
+                $('#data1').highcharts().chartHeight = 275;
+                $('#data1').highcharts().chartWidth = 450;
+            }
+        
+        });
+        
+        document.getElementById("p2").addEventListener("click", function(e){
+            e.stopPropagation();
+            var el = document.getElementById("p2");
+            if(el.className.search("landscape") >= 0){
+                document.getElementById("p2Front").className = "max";
+                document.getElementById("p2Back").className = "max hide";
+                el.className = "playerCard";
+            }
+            else{
+                document.getElementById("p2Front").className = "max hide";
+                document.getElementById("p2Back").className = "max";
+                el.className = "playerCard landscape";
+                $('#data2').highcharts().chartHeight = 275;
+                $('#data2').highcharts().chartWidth = 450;
+            }
+        
+        });
+    });
+    
+});
+</script>
+</body>
+</html>

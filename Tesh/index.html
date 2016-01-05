@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Tesh Sports: Player Card</title>
+<!--
+    <script src="http://127.0.0.1:8000/socket.io/socket.io.js"></script>
+    <script src="http://10.0.1.15:8000/socket.io/socket.io.js"></script>
+    <script src="http://gametheorylabs.com:8000/socket.io/socket.io.js"></script>-->   
+    <script type="text/javascript" src="scripts/Applications/application.js" ></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/app.css" />
+    <link type="text/css" media="screen" charset="utf-8" rel="stylesheet" rev="stylesheet" href="styles/gtlMenu.css" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/icon.ico" />
+    <link rel="apple-touch-icon" href="images/icon.png"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-startup-image" href="images/logo.png"/>
+</head>
+
+<body>
+<div id='p1' class="playerCard" style="position:absolute; top: 50px;">
+    <div id="front" class="max">
+        <img src="images/Players/p1.png"/>
+        <div class='lights'>
+            <table>
+                <tr>
+                    <td>
+                        <div class="led green"></div>
+                    </td>
+                    <td class="cardFont">
+                        Online
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="led yellow"></div>
+                    </td>
+                    <td class="cardFont">
+                        Team Placement
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="led red"></div>
+                    </td>
+                    <td class="cardFont">
+                        Overall Placement
+                    </td>
+                </tr>
+            </table>
+            <!--<div class="led green"></div>
+            <div class="led yellow"></div>
+            <div class="led red"></div>-->
+        </div>
+        <div id="stats" class="datagrid">
+            <p>Standings</p>
+            <table>
+                <tbody>
+                    <tr class="alt">
+                        <td>Intensity</td>
+                        <td id="">85%</td>
+                    </tr>
+                    <tr>
+                        <td>% Complete</td>
+                        <td id="">50%</td>
+                    </tr>
+                    <tr class="alt">
+                        <td>Standing</td>
+                        <td id="">5 of 6</td>
+                    </tr>
+                    <tr>
+                        <td>Avg Heart Rate</td>
+                        <td id="">120bpm</td>
+                    </tr>
+                </tbody>
+            </table>             
+        </div>
+    </div>
+    <div id="back" class="max hide">
+        <div id="data"></div>
+        <a href="#" title="Close" class="close">X</a>
+    </div>
+</div>
+<script>
+/**
+ * Dark blue theme for Highcharts JS
+ * @author Torstein H¿nsi
+ */
+
+Highcharts.theme = {
+   colors: ["#DDDF0D", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, 'rgb(48, 48, 96)'],
+            [1, 'rgb(0, 0, 0)']
+         ]
+      },
+      borderColor: '#000000',
+      borderWidth: 2,
+      className: 'dark-container',
+      plotBackgroundColor: 'rgba(255, 255, 255, .1)',
+      plotBorderColor: '#CCCCCC',
+      plotBorderWidth: 1
+   },
+   title: {
+      style: {
+         color: '#C0C0C0',
+         font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#666666',
+         font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#333333',
+      gridLineWidth: 1,
+      labels: {
+         style: {
+            color: '#A0A0A0'
+         }
+      },
+      lineColor: '#A0A0A0',
+      tickColor: '#A0A0A0',
+      title: {
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#333333',
+      labels: {
+         style: {
+            color: '#A0A0A0'
+         }
+      },
+      lineColor: '#A0A0A0',
+      minorTickInterval: null,
+      tickColor: '#A0A0A0',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   toolbar: {
+      itemStyle: {
+         color: 'silver'
+      }
+   },
+   plotOptions: {
+      line: {
+         dataLabels: {
+            color: '#CCC'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      spline: {
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      scatter: {
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      candlestick: {
+         lineColor: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         font: '9pt Trebuchet MS, Verdana, sans-serif',
+         color: '#A0A0A0'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#444'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#CCC'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         hoverSymbolStroke: '#FFFFFF',
+         theme: {
+            fill: {
+               linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+               stops: [
+                  [0.4, '#606060'],
+                  [0.6, '#333333']
+               ]
+            },
+            stroke: '#000000'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+         stroke: '#000000',
+         style: {
+            color: '#CCC',
+            fontWeight: 'bold'
+         },
+         states: {
+            hover: {
+               fill: {
+                  linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                  stops: [
+                     [0.4, '#BBB'],
+                     [0.6, '#888']
+                  ]
+               },
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: {
+                  linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                  stops: [
+                     [0.1, '#000'],
+                     [0.3, '#333']
+                  ]
+               },
+               stroke: '#000000',
+               style: {
+                  color: 'yellow'
+               }
+            }
+         }
+      },
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(16, 16, 16, 0.5)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+      barBorderColor: '#CCC',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+               [0.4, '#888'],
+               [0.6, '#555']
+            ]
+         },
+      buttonBorderColor: '#CCC',
+      rifleColor: '#FFF',
+      trackBackgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+         stops: [
+            [0, '#000'],
+            [1, '#333']
+         ]
+      },
+      trackBorderColor: '#666'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   legendBackgroundColorSolid: 'rgb(35, 35, 70)',
+   dataLabelsColor: '#444',
+   textColor: '#C0C0C0',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
+$(function () {
+    $(document).ready(function() {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+    
+        var chart;
+        $('#data').highcharts({
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                events: {
+                    load: function() {
+    
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        setInterval(function() {
+                            var x = (new Date()).getTime(), // current time
+                                y = Math.random();
+                            series.addPoint([x, y], true, true);
+                        }, 1000);
+                    },
+                    //click: function(e){
+                    //    e.stopPropagation();
+                    //    var el = document.getElementById("p1");
+                    //    if(el.className.search("landscape") >= 0){
+                    //        document.getElementById("front").className = "max";
+                    //        document.getElementById("back").className = "max hide";
+                    //        el.className = "playerCard";
+                    //    }
+                    //    else{
+                    //        document.getElementById("front").className = "max hide";
+                    //        document.getElementById("back").className = "max";
+                    //        el.className = "playerCard landscape";
+                    //        $('#back').highcharts().chartHeight = 275;
+                    //        $('#back').highcharts().chartWidth = 450;
+                    //    }
+                    //}
+                }
+            },
+            events: {
+                //click: function(e){
+                //    e.stopPropagation();
+                //    var el = document.getElementById("p1");
+                //    if(el.className.search("landscape") >= 0){
+                //        document.getElementById("front").className = "max";
+                //        document.getElementById("back").className = "max hide";
+                //        el.className = "playerCard";
+                //    }
+                //    else{
+                //        document.getElementById("front").className = "max hide";
+                //        document.getElementById("back").className = "max";
+                //        el.className = "playerCard landscape";
+                //        $('#back').highcharts().chartHeight = 275;
+                //        $('#back').highcharts().chartWidth = 450;
+                //    }
+                //}
+            }, 
+            title: {
+                text: 'Live Random Data'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    //events: {
+                    //    click: function(e) {
+                    //        e.stopPropagation();
+                    //        var el = document.getElementById("p1");
+                    //        if(el.className.search("landscape") >= 0){
+                    //            document.getElementById("front").className = "max";
+                    //            document.getElementById("back").className = "max hide";
+                    //            el.className = "playerCard";
+                    //        }
+                    //        else{
+                    //            document.getElementById("front").className = "max hide";
+                    //            document.getElementById("back").className = "max";
+                    //            el.className = "playerCard landscape";
+                    //        }
+                    //    }
+                    //}
+                }
+            },
+            series: [{
+                name: 'Activity Data',
+                data: (function() {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+    
+                    for (i = -19; i <= 0; i++) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                })()
+            }]
+
+        });
+        $('#data').highcharts().chartHeight = 275;
+        $('#data').highcharts().chartWidth = 450;
+        
+        document.getElementById("p1").addEventListener("click", function(e){
+            e.stopPropagation();
+            var el = document.getElementById("p1");
+            if(el.className.search("landscape") >= 0){
+                document.getElementById("front").className = "max";
+                document.getElementById("back").className = "max hide";
+                el.className = "playerCard";
+            }
+            else{
+                document.getElementById("front").className = "max hide";
+                document.getElementById("back").className = "max";
+                el.className = "playerCard landscape";
+                $('#data').highcharts().chartHeight = 275;
+                $('#data').highcharts().chartWidth = 450;
+            }
+        
+        });
+        //$('#"highcharts-0"').click = null;
+        //$('#"highcharts-0"').mousedown = null;
+        //document.getElementById("highcharts-0").click = function(e){
+        //    e.stopPropagation();
+        //    var el = document.getElementById("p1");
+        //    if(el.className.search("landscape") >= 0){
+        //        document.getElementById("front").className = "max";
+        //        document.getElementById("back").className = "max hide";
+        //        el.className = "playerCard";
+        //    }
+        //    else{
+        //        document.getElementById("front").className = "max hide";
+        //        document.getElementById("back").className = "max";
+        //        el.className = "playerCard landscape";
+        //        //$('#back').highcharts().chartHeight = 275;
+        //        //$('#back').highcharts().chartWidth = 450;
+        //    }
+        //
+        //};
+        //
+    });
+    
+});
+</script>
+<div id="app" class="playerCard hide">
+    <div id="SNodeSelect" class="hide">
+        <div id="node-definition" class="SNodeSelect">
+            <div>
+                <p>Select Node Type</p>
+                <a id="node-select-control" class="button" >Control</a>   
+                <a id="node-select-process" class="button">Processing</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="SDeviceSelect" class="hide">
+        <div id="device-definition" class="SDeviceSelect">
+            <div>
+                <p>Select Device Type</p>
+                <a id="node-select-desktop" class="button" onclick="gtl.Set.Node.Device.Type.Desktop();"><img src='images/devices/Desktop.png' /></a>
+                <a id="node-select-laptop" class="button" onclick="gtl.Set.Node.Device.Type.Laptop();"><img src='images/devices/Laptop.png' /></a>
+                <a id="node-select-tablet" class="button" onclick="gtl.Set.Node.Device.Type.Tablet();"><img src='images/devices/Tablet.png' /></a>
+                <a id="node-select-phone" class="button" onclick="gtl.Set.Node.Device.Type.Phone();"><img src='images/devices/Phone.png' /></a> 
+            </div>
+        </div>
+    </div>
+    
+    <div id="SOSSelect" class="hide">
+        <div id="os-definition" class="SOSSelect">
+            <div>
+                <p>Select OS Type</p>
+                <a id="node-select-apple" class="button" ><img src='images/devices/Apple.png' /></a>
+                <a id="node-select-windows" class="button" ><img src='images/devices/Windows.png' /></a>
+                <a id="node-select-linux" class="button" ><img src='images/devices/Linux.png' /></a>
+                <a id="node-select-android" class="button" ><img src='images/devices/Android.png' /></a> 
+            </div>
+        </div>
+    </div>
+    
+    <div id="SNetworkRegister" class="hide">
+        <div id="network-register" class="SNetworkRegister">
+            <div>
+                <p>GEnSS Network Status</p>
+                <p id='network-status'>... Connecting ... </p>
+            </div>
+        </div>
+    </div>
+    <div id="SProcessing" class="hide">
+        <div id="node-overview" class="datagrid" style="top: 5%;">
+            <p>GEnSS Node</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Problem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="alt">
+                        <td>Loaded</td>
+                        <td><div id="node-problem-loaded" class="led-red"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Running</td>
+                        <td><div id="node-problem-running" class="led-red"></div></td>
+                    </tr>
+                    <tr class="alt">
+                        <td>Particles</td>
+                        <td id="node-particles">0</td>  
+                    </tr>
+                </tbody>
+            </table>
+            <div style="padding: 10px">
+                <a class="button" style="margin-bottom: 5px;"><label style="margin-right: 10px">Node Fitness</label><input class="textbox" type="text" id="node-problem-fitness" style="width: 100px" value='0' readonly='true'></a>
+                <a class="button" style="margin-bottom: 5px;"><label style="margin-right: 10px">Global Fitness</label><input class="textbox" type="text" id="global-problem-fitness" style="width: 90px" value='0' readonly='true'></a>
+            </div>
+             
+        </div>
+    </div>
+    <div id="SControl" class="hide">
+        <div id="network-overview" class="datagrid">
+            <p>GEnSS Network</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><img src='images/devices/Desktop.png' /></th>
+                        <th><img src='images/devices/Laptop.png' /></th>
+                        <th><img src='images/devices/Tablet.png' /></th>
+                        <th><img src='images/devices/Phone.png' /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="alt">
+                        <td>Nodes</td>
+                        <td id="nodes-desktop"></td>
+                        <td id="nodes-laptop"></td>
+                        <td id="nodes-tablet"></td>
+                        <td id="nodes-phone"></td>
+                    </tr>
+                    <tr>
+                        <td>Particles</td>
+                        <td><input class="textbox" type="text" id="part-desktop" style="width: 40px" value='0'></td>
+                        <td><input class="textbox" type="text" id="part-laptop" style="width: 40px" value='0'></td>
+                        <td><input class="textbox" type="text" id="part-tablet" style="width: 40px" value='0'></td>
+                        <td><input class="textbox" type="text" id="part-phone" style="width: 40px" value='0'></td>
+                    </tr>
+                    <tr>
+                        
+                            
+                    </tr>
+                </tbody>
+            </table>
+            <div style="padding: 10px">
+                <a id="network-problem-set" class="button">Set Problem</a>
+                <a id="network-problem-start" class="button">Start</a>
+                <a id="network-problem-stop" class="button">Stop</a>
+            </div>
+            <div style="padding: 10px">
+                <a class="button"><label style="margin-right: 10px">Elapsed</label><input class="textbox" type="text" id="network-problem-elapsed" style="width: 120px" value='0' readonly='true'></a>
+                <a class="button"><label style="margin-right: 10px">Fitness</label><input class="textbox" type="text" id="network-problem-fitness" style="width: 120px" value='0' readonly='true'></a>
+                
+                <a class="button"><label style="margin-right: 10px">Update</label><input class="textbox" type="text" id="network-problem-time" style="width: 100px" value='0' readonly='true'></a>
+            </div>
+             
+        </div>
+    </div>
+    
+    
+</div>
+<!--<div id="openModal" class="modalDialog hide">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        <div id="modalContent"   style="height: 300px">
+            <div id="ProblemSet" class="ModalProblemSet hide">
+                <p>Select Problem Size</p>
+                <a id="set-problem-small" class="button">Small</a>
+                <a id="set-problem-medium" class="button">Medium</a>
+                <a id="set-problem-large" class="button">Large</a>
+                <br/>
+                <a id="set-problem-custom"class="button" style="margin: 5px;">Save</a>
+                <br/>
+                <a class="button"><label style="margin-right: 10px">Prob</label><input class="textbox" type="text" id="custom-problem-file" style="width: 300px" value='http://your.file.path.com'></a>
+                <a class="button"><label style="margin-right: 10px">Cost</label><input class="textbox" type="text" id="custom-cost-file" style="width: 300px" value='http://your.file.path.com'></a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div id="gtlMenu" class="gtlMenu">
+    <a id="gtlMenu-toggle" class="slider"><img alt="" id="bot" src="images/arrow_bottom.png"></a>
+    <div id="main-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="main-gtlMenu-options">
+            <li><a id="main-gtlMenu-options-0" >Option 0</a></li>
+            <li><a id="main-gtlMenu-options-1"  >Option 1</a></li>
+            <li><a id="main-gtlMenu-options-2"  >Option 2</a></li>
+            <li><a id="main-gtlMenu-options-3"  >Option 3</a></li>
+            <li><a id="main-gtlMenu-options-4"  >Option 4</a></li>
+        </ul>
+
+        <div id="main-gtlMenu-options-0-content" style="display: none;" class="gtlMenuSelectedContent "> <div class="gtlMenuContent"><br/><a href="#" onclick="flyIn()">Fly In</a><br/><a href="#" onclick="flyOut()">Fly Out</a></div></div>
+        <div id="main-gtlMenu-options-1-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Main Option<br/> 1 <br/></div>
+        <div id="main-gtlMenu-options-2-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Main Option<br/> 2 <br/></div>
+        <div id="main-gtlMenu-options-3-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Main Option<br/> 3 <br/></div>
+        <div id="main-gtlMenu-options-4-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Main Option<br/> 4 <br/></div>
+    </div>
+    
+    <div id="applications-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="applications-gtlMenu-options">
+            <li><a id="applications-gtlMenu-options-0"  >Option 0</a></li>
+            <li><a id="applications-gtlMenu-options-1"  >Option 1</a></li>
+            <li><a id="applications-gtlMenu-options-2"  >Option 2</a></li>
+            <li><a id="applications-gtlMenu-options-3"  >Option 3</a></li>
+            <li><a id="applications-gtlMenu-options-4"  >Option 4</a></li>
+        </ul>
+
+        <div id="applications-gtlMenu-options-0-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>App Option<br/> 0 <br/></div>
+        <div id="applications-gtlMenu-options-1-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>App Option<br/> 1 <br/></div>
+        <div id="applications-gtlMenu-options-2-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>App Option<br/> 2 <br/></div>
+        <div id="applications-gtlMenu-options-3-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>App Option<br/> 3 <br/></div>
+        <div id="applications-gtlMenu-options-4-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>App Option<br/> 4 <br/></div>
+    </div>
+    
+    <div id="settings-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="settings-gtlMenu-options">
+            <li><a id="settings-gtlMenu-options-0"  >Option 0</a></li>
+            <li><a id="settings-gtlMenu-options-1"  >Option 1</a></li>
+            <li><a id="settings-gtlMenu-options-2"  >Option 2</a></li>
+            <li><a id="settings-gtlMenu-options-3"  >Option 3</a></li>
+            <li><a id="settings-gtlMenu-options-4"  >Option 4</a></li>
+        </ul>
+
+        <div id="settings-gtlMenu-options-0-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Settings Option<br/> 0 <br/></div>
+        <div id="settings-gtlMenu-options-1-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Settings Option<br/> 1 <br/></div>
+        <div id="settings-gtlMenu-options-2-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Settings Option<br/> 2 <br/></div>
+        <div id="settings-gtlMenu-options-3-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Settings Option<br/> 3 <br/></div>
+        <div id="settings-gtlMenu-options-4-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Settings Option<br/> 4 <br/></div>
+    </div>
+    
+    <div id="options-gtlMenu" class="gtlMenuSecondLevel collapse">
+        <ul id="options-gtlMenu-options">
+            <li><a id="options-gtlMenu-options-0"  >Option 0</a></li>
+            <li><a id="options-gtlMenu-options-1"  >Option 1</a></li>
+            <li><a id="options-gtlMenu-options-2"  >Option 2</a></li>
+            <li><a id="options-gtlMenu-options-3"  >Option 3</a></li>
+            <li><a id="options-gtlMenu-options-4"  >Option 4</a></li>
+        </ul>
+
+        <div id="options-gtlMenu-options-0-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Options Option<br/> 0 <br/></div>
+        <div id="options-gtlMenu-options-1-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Options Option<br/> 1 <br/></div>
+        <div id="options-gtlMenu-options-2-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Options Option<br/> 2 <br/></div>
+        <div id="options-gtlMenu-options-3-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Options Option<br/> 3 <br/></div>
+        <div id="options-gtlMenu-options-4-content" style="display: none;" class="gtlMenuSelectedContent "> <br/>Options Option<br/> 4 <br/></div>
+    </div>
+    
+    
+    <ul id="gtlMenuTopLevel">
+        <li>
+            <a id="main">Main</a>
+        </li>
+        <li>
+            <a id="applications">Applications</a>
+        </li>
+        <li>
+            <a id="settings">Settings</a>
+        </li>
+        <li>
+            <a id="options">Options</a>
+        </li>
+    </ul>
+    
+</div>
+<script type="text/javascript" src="scripts/gtlMenu.js" ></script>  
+--></body>
+</html>
