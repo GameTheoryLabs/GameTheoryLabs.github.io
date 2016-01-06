@@ -558,16 +558,16 @@ EventSort = function(evt){
 }
 PlayerSort = function(evt){
     var name = evt.Value.name || undefined;
-    var list = Data.Players.get(name)
+    var list = Data.Players.get(name);
+
+    //If list doesnt exist, create and store in Player map
     if(!list){
-        //If Name doesnt exist in Player object, create it
-        if(!Data.Players[name]){
-            list = [];
-            Data.Players.put(name, list);
-        }
-        //Push event to player array
-        list.push(evt);
+        list = [];
+        Data.Players.put(name, list);        
     }
+
+    //Push event to player array
+    list.push(evt);
 }
 var json; //stores json version of input file
 var Data = {}; //stores data gropus from file
@@ -657,6 +657,10 @@ App.Init = function(){
                         }
                         os.console.Comment("Parsing Complete: Stat ...");
                         os.console.AppendComment(Data.Players.size + " Players Logged");
+                        for(var i = 0; i < Data.Players.size; i++){
+                            os.console.AppendComment(Data.Players.value().length + " events for " + Data.Players.key());
+                            Data.Players.next();
+                        }
                         os.console.AppendComment(Data.Mine.length + " Mining Events");
                         os.console.AppendComment(Data.Build.length + " Building Evetns");
                         os.console.AppendComment(Data.Harvest.length + " Harvesting Events");
