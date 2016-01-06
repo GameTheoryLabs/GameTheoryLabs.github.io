@@ -622,7 +622,7 @@ App.Init = function(){
                 App.FileIO.Read.Text(files[i], function(data){
                     //os.console.Comment(data);
                     ParseCSV(data);
-                    Convolution();
+                    //Convolution();
                 })
             }
             else if(extension == "JSON"){
@@ -678,8 +678,7 @@ App.Init = function(){
                         console.log("Error parsing JSON, " + e);
                         os.console.Comment("Error Parsing JSON " + e);
                     }
-                    //ParseCSV(data);
-                    //Convolution();
+
                 });
             }
             else{
@@ -687,8 +686,15 @@ App.Init = function(){
             }
         }
     }
-    
-    //Adding JaHOVA OS terminal command
+
+    //
+    //  Game data intializaiotn
+    //
+        Data.Players = os.resschmgr.Create.Map(); //Holds Array list of all players actions
+
+    //
+    //  Adding JaHOVA OS terminal command
+    //
     var help = "Convolve Data Set >>Convolve  ";
     var convolve = function(input){
                 os.console.Comment("");
@@ -696,6 +702,6 @@ App.Init = function(){
                 }
     os.console.AddCommand("Convolve", convolve, convolve, help);
     
-    Data.Players = os.resschmgr.Create.Map(); //Holds Array list of all players actions
+    
     
 }
