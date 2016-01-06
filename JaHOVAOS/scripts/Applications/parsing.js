@@ -570,33 +570,33 @@ PlayerSort = function(evt){
     list.push(evt);
 }
 var json; //stores json version of input file
-var Data = {}; //stores data gropus from file
-Data.EventID = {
-    Mine: 1, 
-    Build: 2, 
-    Harvest: 3, 
-    Craft: 4, 
-    Farm: 5,
-    Explore: 6, 
-    Die: 7,
-    Combat: 8,
-    Consume: 9,
-    LogIn: 10, 
-    LogOut: 11
-};
-
-Data.Mine = [];
-Data.Build = [];
-Data.Harvest = [];
-Data.Craft = [];
-Data.Farm = [];
-Data.Explore = [];
-Data.Die = [];
-Data.Combat = [];
-Data.Consume = [];
-Data.LogIn = [];
-Data.LogOut = [];
-
+var Data = {
+    Players: null,
+    EventID = {
+        Mine: 1, 
+        Build: 2, 
+        Harvest: 3, 
+        Craft: 4, 
+        Farm: 5,
+        Explore: 6, 
+        Die: 7,
+        Combat: 8,
+        Consume: 9,
+        LogIn: 10, 
+        LogOut: 11
+    },
+    Mine:       [],
+    Build:      [],
+    Harvest:    [],
+    Craft:      [],
+    Farm:       [],
+    Explore:    [],
+    Die:        [],
+    Combat:     [],
+    Consume:    [],
+    LogIn:      [],
+    LogOut:     []
+}; 
 
 App.Init = function(){
     //Display Demos
@@ -690,7 +690,8 @@ App.Init = function(){
     //
     //  Game data intializaiotn
     //
-        Data.Players = os.resschmgr.Create.Map(); //Holds Array list of all players actions
+        //Holds Array list of all players actions
+        Data.Players = os.resschmgr.Create.Map(); 
 
     //
     //  Adding JaHOVA OS terminal command
