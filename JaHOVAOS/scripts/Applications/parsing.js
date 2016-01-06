@@ -672,6 +672,7 @@ App.Init = function(){
                     }
                     catch(e){
                         console.log("Error parsing JSON, " + e);
+                        os.console.Comment("Error Parsing JSON " + e);
                     }
                     //ParseCSV(data);
                     //Convolution();
