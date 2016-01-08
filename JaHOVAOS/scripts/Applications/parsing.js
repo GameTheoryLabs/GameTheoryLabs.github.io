@@ -572,7 +572,7 @@ PlayerSort = function(evt){
 var json; //stores json version of input file
 var Data = {
     Players: null,
-    EventID = {
+    EventID: {
         Mine: 1, 
         Build: 2, 
         Harvest: 3, 
