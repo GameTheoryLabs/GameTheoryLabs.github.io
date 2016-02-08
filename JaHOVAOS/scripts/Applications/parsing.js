@@ -359,7 +359,7 @@ var App = {
         }
     },
     Init: function(){
-    
+        
     }
 }
 //
@@ -484,8 +484,7 @@ Analyze = function(hon, hoff){
       on: [avgOn - stdErrOn, avgOn, avgOn + stdErrOn],
       off: [avgOff - stdErrOff, avgOff, avgOff + stdErrOff],
       sig: sig
-    };
-    
+    }; 
 }
 
 Average = function(input){
@@ -569,9 +568,92 @@ PlayerSort = function(evt){
     //Push event to player array
     list.push(evt);
 }
+ParsePlayerToSession = function(player){
+    //Initialize Session variables
+    var evt;
+    var session;
+
+    //Looop through all events to create sessions
+    for(var i = 0; i  < player.length; i++){
+        evt = player[i]; //Grab Event
+        
+        //LogIn Event, create new session
+        if((evt.Type == Data.EventID.LogIn)){
+
+            //Create New Session
+            session = [];
+            session.push(evt);
+
+            //Add SessionID and Time to Priority Queue
+            Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
+
+            //Add Session to Map
+            Data.Sessions.put(Data.Sessions.size, session);
+        }
+        //Greater than 30min since last event, create new session
+        else if( (i > 0) && ( (evt.Date - session[session.length - 1].Date) > 1800000)  ){
+            //Create New Session
+            session = [];
+            session.push(evt);
+
+            //Add SessionID and Time to Priority Queue
+            Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
+            
+            //Add Session to Map
+            Data.Sessions.put(Data.Sessions.size, session);
+        }
+        //First event for player is not LogIn, create new session
+        else if(!session){
+            //Create New Session
+            session = [];
+            session.push(evt);
+
+            //Add SessionID and Time to Priority Queue
+            Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
+            
+            //Add Session to Map
+            Data.Sessions.put(Data.Sessions.size, session);
+        }
+        //Push event to session log
+        else{
+            session.push(evt);
+        }
+    }
+}
+ParseSessionsToCSV = function(id, session, out){
+    console.log("Converting Session ID: " + id);
+    for(var i = 0; i < session.length; i++){
+        var evt = session[i];
+        var dt = i == 0 ? 0 : session[i].Date - session[i-1].Date;
+        if((evt.Type == Data.EventID.LogIn) || (evt.Type == Data.EventID.LogOut)){
+            Data.SessionsCSV += id + "," + 
+                                evt.Value.name + "," + 
+                                evt.Type + "," + 
+                                evt.Date.toISOString() + 
+                                "," + "," + "," + "," + "," + "," + "," + "," +"\n";
+        }
+        else{
+            Data.SessionsCSV += id + "," + 
+                                evt.Value.name  + "," + 
+                                evt.Type + "," + 
+                                evt.Date.toISOString() + "," + 
+                                dt + "," + 
+                                evt.Value.subAction + "," +
+                                evt.Value.uniqueValue + "," +
+                                evt.Value.biome + "," +
+                                evt.Value.position[0] + "," +
+                                evt.Value.position[1] + "," +
+                                evt.Value.position[2] + "\n";
+        }
+    }
+}
 var json; //stores json version of input file
 var Data = {
+    numOfEvents: 0,
     Players: null,
+    Sessions: null,
+    SessionIDStartTimes: null,
+    SessionsCSV: "",
     EventID: {
         Mine: 1, 
         Build: 2, 
@@ -599,6 +681,131 @@ var Data = {
 }; 
 
 App.Init = function(){
+            //Priority Queue - https://github.com/STRd6/PriorityQueue.js
+            // var queue = PriorityQueue({low: true});
+        var CPriorityQueue = function(options) {
+            var contents = [];
+        
+            var sorted = false;
+            var sortStyle;
+        
+            if(options && options.low) {
+              sortStyle = prioritySortLow;
+            } else {
+              sortStyle = prioritySortHigh;
+            }
+        
+            /**
+             * @private
+             */
+            var sort = function() {
+              contents.sort(sortStyle);
+              sorted = true;
+            };
+        
+            var self = {
+                content: contents,
+              /**
+               * Removes and returns the next element in the queue.
+               * @member PriorityQueue
+               * @return The next element in the queue. If the queue is empty returns
+               * undefined.
+               *
+               * @see PrioirtyQueue#top
+               */
+              pop: function() {
+                if(!sorted) {
+                  sort();
+                }
+        
+                var element = contents.pop();
+        
+                if(element) {
+                  return element.object;
+                } else {
+                  return undefined;
+                }
+              },
+        
+              /**
+               * Returns but does not remove the next element in the queue.
+               * @member PriorityQueue
+               * @return The next element in the queue. If the queue is empty returns
+               * undefined.
+               *
+               * @see PriorityQueue#pop
+               */
+              top: function() {
+                if(!sorted) {
+                  sort();
+                }
+        
+                var element = contents[contents.length - 1];
+        
+                if(element) {
+                  return element.object;
+                } else {
+                  return undefined;
+                }
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @param object The object to check the queue for.
+               * @returns true if the object is in the queue, false otherwise.
+               */
+              includes: function(object) {
+                for(var i = contents.length - 1; i >= 0; i--) {
+                  if(contents[i].object === object) {
+                    return true;
+                  }
+                }
+        
+                return false;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @returns the current number of elements in the queue.
+               */
+              size: function() {
+                return contents.length;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @returns true if the queue is empty, false otherwise.
+               */
+              empty: function() {
+                return contents.length === 0;
+              },
+        
+              /**
+               * @member PriorityQueue
+               * @param object The object to be pushed onto the queue.
+               * @param priority The priority of the object.
+               */
+              push: function(object, priority) {
+                contents.push({object: object, priority: priority});
+                sorted = false;
+              },
+              clear: function(){
+                return contents.length = 0;
+              }
+            };
+        
+            return self;
+        }
+        var prioritySortLow = function(a, b) {
+          return b.priority - a.priority;
+        };
+        var prioritySortHigh = function(a, b) {
+          return a.priority - b.priority;
+        };
+
+        os.resschmgr.Create.PriorityQueue = function(){
+            return new CPriorityQueue();
+        }
     //Display Demos
     //App.Display.EnableButton();
     //App.Events.onFullscreen = function(){os.console.Comment("Going Fullscreen")};
@@ -632,6 +839,7 @@ App.Init = function(){
                     try{
                         os.console.Comment("Parsing File");
                         json = JSON.parse(data);
+                        Data.numOfEvents += json.length;
                         os.console.Comment("Parsing " + json.length + " Events");
                         for(var i = 0; i < json.length; i++){
                             
@@ -692,6 +900,9 @@ App.Init = function(){
     //
         //Holds Array list of all players actions
         Data.Players = os.resschmgr.Create.Map(); 
+        Data.Sessions = os.resschmgr.Create.Map();
+        Data.SessionIDStartTimes = os.resschmgr.Create.PriorityQueue({low: true});
+
 
     //
     //  Adding JaHOVA OS terminal command
@@ -702,7 +913,43 @@ App.Init = function(){
                     Convolution(Number(input));
                 }
     os.console.AddCommand("Convolve", convolve, convolve, help);
+
+    help = "Generate Data Sets from Gameplay Data >>Generate sessions|players|events"
+    var generateReport = function(input){
+        var cmd = input.toUpperCase();
+        
+        if(cmd == 'SESSIONS'){
+            os.console.Comment("\nGenerating Sessions Data From " + Data.Players.size + " Players");
+            console.log(Data.Players.size + " Players");
+            for(var i = 0; i < Data.Players.size; i++){
+                os.console.AppendComment("Parsing Player: " + Data.Players.key());
+                console.log(("Parsing Player: " + Data.Players.key()));
+                ParsePlayerToSession(Data.Players.value());
+                Data.Players.next();
+            }
+
+            os.console.AppendComment("Generated " + Data.Sessions.size + " Sessions from " + Data.numOfEvents + " Events\n");
+
+            os.console.AppendComment("Converting Sessions Objects into CSV Strings");
+            Data.SessionsCSV = "";
+            var numOfSessions = Data.SessionIDStartTimes.size()
+            for(var i = 0; i < numOfSessions; i++){
+                ParseSessionsToCSV(i, Data.Sessions.get(Data.SessionIDStartTimes.pop()));
+            }
+            
+            os.console.AppendComment("Generating output file: sessions.csv");
+            var file = new Blob([Data.SessionsCSV], {type: 'text/plain'});
+            saveAs(file, 'sessions.csv' );
+
+
+
+        }
+        else {
+            os.console.Error("Unknown Report Type: " + cmd);
+        }
+    }
+    os.console.AddCommand("Generate", generateReport, generateReport, help);
     
-    
+    os.debugbar.AnchorConsole();
     
 }
