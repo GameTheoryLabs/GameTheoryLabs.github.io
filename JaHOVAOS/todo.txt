@@ -1,0 +1,25 @@
+JaHOVA OS TODO:
+
+Update the CHTML object to match the PSL lib, allows for binding to an already existing HTML element
+
+Add INPUT created in OR (Update the gamepad)
+
+Add FSM and States in OR/PSL
+
+Add PriorityQ in PSL
+
+Add Animation Sprite Sheet parser from PSL, also look into LostCell 2D CSS animation tech
+
+Fix CSS locations for images, and remove background image… 
+
+Create a method for com.jahova.os.Load() that does not load splash
+
+Refactor Threads Module
+
+Update JOSS… major overhaul
+
+Create jahova.os.min.js and jahova.os.min.css
+
+Update Module loading to match AMD module patter with require formatting
+
+Update api doc, and make api use jos instead of os…
