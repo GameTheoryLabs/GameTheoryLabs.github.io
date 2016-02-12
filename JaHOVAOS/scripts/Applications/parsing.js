@@ -621,7 +621,7 @@ ParsePlayerToSession = function(player){
     }
 }
 ParseSessionsToCSV = function(id, session, out){
-    console.log("Converting Session ID: " + id);
+    //console.log("Converting Session ID: " + id);
     for(var i = 0; i < session.length; i++){
         var evt = session[i];
         var dt = i == 0 ? 0 : session[i].Date - session[i-1].Date;
@@ -922,13 +922,13 @@ App.Init = function(){
             os.console.Comment("\nGenerating Sessions Data From " + Data.Players.size + " Players");
             console.log(Data.Players.size + " Players");
             for(var i = 0; i < Data.Players.size; i++){
-                os.console.AppendComment("Parsing Player: " + Data.Players.key());
-                console.log(("Parsing Player: " + Data.Players.key()));
+                //os.console.AppendComment("Parsing Player: " + Data.Players.key());
+                //console.log(("Parsing Player: " + Data.Players.key()));
                 ParsePlayerToSession(Data.Players.value());
                 Data.Players.next();
             }
 
-            os.console.AppendComment("Generated " + Data.Sessions.size + " Sessions from " + Data.numOfEvents + " Events\n");
+            os.console.AppendComment("Generated " + Data.Sessions.size + " Sessions from " + Data.Players.size + " Players and " + Data.numOfEvents + " Events\n");
 
             os.console.AppendComment("Converting Sessions Objects into CSV Strings");
             Data.SessionsCSV = "";
