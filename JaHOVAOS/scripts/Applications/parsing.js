@@ -591,7 +591,7 @@ ParsePlayerToSession = function(player){
             Data.Sessions.put(Data.Sessions.size, session);
         }
         //Greater than 30min since last event, create new session
-        else if( (i > 0) && ( (evt.Date - session[session.length - 1].Date) > 1800000)  ){
+        else if( (i > 0) && ( Math.abs((evt.Date - session[session.length - 1].Date)) > 1800000)  ){
             //Create New Session
             session = [];
             session.push(evt);
