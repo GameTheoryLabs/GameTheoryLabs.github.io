@@ -568,10 +568,329 @@ PlayerSort = function(evt){
     //Push event to player array
     list.push(evt);
 }
+
+SetEngagementLevel = function(stats){
+    //"LOW", "HIGH", "VERYHIGH"
+    var duration = stats.duration;
+    var events   = stats.NumberOf.Events;
+
+    //Calculate distance to centroids
+    var low = Math.sqrt(Math.pow( Data.Centroids.Engagment.Low[0] - duration, 2) + 
+                        Math.pow( Data.Centroids.Engagment.Low[1] - events, 2));
+    
+    var high = Math.sqrt(Math.pow( Data.Centroids.Engagment.High[0] - duration, 2) + 
+                         Math.pow( Data.Centroids.Engagment.High[1] - events, 2));
+    
+    var veryHigh = Math.sqrt(Math.pow( Data.Centroids.Engagment.VeryHigh[0] - duration, 2) + 
+                             Math.pow( Data.Centroids.Engagment.VeryHigh[1] - events, 2));
+
+    //Find closest centroid and set engagement level
+    var test = low;
+    stats.engagement = "LOW";
+
+    if(high <= test){
+        test = high;
+        stats.engagement = "HIGH";
+    }
+    if(test > veryHigh){
+        stats.engagement = "VERYHIGH";
+    }
+
+    //Debugging
+    Cluster[stats.engagement]++;
+
+}
+SetArchetype = function(stats){
+    var arch = Data.Archetype.Undefined;
+
+    //Calculate distance to centroids
+    if(stats.engagement == "LOW"){
+ 
+        //Duration, Biomes, Distance, Mining, Building, Harvesting, Farming, Exploring, Deaths, Hunt
+        var LShortPlay = Math.sqrt(Math.pow( Data.Centroids.Low.ShortPlay[0] - stats.duration, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[1] - stats.NumberOf.Biomes, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[2] - stats.distance, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[3] - stats.NumberOf.Mine, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[4] - stats.NumberOf.Build, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[5] - stats.NumberOf.Harvest, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[6] - stats.NumberOf.Farm, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[7] - stats.NumberOf.Explore, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[8] - stats.NumberOf.Die, 2) + 
+                                   Math.pow( Data.Centroids.Low.ShortPlay[9] - stats.NumberOf.Hunt, 2));
+        
+        var LVisit     = Math.sqrt(Math.pow( Data.Centroids.Low.Visit[0] - stats.duration, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[1] - stats.NumberOf.Biomes, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[2] - stats.distance, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[3] - stats.NumberOf.Mine, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[4] - stats.NumberOf.Build, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[5] - stats.NumberOf.Harvest, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[6] - stats.NumberOf.Farm, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[7] - stats.NumberOf.Explore, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[8] - stats.NumberOf.Die, 2) + 
+                                   Math.pow( Data.Centroids.Low.Visit[9] - stats.NumberOf.Hunt, 2));
+       
+        var LBuild     = Math.sqrt(Math.pow( Data.Centroids.Low.Build[0] - stats.duration, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[1] - stats.NumberOf.Biomes, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[2] - stats.distance, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[3] - stats.NumberOf.Mine, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[4] - stats.NumberOf.Build, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[5] - stats.NumberOf.Harvest, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[6] - stats.NumberOf.Farm, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[7] - stats.NumberOf.Explore, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[8] - stats.NumberOf.Die, 2) + 
+                                   Math.pow( Data.Centroids.Low.Build[9] - stats.NumberOf.Hunt, 2));
+        
+        var LExplore   = Math.sqrt(Math.pow( Data.Centroids.Low.Explore[0] - stats.duration, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[1] - stats.NumberOf.Biomes, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[2] - stats.distance, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[3] - stats.NumberOf.Mine, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[4] - stats.NumberOf.Build, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[5] - stats.NumberOf.Harvest, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[6] - stats.NumberOf.Farm, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[7] - stats.NumberOf.Explore, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[8] - stats.NumberOf.Die, 2) + 
+                                   Math.pow( Data.Centroids.Low.Explore[9] - stats.NumberOf.Hunt, 2));
+        
+        arch = LShortPlay;
+        stats.Archetype = Data.Archetype.LowShortPlay;
+
+        if(LVisit < arch){
+            arch = LVisit;
+            stats.Archetype = Data.Archetype.LowVisit;
+        }
+
+        if(LBuild < arch){
+            arch = LBuild;
+            stats.Archetype = Data.Archetype.LowBuild;
+        }
+
+        if(LExplore < arch){
+            arch = LExplore;
+            stats.Archetype = Data.Archetype.LowExplore;
+        }
+
+        Archetype[stats.Archetype]++;
+    }
+    else if(stats.engagement == "HIGH"){
+        // HighPioneering: 4,
+        // HighExplore: 5, 
+        // HighBuild: 6
+
+        //Duration, Biomes, Distance, Mining, Building, Harvesting, Farming, Exploring, Deaths, Hunt
+        var HBuild   = Math.sqrt(Math.pow( Data.Centroids.High.Build[0] - stats.duration, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[1] - stats.NumberOf.Biomes, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[2] - stats.distance, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[3] - stats.NumberOf.Mine, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[4] - stats.NumberOf.Build, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[5] - stats.NumberOf.Harvest, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[6] - stats.NumberOf.Farm, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[7] - stats.NumberOf.Explore, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[8] - stats.NumberOf.Die, 2) + 
+                                 Math.pow( Data.Centroids.High.Build[9] - stats.NumberOf.Hunt, 2));
+    
+        var HExplore = Math.sqrt(Math.pow( Data.Centroids.High.Explore[0] - stats.duration, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[1] - stats.NumberOf.Biomes, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[2] - stats.distance, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[3] - stats.NumberOf.Mine, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[4] - stats.NumberOf.Build, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[5] - stats.NumberOf.Harvest, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[6] - stats.NumberOf.Farm, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[7] - stats.NumberOf.Explore, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[8] - stats.NumberOf.Die, 2) + 
+                                 Math.pow( Data.Centroids.High.Explore[9] - stats.NumberOf.Hunt, 2));
+        
+        var HPioneer = Math.sqrt(Math.pow( Data.Centroids.High.Pioneering[0] - stats.duration, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[1] - stats.NumberOf.Biomes, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[2] - stats.distance, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[3] - stats.NumberOf.Mine, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[4] - stats.NumberOf.Build, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[5] - stats.NumberOf.Harvest, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[6] - stats.NumberOf.Farm, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[7] - stats.NumberOf.Explore, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[8] - stats.NumberOf.Die, 2) + 
+                                 Math.pow( Data.Centroids.High.Pioneering[9] - stats.NumberOf.Hunt, 2));
+
+        arch = HBuild;
+        stats.Archetype = Data.Archetype.HighBuild;
+
+        if(HExplore < arch){
+            arch = HExplore;
+            stats.Archetype = Data.Archetype.HighExplore;
+        }
+
+        if(HPioneer < arch){
+            arch = HPioneer;
+            stats.Archetype = Data.Archetype.HighPioneering;
+        }
+
+        Archetype[stats.Archetype]++;
+    }
+    else if(stats.engagement == "VERYHIGH"){
+        stats.Archetype = Data.Archetype.VeryHigh;
+        Archetype[stats.Archetype]++;
+    }
+    else if(stats.engagement == "UNDEFINED"){
+        stats.Archetype = Data.Archetype.Undefined;
+        Archetype[stats.Archetype]++;
+    }
+}
+GenerateSessionStats = function(stats, session){
+    stats.NumberOf.Events = session.length;
+
+    stats.endTime = session[session.length - 1].Date;
+    //stats.duration = (stats.endTime - stats.startTime) / (1000 * 60);  //Duration in minutes
+    stats.duration = (stats.endTime - stats.startTime) / (10000);  //Incorrectly calculate time to match cluster data
+
+    //Calculates time incorreclty, but matches paper
+    // stats.endTime = session.length >2 ? session[session.length - 2].Date : session[session.length - 1].Date;
+    // stats.duration = (stats.endTime - stats.startTime) / (10000);  //Duration in minutes
+
+    //Create Biome map to identify number of unique biomes visited
+    var biomes = os.resschmgr.Create.Map(); 
+
+    var distance = 0.0;
+
+    if(stats.NumberOf.Events > 2 && stats.duration > 1 ){
+        //Reset number events to remove LogIn/Out events
+        stats.NumberOf.Events = 0;
+        
+        
+        //Loop through events in session
+        for(var i = 0; i < session.length; i++){
+
+            //Identify Biome and add to map if new
+                //Check for biome (if not LogIn/LogOut Event)
+            if((session[i].Type != Data.EventID.LogIn) && (session[i].Type != Data.EventID.LogOut)){
+                //If biome not in map, ad it
+                if(biomes.get(session[i].Value.biome) == undefined){
+                    biomes.put(session[i].Value.biome,session[i].Value.biome);
+                }
+
+                //Accumlate Distance Traveled
+                if((i > 0) && (session[i-1].Type != Data.EventID.LogIn) && (session[i-1].Type != Data.EventID.LogOut)){
+                    var pos0 = session[i-1].Value.position;
+                    var pos1 = session[i].Value.position;
+
+                    distance += Math.sqrt(Math.pow( pos1[0] - pos0[0], 2) + 
+                                              Math.pow( pos1[1] - pos0[1], 2) + 
+                                              Math.pow( pos1[2] - pos0[2], 2));
+                }
+            }
+
+
+
+            //Increment Event Type Counter
+            if(session[i].Type == Data.EventID.Mine){          stats.NumberOf.Mine++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Build){    stats.NumberOf.Build++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Harvest){  stats.NumberOf.Harvest++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Craft){    stats.NumberOf.Craft++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Farm){     stats.NumberOf.Farm++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Explore){  stats.NumberOf.Explore++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Die){      stats.NumberOf.Die++; stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Combat){   
+                    if(session[i].Value.subAction == "Hunt"){  stats.NumberOf.Hunt++;}
+                                                               stats.NumberOf.Combat++; 
+                                                               stats.NumberOf.Events++;}
+            else if(session[i].Type == Data.EventID.Consume){  stats.NumberOf.Consume++; stats.NumberOf.Events++;}
+            
+            //Update Event Stream
+                //If stream is empty, create first event
+            if(stats.streams.length == 0){
+                stats.streams[0] = {type: session[i].Type,
+                                    value: 1};
+            }
+            else{
+                //Get last event object in stream
+                var evt = stats.streams[stats.streams.length - 1];
+
+                //If type is same, increment count
+                if(evt.type == session[i].Type){
+                    evt.value++;
+                }
+                //If new type, create and push new event object
+                else{
+                    stats.streams.push({type: session[i].Type,
+                                        value: 1});
+                }
+            }
+
+        }
+
+        //Save distance traveled
+        stats.distance = distance/10;
+
+        //Set number of biomes visited
+        stats.NumberOf.Biomes = biomes.size;
+
+        //Store events in stats 
+        stats.events = session;
+
+        //Determine Engagment Level
+        SetEngagementLevel(stats);
+
+        //Determin Archetype
+        SetArchetype(stats);
+    }
+}
+GeneratePlayerTransitions = function(player, sessions){
+    var trans = new CPlayerTransition();
+    var stat0 = sessions.content[0].object;
+    var stat1;
+
+    //Store first sessions archetype and engagment level
+    trans.archTransitions.push(stat0.Archetype);
+    trans.engagementTransitions.push(stat0.engagement);
+
+    //Increment counters for first state
+    trans.archCount[stat0.Archetype]++;
+    trans.engagementCount[stat0.engagement]++;
+
+    //Loop through all sessions storing transitions
+    for(var i = 1; i < sessions.size(); i++){
+        stat0 = sessions.content[i - 1].object;
+        stat1 = sessions.content[i].object;
+
+        //Push to transistions arrays
+        trans.archTransitions.push(stat1.Archetype);
+        trans.engagementTransitions.push(stat1.engagement);
+
+        //Increment counters
+        trans.archCount[stat1.Archetype]++;
+        trans.engagementCount[stat1.engagement]++;
+
+        //Increment Global engagment counter
+        Data.Transitions.Engagment[stat0.engagement][stat1.engagement]++;
+
+        //Increment Global archetype counter
+        Data.Transitions.Archetype[stat0.Archetype][stat1.Archetype]++;
+
+    }
+
+    //Calculate Percentages
+    var totalSessions = sessions.size();
+    trans.archPercentage.LowShortPlay       = Number((trans.archCount[0]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.LowVisit           = Number((trans.archCount[1]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.LowBuild           = Number((trans.archCount[2]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.LowExplore         = Number((trans.archCount[3]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.HighPioneering     = Number((trans.archCount[4]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.HighExplore        = Number((trans.archCount[5]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.HighBuild          = Number((trans.archCount[6]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.VeryHigh           = Number((trans.archCount[7]/totalSessions * 100).toFixed(1));
+    trans.archPercentage.Undefined          = Number((trans.archCount[8]/totalSessions * 100).toFixed(1));
+
+    trans.engagementPercentage.Low          = Number((trans.engagementCount.LOW/totalSessions * 100).toFixed(1));
+    trans.engagementPercentage.High         = Number((trans.engagementCount.HIGH/totalSessions * 100).toFixed(1));
+    trans.engagementPercentage.VeryHigh     = Number((trans.engagementCount.VERYHIGH/totalSessions * 100).toFixed(1));
+    trans.engagementPercentage.Undefined    = Number((trans.engagementCount.UNDEFINED/totalSessions * 100).toFixed(1));
+
+
+    Data.PlayerTransitions.put(player, trans);
+}
 ParsePlayerToSession = function(player){
     //Initialize Session variables
     var evt;
     var session;
+    var stats;
 
     //Looop through all events to create sessions
     for(var i = 0; i  < player.length; i++){
@@ -580,6 +899,12 @@ ParsePlayerToSession = function(player){
         //LogIn Event, create new session
         if((evt.Type == Data.EventID.LogIn)){
 
+            //If session exist, then record previous session length in SessionData Object
+            if(session && session.length > 0){
+                GenerateSessionStats(stats, session);
+            }
+
+
             //Create New Session
             session = [];
             session.push(evt);
@@ -587,11 +912,35 @@ ParsePlayerToSession = function(player){
             //Add SessionID and Time to Priority Queue
             Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
 
+            //Add Session ID and Start Time to PlayerSession Map
+                //Sessions description object
+            stats = new CSessionStat();
+            stats.id = Data.Sessions.size; //ID
+            stats.startTime = evt.Date;    //Start Time
+            Data.SessionStats.put(stats.id, stats);
+
+                //If player exist in map, add to array
+            if(Data.PlayerSessions.get(evt.Value.name)){
+                var list = Data.PlayerSessions.get(evt.Value.name);
+                list.push(stats, stats.startTime);
+            }
+            else{//Otherwise create new array in map
+                var queue = os.resschmgr.Create.PriorityQueue({low: true});
+                queue.push(stats, stats.startTime);
+                Data.PlayerSessions.put(evt.Value.name, queue);
+            }
+
             //Add Session to Map
             Data.Sessions.put(Data.Sessions.size, session);
         }
         //Greater than 30min since last event, create new session
         else if( (i > 0) && ( Math.abs((evt.Date - session[session.length - 1].Date)) > 1800000)  ){
+        //else if( (i > 0) && ( ((evt.Date - session[session.length - 1].Date)) > 1800000)  ){   
+            //If session exist, then record previous session length in SessionData Object
+            if(session && session.length > 0){
+                GenerateSessionStats(stats, session);
+            }
+
             //Create New Session
             session = [];
             session.push(evt);
@@ -599,6 +948,24 @@ ParsePlayerToSession = function(player){
             //Add SessionID and Time to Priority Queue
             Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
             
+            //Add Session ID and Start Time to PlayerSession Map
+                //Sessions description object
+            stats = new CSessionStat();
+            stats.id = Data.Sessions.size; //ID
+            stats.startTime = evt.Date;    //Start Time
+            Data.SessionStats.put(stats.id, stats);
+
+                //If player exist in map, add to array
+            if(Data.PlayerSessions.get(evt.Value.name)){
+                var list = Data.PlayerSessions.get(evt.Value.name);
+                list.push(stats, stats.startTime);
+            }
+            else{//Otherwise create new array in map
+                var queue = os.resschmgr.Create.PriorityQueue({low: true});
+                queue.push(stats, stats.startTime)
+                Data.PlayerSessions.put(evt.Value.name, queue);
+            }
+
             //Add Session to Map
             Data.Sessions.put(Data.Sessions.size, session);
         }
@@ -611,6 +978,24 @@ ParsePlayerToSession = function(player){
             //Add SessionID and Time to Priority Queue
             Data.SessionIDStartTimes.push(Data.Sessions.size, evt.Date);
             
+             //Add Session ID and Start Time to PlayerSession Map
+                //Sessions description object
+            stats = new CSessionStat();
+            stats.id = Data.Sessions.size; //ID
+            stats.startTime = evt.Date;    //Start Time
+            Data.SessionStats.put(stats.id, stats);
+
+                //If player exist in map, add to array
+            if(Data.PlayerSessions.get(evt.Value.name)){
+                var list = Data.PlayerSessions.get(evt.Value.name);
+                list.push(stats, stats.startTime);
+            }
+            else{//Otherwise create new array in map
+                var queue = os.resschmgr.Create.PriorityQueue({low: true});
+                queue.push(stats, stats.startTime)
+                Data.PlayerSessions.put(evt.Value.name, queue);
+            }
+
             //Add Session to Map
             Data.Sessions.put(Data.Sessions.size, session);
         }
@@ -619,6 +1004,9 @@ ParsePlayerToSession = function(player){
             session.push(evt);
         }
     }
+
+    //Record last session stats into SessionStats Object
+    GenerateSessionStats(stats, session);
 }
 ParseSessionsToCSV = function(id, session, out){
     //console.log("Converting Session ID: " + id);
@@ -647,13 +1035,145 @@ ParseSessionsToCSV = function(id, session, out){
         }
     }
 }
+
+var CSessionStat = function(id, events){
+    this.id = id;
+    this.startTime = 0;
+    this.endTime = 0;
+    this.duration = 0;
+    this.Archetype = Data.Archetype.Undefined;
+    this.NumberOf = {
+        Events: 0,
+        Biomes: 0,
+        Mine: 0, 
+        Build: 0, 
+        Harvest: 0, 
+        Craft: 0, 
+        Farm: 0,
+        Explore: 0, 
+        Die: 0,
+        Combat: 0,
+        Hunt: 0,
+        Consume: 0,
+    };
+    this.distance = 0.0; //Total distance traveled in game units
+    this.engagement = "UNDEFINED"; //"LOW", "HIGH", "VERYHIGH", "UNDEFINED"
+    this.streams = [];   // [{type: event ID, value: number of times}, {type, value}, ....]
+    this.events = null;
+}
+var CPlayerTransition = function(){
+    this.archTransitions = [];
+    this.archPercentage = {
+        LowShortPlay: 0, 
+        LowVisit: 0,  
+        LowBuild: 0,  
+        LowExplore: 0, 
+        HighPioneering: 0,
+        HighExplore: 0, 
+        HighBuild: 0
+    };
+    this.archCount = [0,0,0,0,0,0,0,0,0];
+
+    this.engagementTransitions = [];
+    this.engagementPercentage = {
+        Low: 0,
+        High:  0,
+        VeryHigh: 0,
+        Undefined: 0
+    }
+    this.engagementCount = {
+        LOW: 0,
+        HIGH:  0,
+        VERYHIGH: 0,
+        UNDEFINED: 0
+    }
+}
 var json; //stores json version of input file
+var Cluster = { //Debugging Values
+    LOW: 0, 
+    HIGH: 0,
+    VERYHIGH: 0,
+}
+var Archetype = [0,0,0,0,0,0,0,0,0]; //Debugging Values
 var Data = {
     numOfEvents: 0,
-    Players: null,
-    Sessions: null,
+    Players: null,              //Map of Arrays of all events associated with player name as key
+    Sessions: null,             //Map of Arrays of all events associated with session ID as key
+    PlayerSessions: null,       //PriorityQ of objects storing session ID and start time with player name as key
+    PlayerTransitions: null,    //Map of arrays holding 
+    SessionStats: null,         //Map of CSessionStat Objects with session ID as key
     SessionIDStartTimes: null,
     SessionsCSV: "",
+    TransitionsCSV: "",
+    TransitionCountsCSV: "",
+    Transitions: {
+        Engagment: {
+            LOW: {
+                LOW: 0,
+                HIGH: 0,
+                VERYHIGH: 0,
+                UNDEFINED: 0
+            },
+            HIGH: {
+                LOW: 0,
+                HIGH: 0,
+                VERYHIGH: 0,
+                UNDEFINED: 0
+            },
+            VERYHIGH: {
+                LOW: 0,
+                HIGH: 0,
+                VERYHIGH: 0,
+                UNDEFINED: 0
+            },
+            UNDEFINED: {
+                LOW: 0,
+                HIGH: 0,
+                VERYHIGH: 0,
+                UNDEFINED: 0
+            }
+        },
+        Archetype: [
+        [0,0,0,0,0,0,0,0,0],//LowShortPlay
+        [0,0,0,0,0,0,0,0,0],//LowVisit
+        [0,0,0,0,0,0,0,0,0],//LowBuild
+        [0,0,0,0,0,0,0,0,0],//LowExplore
+        [0,0,0,0,0,0,0,0,0],//HighPioneering
+        [0,0,0,0,0,0,0,0,0],//HighExplore
+        [0,0,0,0,0,0,0,0,0],//HighBuild
+        [0,0,0,0,0,0,0,0,0],//VeryHigh
+        [0,0,0,0,0,0,0,0,0] //Undefined
+        ]
+    },
+    Centroids: {
+        Engagment: {    //session length (min), number of events
+            Low: [190.417988, 187.097561], 
+            High: [884.299107, 1242.687500],
+            VeryHigh: [2073.682609, 4953.565217]
+        },
+        Low: { //Duration, Biomes, Distance, Mining, Building, Harvesting, Farming, Exploring, Deaths, Hunt
+            Build: [279.5292683, 2.243902439, 215.3323794, 406.804878, 253.7804878, 9.365853659, 0.658536585, 3.951219512, 0.048780488, 2.536585366],
+            ShortPlay: [71.61428571, 1.826086957, 73.16937376, 26.0931677, 12.72049689, 2.50310559, 0.310559006, 2.565217391, 0.316770186, 0.925465839],
+            Visit: [284.7145833, 3.75, 355.9695181, 94.71875, 40.14583333, 15.88541667, 3.479166667, 9.583333333, 0.71875, 3.239583333],
+            Explore: [404.4633333, 6.8, 1079.522008, 46.8, 29.26666667, 22.43333333, 1.866666667, 42.6, 0.766666667, 13.6]
+        },
+        High: {//Duration, Biomes, Distance, Mining, Building, Harvesting, Farming, Exploring, Deaths, Hunt
+            Build: [1039.221739, 3.304347826, 892.8514372, 607.5652174, 1028.304348, 52.73913043, 23.86956522, 5.130434783, 0, 5.869565217],
+            Pioneering: [770.3193548, 3.096774194, 449.0868046, 724.7258065, 311.9677419, 17.19354839, 3.387096774, 8.564516129, 0.548387097, 8.693548387],
+            Explore: [1014.059259, 6.888888889, 1765.577247, 424.6666667, 307.1851852, 70.2962963, 4.888888889, 59.48148148, 0.888888889, 14.14814815]
+        }
+    },
+    Archetype: {
+        LowShortPlay: 0, 
+        LowVisit: 1,  
+        LowBuild: 2,  
+        LowExplore: 3, 
+        HighPioneering: 4,
+        HighExplore: 5, 
+        HighBuild: 6,
+        VeryHigh: 7,
+        Undefined: 8
+    },
     EventID: {
         Mine: 1, 
         Build: 2, 
@@ -835,7 +1355,8 @@ App.Init = function(){
             else if(extension == "JSON"){
                 App.FileIO.Read.Text(files[i], function(data){
                     //os.console.Comment(data);
-                    os.debugbar.AnchorConsolePage();
+                    //if(!os.debugbar.ConsolePagepinned)
+                    //    os.debugbar.AnchorConsole();
                     try{
                         os.console.Comment("Parsing File");
                         json = JSON.parse(data);
@@ -901,6 +1422,9 @@ App.Init = function(){
         //Holds Array list of all players actions
         Data.Players = os.resschmgr.Create.Map(); 
         Data.Sessions = os.resschmgr.Create.Map();
+        Data.PlayerSessions = os.resschmgr.Create.Map();
+        Data.PlayerTransitions = os.resschmgr.Create.Map();
+        Data.SessionStats = os.resschmgr.Create.Map();
         Data.SessionIDStartTimes = os.resschmgr.Create.PriorityQueue({low: true});
 
 
@@ -914,7 +1438,7 @@ App.Init = function(){
                 }
     os.console.AddCommand("Convolve", convolve, convolve, help);
 
-    help = "Generate Data Sets from Gameplay Data >>Generate sessions|players|events"
+    help = "Generate Data Sets from Gameplay Data >>Generate sessions|transitions|events"
     var generateReport = function(input){
         var cmd = input.toUpperCase();
         
@@ -941,8 +1465,97 @@ App.Init = function(){
             var file = new Blob([Data.SessionsCSV], {type: 'text/plain'});
             saveAs(file, 'sessions.csv' );
 
+            //Output Cluster Info:
+            var total = Cluster.LOW + Cluster.HIGH + Cluster.VERYHIGH;
+            os.console.AppendComment("Total Number of Usable Sessions: " + total);
+            os.console.AppendComment("Low: "  + (Cluster.LOW/total*100).toFixed(1) + "%" + ", "+ Cluster.LOW );
+            os.console.AppendComment("High: "  + (Cluster.HIGH/total*100).toFixed(1) + "%" + ", "+ Cluster.HIGH );
+            os.console.AppendComment("VeryHigh: "  + (Cluster.VERYHIGH/total*100).toFixed(1) + "%" + ", "+ Cluster.VERYHIGH );
 
 
+            os.console.AppendComment("Archetype Distribution: ");
+            os.console.AppendComment("Low: ");
+            os.console.AppendComment("  LowShortPlay: " + (Archetype[0]/Cluster.LOW*100).toFixed(1) + "%" +  ", " + Archetype[0]);
+            os.console.AppendComment("  LowVisit: " +     (Archetype[1]/Cluster.LOW*100).toFixed(1) + "%" +  ", " + Archetype[1]);
+            os.console.AppendComment("  LowBuild: " +     (Archetype[2]/Cluster.LOW*100).toFixed(1) + "%" +  ", " + Archetype[2]);
+            os.console.AppendComment("  LowExplore: " +   (Archetype[3]/Cluster.LOW*100).toFixed(1) + "%" +  ", " + Archetype[3]);
+
+            os.console.AppendComment("High: ");
+            os.console.AppendComment("  HighPioneering: " +  (Archetype[4]/Cluster.HIGH*100).toFixed(1) + "%" +  ", " + Archetype[4]);
+            os.console.AppendComment("  HighExplore: " +     (Archetype[5]/Cluster.HIGH*100).toFixed(1) + "%" +  ", " + Archetype[5]);
+            os.console.AppendComment("  HighBuild: " +       (Archetype[6]/Cluster.HIGH*100).toFixed(1) + "%" +  ", " + Archetype[6]);
+
+             //if(!os.debugbar.ConsolePagepinned)
+             //   os.debugbar.AnchorConsole();
+        }
+        else if(cmd == 'TRANSITIONS'){
+            os.console.Comment('\nGenerating Transition Data');
+
+            for(var i = 0; i < Data.PlayerSessions.size; i++){
+
+                GeneratePlayerTransitions(Data.PlayerSessions.key(), Data.PlayerSessions.value());
+                Data.PlayerSessions.next();
+                
+            }
+
+            //Parse Player transitions to CSV
+            Data.TransitionsCSV = '';
+
+            for(var i = 0; i < Data.PlayerTransitions.size; i++){
+                var stat = Data.PlayerTransitions.value();
+                if(stat.archTransitions.length > 0){
+                    Data.TransitionsCSV  += Data.PlayerTransitions.key() + "," + stat.archTransitions.join() + '\n';
+                }
+                Data.PlayerTransitions.next();
+            }
+
+            os.console.AppendComment("Generating output file: transitions.csv");
+            var file = new Blob([Data.TransitionsCSV], {type: 'text/plain'});
+            saveAs(file, 'transitions.csv' );
+
+            //Parse Player archetype counts to CSV
+            Data.TransitionsCountCSV = 'Player,LowShortPlay,LowVisit,LowBuild,LowExplore,HighPioneering,HighExplore,HighBuild,VeryHigh,Undefined\n';
+
+            for(var i = 0; i < Data.PlayerTransitions.size; i++){
+                var stat = Data.PlayerTransitions.value();
+                if(stat.archTransitions.length > 0){
+                    Data.TransitionsCountCSV  += Data.PlayerTransitions.key() + "," + stat.archCount.join() + '\n';
+                }
+                Data.PlayerTransitions.next();
+            }
+
+            os.console.AppendComment("Generating output file: transitionCounts.csv");
+            var file = new Blob([Data.TransitionsCountCSV], {type: 'text/plain'});
+            saveAs(file, 'transitionCounts.csv' );
+
+            os.console.AppendComment("Transition Overview: ");
+            //os.console.AppendComment("0: LowShortPlay\n1: LowVisit\n2: LowBuild\n3: LowExplore\n4: HighPioneering\n5: HighExplore\n6: HighBuild\n7: VeryHigh\n8: Undefined");
+
+            os.console.AppendComment("\nArchetype Transitions");
+            var archTran = Data.Transitions.Archetype;
+            os.console.AppendComment("\tLSP\tLV\tLB\tLE\tHP\tHE\tHB\tVH");
+            os.console.AppendComment("LSP\t"+ archTran[0][0]  +"\t"+ archTran[0][1] +"\t"+ archTran[0][2]  +"\t" + archTran[0][3] +"\t"+  archTran[0][4] +"\t"+  archTran[0][5] +"\t"+  archTran[0][6] +"\t"+  archTran[0][7] );
+            os.console.AppendComment( "LV\t"+ archTran[1][0]  +"\t"+ archTran[1][1] +"\t"+ archTran[1][2]  +"\t" + archTran[1][3] +"\t"+  archTran[1][4] +"\t"+  archTran[1][5] +"\t"+  archTran[1][6] +"\t"+  archTran[1][7] );
+            os.console.AppendComment( "LB\t"+ archTran[2][0]  +"\t"+ archTran[2][1] +"\t"+ archTran[2][2]  +"\t" + archTran[2][3] +"\t"+  archTran[2][4] +"\t"+  archTran[2][5] +"\t"+  archTran[2][6] +"\t"+  archTran[2][7] );
+            os.console.AppendComment( "LE\t"+ archTran[3][0]  +"\t"+ archTran[3][1] +"\t"+ archTran[3][2]  +"\t" + archTran[3][3] +"\t"+  archTran[3][4] +"\t"+  archTran[3][5] +"\t"+  archTran[3][6] +"\t"+  archTran[3][7] );
+            os.console.AppendComment( "HP\t"+ archTran[4][0]  +"\t"+ archTran[4][1] +"\t"+ archTran[4][2]  +"\t" + archTran[4][3] +"\t"+  archTran[4][4] +"\t"+  archTran[4][5] +"\t"+  archTran[4][6] +"\t"+  archTran[4][7] );
+            os.console.AppendComment( "HE\t"+ archTran[5][0]  +"\t"+ archTran[5][1] +"\t"+ archTran[5][2]  +"\t" + archTran[5][3] +"\t"+  archTran[5][4] +"\t"+  archTran[5][5] +"\t"+  archTran[5][6] +"\t"+  archTran[5][7] );
+            os.console.AppendComment( "HB\t"+ archTran[6][0]  +"\t"+ archTran[6][1] +"\t"+ archTran[6][2]  +"\t" + archTran[6][3] +"\t"+  archTran[6][4] +"\t"+  archTran[6][5] +"\t"+  archTran[6][6] +"\t"+  archTran[6][7] );
+            os.console.AppendComment( "VH\t"+ archTran[7][0]  +"\t"+ archTran[7][1] +"\t"+ archTran[7][2]  +"\t" + archTran[7][3] +"\t"+  archTran[7][4] +"\t"+  archTran[7][5] +"\t"+  archTran[7][6] +"\t"+  archTran[7][7] );
+
+            os.console.AppendComment("\nEngagement Transitions");
+            var engTran = Data.Transitions.Engagment;
+            os.console.AppendComment("\tL\tH\tVH");
+            os.console.AppendComment( "L\t"+ engTran.LOW.LOW + "\t" + engTran.LOW.HIGH + "\t" + engTran.LOW.VERYHIGH);
+            os.console.AppendComment( "H\t"+ engTran.HIGH.LOW + "\t" + engTran.HIGH.HIGH + "\t" + engTran.HIGH.VERYHIGH);
+            os.console.AppendComment( "VH\t"+ engTran.VERYHIGH.LOW + "\t" + engTran.VERYHIGH.HIGH + "\t" + engTran.VERYHIGH.VERYHIGH);
+
+            //Output Transition Data Files
+
+            os.console.Comment("");
+
+            //if(!os.debugbar.ConsolePagepinned)
+            //    os.debugbar.AnchorConsole();
         }
         else {
             os.console.Error("Unknown Report Type: " + cmd);
@@ -950,6 +1563,7 @@ App.Init = function(){
     }
     os.console.AddCommand("Generate", generateReport, generateReport, help);
     
-    os.debugbar.AnchorConsole();
+    if(!os.debugbar.ConsolePagepinned)
+        os.debugbar.AnchorConsole();
     
 }
